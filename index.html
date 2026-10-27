@@ -77,7 +77,8 @@ button{cursor:pointer}button:hover{border-color:var(--accent)}
 
   <h2>Grid and text</h2>
   <div class="grid3">
-    <label>Gridlines<select id="gw"><option value="light">Light</option><option value="standard" selected>Standard</option><option value="bold">Bold</option><option value="none">None</option></select></label>
+    <label>Grid color<select id="gw"><option value="light">Light</option><option value="standard" selected>Medium</option><option value="bold">Dark</option><option value="none">Hide grid</option></select></label>
+    <label>Grid thickness<input id="gt" type="range" min="0.5" max="4" step="0.25" value="1"></label>
     <label>Minor lines<select id="gm"><option value="1">None</option><option value="2">2 per block</option><option value="4">4 per block</option><option value="5">5 per block</option></select></label>
     <label>Block size<input id="cell" type="range" min="16" max="60" value="28"></label>
     <label>Label size<input id="ls" type="range" min="11" max="26" value="15"></label>
@@ -145,7 +146,7 @@ function renderRows(){
   rows.forEach((r,i)=>{
     const d=document.createElement('div');d.className='row';d.dataset.i=i;
     d.innerHTML=`<div class="l1"><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or points"><button type="button" data-act="del" aria-label="Remove row" title="Remove row">\u00d7</button></div>
-<div class="l2"><input type="color" data-k="color" value="${r.color}" aria-label="Color"><select data-k="dash" aria-label="Line style">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']],r.dash)}</select><select data-k="w" aria-label="Thickness">${sel([['1.5','Thin'],['2.5','Medium'],['4','Thick']],r.w)}</select><select data-k="arr" aria-label="Arrows">${sel([['both','Arrows: both ends'],['start','Arrow: left/bottom end'],['end','Arrow: right/top end'],['none','No arrows']],r.arr||'both')}</select><label class="chk"><input type="checkbox" data-k="vis"${r.vis!==false?' checked':''}>Show</label></div>
+<div class="l2"><input type="color" data-k="color" value="${r.color}" aria-label="Color"><select data-k="dash" aria-label="Line style">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']],r.dash)}</select><label class="chk">Width<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}" style="width:80px" aria-label="Line thickness"></label><select data-k="arr" aria-label="Arrows">${sel([['both','Arrows: both ends'],['start','Arrow: left/bottom end'],['end','Arrow: right/top end'],['none','No arrows']],r.arr||'both')}</select><label class="chk"><input type="checkbox" data-k="vis"${r.vis!==false?' checked':''}>Show</label></div>
 <div class="l3"><input data-k="lab" value="${esc(r.lab)}" placeholder="Label (for points: A; B; C)" aria-label="Line label"><button type="button" data-act="useeq">Use equation</button></div>
 <div class="l4"><label>Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><select data-k="place" aria-label="Label placement">${sel([['above','Above line'],['below','Below line'],['on','On the line'],['right','Right of point'],['left','Left of point']],r.place)}</select><label><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show point coordinates</label><label><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div>`;
     box.append(d)})}
@@ -168,7 +169,7 @@ function draw(){
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
   let s=`<svg id="fig" xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 ${TW} ${TH}" font-family="Helvetica,Arial,sans-serif"><rect width="100%" height="100%" fill="#fff"/><defs><clipPath id="cp"><rect x="${L}" y="${T}" width="${W}" height="${H}"/></clipPath></defs>`;
   // grid
-  const gc={light:['#d5dae0',.7],standard:['#9ba6b2',1],bold:['#4a5560',1.6]}[$('#gw').value],mn=+$('#gm').value;
+  const gc0={light:'#d5dae0',standard:'#9ba6b2',bold:'#4a5560'}[$('#gw').value],gt=+$('#gt').value,gc=gc0&&[gc0,gt],mn=+$('#gm').value;
   if(gc){
     const ln=(a,b,c,d,w,o)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${gc[0]}" stroke-width="${w}" opacity="${o}"/>`;
     if(mn>1){for(let i=0;x0+i*xs/mn<=x1+1e-9;i++)if(i%mn)s+=ln(sx(x0+i*xs/mn),T,sx(x0+i*xs/mn),T+H,gc[1]*.5,.7);
