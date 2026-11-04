@@ -62,6 +62,10 @@ h3{font-size:13px;margin:12px 0 6px}
 .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .chip{font-size:12px;padding:3px 8px;border-radius:99px;font-family:ui-monospace,Menlo,Consolas,monospace}
 .row[data-type="pts"] .only-line,.row:not([data-type="pts"]) .only-pts{display:none}
+.fold{padding:3px 8px;line-height:1.2;font-size:14px}
+.dot,.dot:hover{width:26px;height:26px;padding:0;border-radius:50%;border:3px solid var(--c);background:var(--c);box-shadow:0 0 0 1px var(--mute);flex:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.dot.off{background:transparent}
+#cmenu{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);display:grid;gap:8px;width:196px}#cmenu .pal{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}#cmenu .pal button{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--mute)}#cmenu label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.row.folded{padding:6px 10px}.row.folded details,.row.folded .kind{display:none}.row.folded[data-type="bad"] .kind{display:block}
 </style>
 </head>
 <body>
@@ -71,10 +75,11 @@ h3{font-size:13px;margin:12px 0 6px}
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
   <h2><span class="n">1</span>Lines and points</h2>
-  <p class="hint">Type an equation or a point. Use ^ for powers (x^2 appears as x&sup2;).</p>
+  <p class="hint">Type an equation or a point. Use ^ for powers (x^2 appears as x&sup2;). Click a row’s colored circle to show or hide it. Press and hold it to change the color.</p>
   <div id="rows"></div>
   <div class="adds">
     <button type="button" id="add" class="primary">+ Add row</button>
+    <button type="button" id="foldall">Collapse all</button>
     <span class="hint">Quick add:</span>
     <button type="button" class="chip" data-ex="y = 2x + 1">y = 2x + 1</button>
     <button type="button" class="chip" data-ex="x = 4">x = 4</button>
@@ -178,16 +183,16 @@ function parseRow(s){
   if(dy===0){const a=g(0,0),b=g(1,0)-a;if(!isFinite(a)||!b)throw 0;return{type:'v',c:-a/b}}
   return{type:'f',f:x=>{const a=g(x,0);return -a/(g(x,1)-a)}}}
 
-const COLORS=['#1f5fbf','#d1342f','#1a8a4a','#7a3fb0','#d97706','#0e7490'];
+const COLORS=['#000000'];
 let rows=[{eq:'y = 2x + 1',color:COLORS[0],dash:'solid',w:'2.5',lab:'y = 2x + 1',pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
 const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}</option>`).join('');
 
 function renderRows(){
   const box=$('#rows');box.innerHTML='';
   rows.forEach((r,i)=>{
-    const d=document.createElement('div');d.className='row';d.dataset.i=i;
+    const d=document.createElement('div');d.className='row'+(r.folded?' folded':'');d.dataset.i=i;
     const op=k=>(r.ui?r.ui[k]:k=='l')?' open':'';
-    d.innerHTML=`<div class="head"><input type="color" data-k="color" value="${r.color}" aria-label="Color"><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"><label class="show" title="Show or hide on the graph"><input type="checkbox" data-k="vis"${r.vis!==false?' checked':''}>Show</label><button type="button" data-act="del" aria-label="Remove row" title="Remove row">\u00d7</button></div>
+    d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"><button type="button" data-act="del" aria-label="Remove row" title="Remove row">\u00d7</button></div>
 <div class="kind"></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><small class="hint wide only-pts">Several points? Separate names with semicolons: A; B; C</small><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>`;
@@ -195,6 +200,8 @@ function renderRows(){
 $('#rows').addEventListener('input',e=>{const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;draw()});
 $('#rows').addEventListener('click',e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='del')rows.splice(i,1);
+  if(a=='fold')rows[i].folded=!rows[i].folded;
+  if(a=='dot'){if(held){held=false;return}rows[i].vis=rows[i].vis===false}
   if(a=='useeq')rows[i].lab=rows[i].eq.replace(/\s+/g,' ').trim();
   renderRows();draw()});
 $('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const q=document.querySelectorAll('.eq');q[q.length-1].focus()};
@@ -285,6 +292,22 @@ document.querySelectorAll('#panel input[id],#panel select[id]').forEach(el=>el.a
 renderRows();draw();
 
 $('#rows').addEventListener('toggle',e=>{const dt=e.target;if(dt.tagName!='DETAILS')return;const r=rows[dt.closest('.row').dataset.i];if(!r)return;r.ui=r.ui||{l:true};r.ui[dt.dataset.d]=dt.open},true);
+let held=false,ht=null;
+const PAL=['#000000','#c74440','#2d70b3','#388c46','#6042a6','#fa7e19','#e6007e','#0e7490','#8a6d3b','#7f7f7f'];
+const closeMenu=()=>{const m=$('#cmenu');if(m)m.remove()};
+function openMenu(btn,i){closeMenu();const m=document.createElement('div');m.id='cmenu';
+  m.innerHTML='<div class="pal">'+PAL.map(c=>`<button type="button" data-c="${c}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')+'</div><label>Custom<input type="color" value="'+rows[i].color+'"></label>';
+  document.body.append(m);const b=btn.getBoundingClientRect();
+  m.style.left=Math.max(8,Math.min(b.left,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
+  m.onclick=e=>{const c=e.target.dataset.c;if(c){rows[i].color=c;closeMenu();renderRows();draw()}};
+  m.querySelector('input').oninput=e=>{rows[i].color=e.target.value;btn.style.setProperty('--c',e.target.value);draw()}}
+$('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest('.dot');held=false;clearTimeout(ht);if(!b)return;ht=setTimeout(()=>{held=true;openMenu(b,+b.closest('.row').dataset.i)},450)});
+['pointerup','pointerleave','pointercancel'].forEach(t=>$('#rows').addEventListener(t,()=>clearTimeout(ht),true));
+$('#rows').addEventListener('contextmenu',e=>{const b=e.target.closest('.dot');if(!b)return;e.preventDefault();openMenu(b,+b.closest('.row').dataset.i)});
+document.addEventListener('pointerdown',e=>{if(!e.target.closest('#cmenu')&&!e.target.closest('.dot'))closeMenu()});
+document.addEventListener('keydown',e=>{if(e.key=='Escape')closeMenu()});
+window.addEventListener('scroll',closeMenu,true);
+$('#foldall').onclick=()=>{const all=rows.length&&rows.every(r=>r.folded);rows.forEach(r=>r.folded=!all);renderRows();draw();$('#foldall').textContent=all?'Collapse all':'Expand all'};
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const eq=b.dataset.ex,pt=/^[A-Za-z]'*\(/.test(eq);rows.push({eq,color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:pt?'':eq,pos:70,place:'above',rot:true,coords:pt,arr:'both',vis:true,labOn:true});renderRows();draw()});
 </script>
 </body>
