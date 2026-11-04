@@ -66,6 +66,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .dot,.dot:hover{width:26px;height:26px;padding:0;border-radius:50%;border:3px solid var(--c);background:var(--c);box-shadow:0 0 0 1px var(--mute);flex:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}.dot.off{background:transparent}
 #cmenu{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);display:grid;gap:8px;width:196px}#cmenu .pal{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}#cmenu .pal button{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--mute)}#cmenu label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
 .row.folded{padding:6px 10px}.row.folded details,.row.folded .kind{display:none}.row.folded[data-type="bad"] .kind{display:block}
+.wrap{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.wrap.dragging{cursor:grabbing}
 </style>
 </head>
 <body>
@@ -129,14 +130,18 @@ h3{font-size:13px;margin:12px 0 6px}
     <button type="button" id="dpng">Save PNG</button>
     <button type="button" id="cpy">Copy image</button>
     <button type="button" id="prt">Print</button>
+    <button type="button" id="rv" title="Back to x and y from −10 to 10">Reset view</button>
   </div>
   <div class="wrap"><svg id="fig"></svg></div>
+  <p class="hint" style="margin-top:8px">Drag to pan. Scroll or pinch to zoom. The view snaps to the grid when you let go, and the axis boxes update to match.</p>
   <div id="note" role="status"></div>
 </main>
 </div>
 
 <script>
 const $=s=>document.querySelector(s);
+let live=null,view=null;
+const ticks=(a,b,st)=>{const o=[];for(let k=Math.ceil(a/st-1e-9);k*st<=b+1e-9;k++)o.push([k,k*st]);return o};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
 const sup=(s,sz)=>{const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
@@ -208,23 +213,24 @@ $('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
-  const x0=val('x0'),x1=val('x1'),xs=val('xs'),y0=val('y0'),y1=val('y1'),ys=val('ys');
+  let x0=val('x0'),x1=val('x1'),xs=val('xs'),y0=val('y0'),y1=val('y1'),ys=val('ys');
+  if(live)({x0,x1,xs,y0,y1,ys}=live);
   const fig=$('#fig');
   if(![x0,x1,xs,y0,y1,ys].every(isFinite)||x1<=x0||y1<=y0||xs<=0||ys<=0||(x1-x0)/xs>200||(y1-y0)/ys>200){$('#note').textContent='Check the axis ranges: \u201cTo\u201d must be larger than \u201cFrom\u201d, and \u201cCount by\u201d must be positive.';return}
   $('#note').textContent='';
   const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xt=$('#xt').value,yt=$('#yt').value;
-  const W=(x1-x0)/xs*cell,H=(y1-y0)/ys*cell,L=xt||yt?64:56,R=36,T=ct?58:34,B=xt?64:44;
-  const TW=Math.round(L+W+R),TH=Math.round(T+H+B);
+  const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,L=xt||yt?64:56,R=36,T=ct?58:34,B=xt?64:44;
+  const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
   let s=`<svg id="fig" xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 ${TW} ${TH}" font-family="Helvetica,Arial,sans-serif"><rect width="100%" height="100%" fill="#fff"/><defs><clipPath id="cp"><rect x="${L}" y="${T}" width="${W}" height="${H}"/></clipPath></defs>`;
   // grid
   const gc0={light:'#d5dae0',standard:'#9ba6b2',bold:'#4a5560'}[$('#gw').value],gt=+$('#gt').value,gc=gc0&&[gc0,gt],mn=+$('#gm').value;
   if(gc){
     const ln=(a,b,c,d,w,o)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${gc[0]}" stroke-width="${w}" opacity="${o}"/>`;
-    if(mn>1){for(let i=0;x0+i*xs/mn<=x1+1e-9;i++)if(i%mn)s+=ln(sx(x0+i*xs/mn),T,sx(x0+i*xs/mn),T+H,gc[1]*.5,.7);
-             for(let i=0;y0+i*ys/mn<=y1+1e-9;i++)if(i%mn)s+=ln(L,sy(y0+i*ys/mn),L+W,sy(y0+i*ys/mn),gc[1]*.5,.7)}
-    for(let i=0;x0+i*xs<=x1+1e-9;i++)s+=ln(sx(x0+i*xs),T,sx(x0+i*xs),T+H,gc[1],1);
-    for(let i=0;y0+i*ys<=y1+1e-9;i++)s+=ln(L,sy(y0+i*ys),L+W,sy(y0+i*ys),gc[1],1)}
+    if(mn>1){ticks(x0,x1,xs/mn).forEach(([k,v])=>{if(((k%mn)+mn)%mn)s+=ln(sx(v),T,sx(v),T+H,gc[1]*.5,.7)});
+             ticks(y0,y1,ys/mn).forEach(([k,v])=>{if(((k%mn)+mn)%mn)s+=ln(L,sy(v),L+W,sy(v),gc[1]*.5,.7)})}
+    ticks(x0,x1,xs).forEach(([k,v])=>s+=ln(sx(v),T,sx(v),T+H,gc[1],1));
+    ticks(y0,y1,ys).forEach(([k,v])=>s+=ln(L,sy(v),L+W,sy(v),gc[1],1))}
   // axes
   const ax=y0<=0&&y1>=0?sy(0):T+H,ay=x0<=0&&x1>=0?sx(0):L;
   s+=`<g stroke="#111" stroke-width="1.8"><line x1="${L-6}" y1="${ax}" x2="${L+W+6}" y2="${ax}"/><line x1="${ay}" y1="${T-6}" x2="${ay}" y2="${T+H+6}"/></g><g fill="#111">`
@@ -233,8 +239,8 @@ function draw(){
   // numbers
   const xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
   s+=`<g font-size="12" fill="#111">`;
-  if(xe)for(let i=0;x0+i*xs<=x1+1e-9;i++){if(i%xe)continue;const v=x0+i*xs;if(Math.abs(v)<1e-9&&orig)continue;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?20:16)}" text-anchor="middle">${fmt(v)}</text>`}
-  if(ye)for(let i=0;y0+i*ys<=y1+1e-9;i++){if(i%ye)continue;const v=y0+i*ys;if(Math.abs(v)<1e-9&&orig)continue;s+=`<text x="${ay-8}" y="${sy(v)+4}" text-anchor="end">${fmt(v)}</text>`}
+  if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?20:16)}" text-anchor="middle">${fmt(v)}</text>`});
+  if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${ay-8}" y="${sy(v)+4}" text-anchor="end">${fmt(v)}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+16}" text-anchor="end">0</text>`;
   s+=`</g><g font-size="15" font-style="italic" fill="#111"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,15)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,15)}</text></g>`;
   if(ct)s+=`<text x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
@@ -309,6 +315,38 @@ document.addEventListener('keydown',e=>{if(e.key=='Escape')closeMenu()});
 window.addEventListener('scroll',closeMenu,true);
 $('#foldall').onclick=()=>{const all=rows.length&&rows.every(r=>r.folded);rows.forEach(r=>r.folded=!all);renderRows();draw();$('#foldall').textContent=all?'Collapse all':'Expand all'};
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const eq=b.dataset.ex,pt=/^[A-Za-z]'*\(/.test(eq);rows.push({eq,color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:pt?'':eq,pos:70,place:'above',rot:true,coords:pt,arr:'both',vis:true,labOn:true});renderRows();draw()});
+
+// pan and zoom
+let gz=false,mv=false,snapT=null;const ptrs=new Map(),wrap=document.querySelector('.wrap');
+const rd=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
+const fv=n=>String(+n.toPrecision(12));
+const nice=r=>{const p=Math.pow(10,Math.floor(Math.log10(r))),m=r/p;return +((m<1.41?1:m<3.16?2:m<7.07?5:10)*p).toPrecision(12)};
+function begin(){if(live)return true;if(!view)return false;const l={x0:rd('x0'),x1:rd('x1'),y0:rd('y0'),y1:rd('y1'),xs:rd('xs'),ys:rd('ys'),W:view.W,H:view.H};if(Object.values(l).some(v=>!isFinite(v)))return false;live=l;gz=false;mv=false;return true}
+const toSvg=(cx,cy)=>{const r=$('#fig').getBoundingClientRect(),k=view.TW/r.width;return[(cx-r.left)*k,(cy-r.top)*k]};
+const panBy=(dx,dy)=>{const wx=(live.x1-live.x0)/live.W,wy=(live.y1-live.y0)/live.H;live.x0-=dx*wx;live.x1-=dx*wx;live.y0+=dy*wy;live.y1+=dy*wy};
+function zoomAt(px,py,f){const l=live,w=l.x1-l.x0,h=l.y1-l.y0;if(w*f<1e-6||w*f>1e7||h*f<1e-6||h*f>1e7)return;
+  const ax=l.x0+(px-view.L)/l.W*w,ay=l.y1-(py-view.T)/l.H*h;
+  l.x0=ax-(ax-l.x0)*f;l.x1=ax+(l.x1-ax)*f;l.y0=ay-(ay-l.y0)*f;l.y1=ay+(l.y1-ay)*f;
+  const c=+$('#cell').value;l.xs=nice((l.x1-l.x0)/(l.W/c));l.ys=nice((l.y1-l.y0)/(l.H/c));gz=true}
+function commit(){clearTimeout(snapT);if(!live)return;const l=live,c=+$('#cell').value;live=null;
+  if(!mv){draw();return}
+  const nx=Math.max(1,Math.round(l.W/c)),ny=Math.max(1,Math.round(l.H/c));
+  const snap=(a,b,st,n)=>{let w=b-a;if(gz){st=nice(w/n);w=n*st}const a2=Math.round(((a+b)/2-w/2)/st)*st;return[a2,a2+w,st]};
+  const[x0,x1,xs]=snap(l.x0,l.x1,l.xs,nx),[y0,y1,ys]=snap(l.y0,l.y1,l.ys,ny);
+  $('#x0').value=fv(x0);$('#x1').value=fv(x1);$('#y0').value=fv(y0);$('#y1').value=fv(y1);
+  if(gz){$('#xs').value=fv(xs);$('#ys').value=fv(ys)}
+  draw()}
+wrap.addEventListener('pointerdown',e=>{if(e.button>0)return;ptrs.set(e.pointerId,[e.clientX,e.clientY]);try{wrap.setPointerCapture(e.pointerId)}catch(_){}if(begin())wrap.classList.add('dragging')});
+wrap.addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||!live)return;const n=[e.clientX,e.clientY];mv=true;
+  if(ptrs.size==1){const a=toSvg(p[0],p[1]),b=toSvg(n[0],n[1]);panBy(b[0]-a[0],b[1]-a[1])}
+  else if(ptrs.size==2){const o=[...ptrs.entries()].find(([id])=>id!=e.pointerId)[1],mid=q=>[(q[0]+o[0])/2,(q[1]+o[1])/2],d=q=>Math.hypot(q[0]-o[0],q[1]-o[1]);
+    const m0=mid(p),m1=mid(n),a=toSvg(m0[0],m0[1]),b=toSvg(m1[0],m1[1]),d0=d(p),d1=d(n);
+    panBy(b[0]-a[0],b[1]-a[1]);if(d0>0&&d1>0)zoomAt(b[0],b[1],d0/d1)}
+  ptrs.set(e.pointerId,n);draw()});
+const endDrag=e=>{ptrs.delete(e.pointerId);if(!ptrs.size){wrap.classList.remove('dragging');commit()}};
+wrap.addEventListener('pointerup',endDrag);wrap.addEventListener('pointercancel',endDrag);
+wrap.addEventListener('wheel',e=>{if(!begin())return;e.preventDefault();mv=true;const k=e.ctrlKey?.01:.0015,dy=e.deltaY*(e.deltaMode==1?33:1),pt=toSvg(e.clientX,e.clientY);zoomAt(pt[0],pt[1],Math.exp(dy*k));draw();clearTimeout(snapT);snapT=setTimeout(commit,220)},{passive:false});
+$('#rv').onclick=()=>{live=null;['x0','y0'].forEach(i=>$('#'+i).value='-10');['x1','y1'].forEach(i=>$('#'+i).value='10');['xs','ys'].forEach(i=>$('#'+i).value='1');draw()};
 </script>
 </body>
 </html>
