@@ -67,6 +67,17 @@ h3{font-size:13px;margin:12px 0 6px}
 #cmenu{position:fixed;z-index:50;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;box-shadow:0 6px 24px rgba(0,0,0,.25);display:grid;gap:8px;width:196px}#cmenu .pal{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}#cmenu .pal button{width:28px;height:28px;border-radius:50%;padding:0;border:2px solid var(--panel);box-shadow:0 0 0 1px var(--mute)}#cmenu label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
 .row.folded{padding:6px 10px}.row.folded details,.row.folded .kind{display:none}.row.folded[data-type="bad"] .kind{display:block}
 .wrap{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}.wrap.dragging{cursor:grabbing}
+.pv{font-size:16px;padding:2px 6px;white-space:nowrap;overflow-x:auto;color:var(--ink)}
+.pv::before{content:"Preview  ";font-size:12px;color:var(--mute)}
+.pv sup{font-size:.7em}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 3px;font-size:.92em}
+.fr>span{padding:0 4px}.fr>span:first-child{border-bottom:1.5px solid currentColor}
+.sec h2{cursor:pointer;user-select:none;margin:14px 0 8px}
+.sec.closed h2{margin-bottom:0}
+.chev{margin-left:auto;color:var(--mute);transition:transform .15s}
+.sec.closed .chev{transform:rotate(-90deg)}
+.sec.closed .sb{display:none}
+.rad{display:inline-block;white-space:nowrap}.rs{font-size:1.05em}.rb{display:inline-block;border-top:1.5px solid currentColor;padding:1px 2px 0;margin-left:-1px}
 </style>
 </head>
 <body>
@@ -75,7 +86,7 @@ h3{font-size:13px;margin:12px 0 6px}
   <h1>Coordinate grid</h1>
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
-  <h2><span class="n">1</span>Lines and points</h2>
+  <section class="sec"><h2><span class="n">1</span>Lines and points<span class="chev" aria-hidden="true">▾</span></h2><div class="sb">
   <p class="hint">Type an equation or a point. Use ^ for powers (x^2 appears as x&sup2;). Click a row’s colored circle to show or hide it. Press and hold it to change the color.</p>
   <div id="rows"></div>
   <div class="adds">
@@ -88,7 +99,8 @@ h3{font-size:13px;margin:12px 0 6px}
     <button type="button" class="chip" data-ex="A(2, 3)">A(2, 3)</button>
   </div>
 
-  <h2><span class="n">2</span>Axes</h2>
+  </div></section>
+<section class="sec"><h2><span class="n">2</span>Axes<span class="chev" aria-hidden="true">▾</span></h2><div class="sb">
   <h3>Horizontal axis (x)</h3>
   <div class="grid3">
     <label>From<input id="x0" value="-10"></label>
@@ -107,7 +119,8 @@ h3{font-size:13px;margin:12px 0 6px}
   </div>
   <p class="hint">Step is the distance between gridlines. Ranges accept fractions and pi, like pi/2.</p>
 
-  <h2><span class="n">3</span>Grid</h2>
+  </div></section>
+<section class="sec"><h2><span class="n">3</span>Grid<span class="chev" aria-hidden="true">▾</span></h2><div class="sb">
   <div class="grid3">
     <label>Color<select id="gw"><option value="light">Light</option><option value="standard" selected>Medium</option><option value="bold">Dark</option><option value="none">Hide grid</option></select></label>
     <label>Thickness<input id="gt" type="range" min="0.5" max="4" step="0.25" value="1"></label>
@@ -115,13 +128,15 @@ h3{font-size:13px;margin:12px 0 6px}
     <label>Block size<input id="cell" type="range" min="16" max="60" value="28"></label>
   </div>
 
-  <h2><span class="n">4</span>Titles and text</h2>
+  </div></section>
+<section class="sec"><h2><span class="n">4</span>Titles and text<span class="chev" aria-hidden="true">▾</span></h2><div class="sb">
   <div class="f">
     <label>Chart title<input id="ct" placeholder="Optional"></label>
     <label>Horizontal axis title<input id="xt" placeholder="Optional"></label>
     <label>Vertical axis title<input id="yt" placeholder="Optional"></label>
     <label>Label text size<input id="ls" type="range" min="11" max="26" value="15"></label>
   </div>
+</div></section>
 </aside>
 
 <main class="stage">
@@ -142,6 +157,48 @@ h3{font-size:13px;margin:12px 0 6px}
 const $=s=>document.querySelector(s);
 let live=null,view=null;
 const ticks=(a,b,st)=>{const o=[];for(let k=Math.ceil(a/st-1e-9);k*st<=b+1e-9;k++)o.push([k,k*st]);return o};
+const cvx=document.createElement('canvas').getContext('2d');
+const tw=(t,sz)=>{cvx.font='bold '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
+const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;
+const wsup=(t,sz)=>{let w=0,last=0,m;SUPRE.lastIndex=0;while((m=SUPRE.exec(t))){w+=tw(t.slice(last,m.index),sz)+tw(m[1]!==undefined?m[1]:m[2],sz*.7);last=SUPRE.lastIndex}return w+tw(t.slice(last),sz)};
+const FC='A-Za-z0-9.^\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
+const FRRE=new RegExp('(\\([^()]*\\)|['+FC+']+)/(\\([^()]*\\)|['+FC+']+)','g');
+const unp=t=>/^\(.*\)$/.test(t)?t.slice(1,-1):t;
+const NOUT=0xE000;
+function extract(str){const rads=[];let o='',i=0;
+  while(i<str.length){let k=-1;if(str.startsWith('sqrt(',i))k=i+4;else if(str[i]=='\u221a'&&str[i+1]=='(')k=i+1;
+    if(k<0){o+=str[i++];continue}
+    let d=0,j=k;for(;j<str.length;j++){if(str[j]=='(')d++;else if(str[j]==')'&&--d==0)break}
+    if(j>=str.length){o+=str[i++];continue}
+    rads.push(str.slice(k+1,j));o+=String.fromCharCode(NOUT+rads.length-1);i=j+1}
+  return{s:o,rads}}
+function lay(str,sz,halo,rads){
+  const col=(halo.match(/fill="([^"]+)"/)||[])[1]||'#000';
+  let x=0,o='',up=sz*.8,down=sz*.22,fr=false;
+  const put=(L,dy)=>{o+=`<g transform="translate(${x.toFixed(1)} ${dy.toFixed(1)})">${L.svg}</g>`;x+=L.w;up=Math.max(up,L.up-dy);down=Math.max(down,L.down+dy);fr=fr||L.fr};
+  const txt=t=>{if(!t)return;put({svg:`<text x="0" y="0" xml:space="preserve" style="white-space:pre" font-size="${sz}" font-weight="bold" ${halo}>${sup(t,sz)}</text>`,w:wsup(t,sz),up:sz*.8,down:sz*.22,fr:false},0)};
+  const rad=inner=>{const I=layout(inner,sz,halo),sw=sz*.55,top=-(I.up+3),end=(sw+I.w+2).toFixed(1);
+    const d=`M0 ${(-.28*sz).toFixed(1)} L${(.09*sz).toFixed(1)} ${(-.34*sz).toFixed(1)} L${(.26*sz).toFixed(1)} ${(.1*sz).toFixed(1)} L${(.5*sz).toFixed(1)} ${top.toFixed(1)} H${end}`;
+    put({svg:`<path d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/><g transform="translate(${sw.toFixed(1)} 0)">${I.svg}</g>`,w:sw+I.w+3,up:I.up+5,down:Math.max(I.down,sz*.14),fr:I.fr},0)};
+  const inline=t=>{let last=0;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);if(c>=NOUT&&c<NOUT+256){txt(t.slice(last,i));rad(rads[c-NOUT]);last=i+1}}txt(t.slice(last))};
+  const re=new RegExp(FRRE.source,'g');let last=0,m;
+  while((m=re.exec(str))){inline(str.slice(last,m.index));last=re.lastIndex;
+    const fs=sz*.82,N=lay(unp(m[1]),fs,halo,rads),D=lay(unp(m[2]),fs,halo,rads),fw=Math.max(N.w,D.w)+6,yb=-sz*.3,yN=yb-3-N.down,yD=yb+2+D.up,x2=x+fw;
+    o+=`<line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="#fff" stroke-width="4.5"/><line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="${col}" stroke-width="1.6"/>`
+      +`<g transform="translate(${(x+(fw-N.w)/2).toFixed(1)} ${yN.toFixed(1)})">${N.svg}</g><g transform="translate(${(x+(fw-D.w)/2).toFixed(1)} ${yD.toFixed(1)})">${D.svg}</g>`;
+    up=Math.max(up,N.up-yN);down=Math.max(down,yD+D.down);fr=true;x+=fw+3}
+  inline(str.slice(last));return{svg:o,w:x,up,down,fr}}
+function layout(str,sz,halo){const e=extract(str);return lay(e.s,sz,halo,e.rads)}
+function lab(str,sz,halo,tf,dx,dy,an){const r=layout(str,sz,halo);
+  if(dy<=-8)dy-=Math.max(0,r.down-sz*.25);else if(dy>=sz)dy=Math.max(dy,r.up+5);
+  const ox=an=='middle'?-r.w/2:an=='end'?-r.w:0;
+  return `<g transform="${tf}"><g transform="translate(${(dx+ox).toFixed(1)} ${dy.toFixed(1)})">${r.svg}</g></g>`}
+const hsup=t=>esc(t).replace(/\^\(([^)]*)\)|\^(-?\d*\.?\d+|-?[a-z])/gi,(m,a,b)=>'<sup>'+(a!==undefined?a:b).replace(/-/g,'\u2212')+'</sup>');
+function mathHTML(str){const e=extract(str),re=new RegExp(FRRE.source,'g'),src=e.s;let o='',last=0,m;
+  const ph=t=>hsup(t).replace(/[\uE000-\uE0FF]/g,c=>`<span class="rad"><span class="rs">\u221a</span><span class="rb">${mathHTML(e.rads[c.charCodeAt(0)-NOUT])}</span></span>`);
+  while((m=re.exec(src))){o+=ph(src.slice(last,m.index))+`<span class="fr"><span>${ph(unp(m[1]))}</span><span>${ph(unp(m[2]))}</span></span>`;last=re.lastIndex}
+  return o+ph(src.slice(last))}
+function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(/.test(t)?mathHTML(t):'';el.innerHTML=h;el.hidden=!h})}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
 const sup=(s,sz)=>{const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
@@ -199,10 +256,11 @@ function renderRows(){
     const op=k=>(r.ui?r.ui[k]:k=='l')?' open':'';
     d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"><button type="button" data-act="del" aria-label="Remove row" title="Remove row">\u00d7</button></div>
 <div class="kind"></div>
+<div class="pv" data-pv="eq" hidden></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
-<details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><small class="hint wide only-pts">Several points? Separate names with semicolons: A; B; C</small><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>`;
-    box.append(d)})}
-$('#rows').addEventListener('input',e=>{const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;draw()});
+<details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><small class="hint wide only-pts">Several points? Separate names with semicolons: A; B; C</small><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>`;
+    box.append(d);pvUpdate(d,i)})}
+$('#rows').addEventListener('input',e=>{const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab'){const rw=e.target.closest('.row');pvUpdate(rw,+rw.dataset.i)}draw()});
 $('#rows').addEventListener('click',e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='del')rows.splice(i,1);
   if(a=='fold')rows[i].folded=!rows[i].folded;
@@ -264,7 +322,7 @@ function draw(){
     if(p.type=='pts'){
       const cs=r.lab?r.lab.split(';').map(z=>z.trim()):[];p.pts.forEach((q,qi)=>{if(r.vis!==false)lines+=`<circle cx="${sx(q.x)}" cy="${sy(q.y)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1"/>`;
         const t=(cs[qi]||q.n)+(r.coords?`(${fmt(q.x)}, ${fmt(q.y)})`:'');
-        if(t&&r.labOn!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];labels+=`<text x="${(sx(q.x)+dx).toFixed(1)}" y="${(sy(q.y)+dy).toFixed(1)}" text-anchor="${an}" font-size="${ls}" font-weight="bold" ${halo}>${sup(t,ls)}</text>`}});
+        if(t&&r.labOn!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];labels+=lab(t,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an)}});
       return}
     let segs;
     if(p.type=='v'){const n=80;segs=[[...Array(n+1)].map((_,k)=>[sx(p.c),sy(y0+(y1-y0)*k/n)])]}else segs=trace(p.f);
@@ -277,7 +335,7 @@ function draw(){
       const k=Math.round(r.pos/100*(vis.length-1)),q=vis[k],a=vis[Math.max(0,k-4)],b=vis[Math.min(vis.length-1,k+4)];
       let ang=r.rot?Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI:0;if(ang>90)ang-=180;if(ang<-90)ang+=180;
       const[dx,dy,an]={above:[0,-9,'middle'],below:[0,ls+3,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];
-      labels+=`<text transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})" x="${dx}" y="${dy}" text-anchor="${an}" font-size="${ls}" font-weight="bold" ${halo}>${sup(r.lab,ls)}</text>`}
+      labels+=lab(r.lab,ls,halo,`translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})`,dx,dy,an)}
   });
   s+=`<g clip-path="url(#cp)">${lines}</g>${arrows}${labels}</svg>`;
   fig.outerHTML=s}
@@ -347,6 +405,7 @@ const endDrag=e=>{ptrs.delete(e.pointerId);if(!ptrs.size){wrap.classList.remove(
 wrap.addEventListener('pointerup',endDrag);wrap.addEventListener('pointercancel',endDrag);
 wrap.addEventListener('wheel',e=>{if(!begin())return;e.preventDefault();mv=true;const k=e.ctrlKey?.01:.0015,dy=e.deltaY*(e.deltaMode==1?33:1),pt=toSvg(e.clientX,e.clientY);zoomAt(pt[0],pt[1],Math.exp(dy*k));draw();clearTimeout(snapT);snapT=setTimeout(commit,220)},{passive:false});
 $('#rv').onclick=()=>{live=null;['x0','y0'].forEach(i=>$('#'+i).value='-10');['x1','y1'].forEach(i=>$('#'+i).value='10');['xs','ys'].forEach(i=>$('#'+i).value='1');draw()};
+document.querySelectorAll('.sec>h2').forEach(h=>{const t=()=>{const c=h.parentElement.classList.toggle('closed');h.setAttribute('aria-expanded',String(!c))};h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');h.onclick=t;h.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();t()}}});
 </script>
 </body>
 </html>
