@@ -85,6 +85,18 @@ h3{font-size:13px;margin:12px 0 6px}
 .row.flash{animation:fl 1.2s}
 @keyframes fl{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 4px var(--accent)}}
 @media(prefers-reduced-motion:reduce){.row.flash{animation:none;box-shadow:0 0 0 3px var(--accent)}}
+.fillrow{display:flex;gap:10px;align-items:center}.fillrow label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute)}.fillrow input[type=range]{width:90px}
+.row:not([data-ineq="1"]) .only-ineq{display:none}
+.row[data-ineq="1"] .kind::after{content:"Inequality (shows where it is true)"}
+.restrow label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mute)}
+.row:not([data-restr="1"]) .only-restr{display:none}
+.row[data-restr="1"][data-type="f"] .kind::after{content:"Line or curve with a restriction"}
+.row[data-restr="1"][data-type="v"] .kind::after{content:"Vertical line with a restriction"}
+.row[data-restr="1"][data-ineq="1"] .kind::after{content:"Inequality with a restriction"}
+.par{display:grid;grid-template-columns:auto 1fr 76px;gap:6px 8px;align-items:center;margin-bottom:8px}.par b{font-style:italic;font-size:15px}.par .pr{grid-column:2/4;display:flex;gap:6px}.par input[type=number]{width:100%;min-width:0}.par .pr input{font-size:12px}
+#params h3{margin:12px 0 6px}
+.trig{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mute)}
+.row:not([data-feat="1"]) .only-feat{display:none}
 </style>
 </head>
 <body>
@@ -94,14 +106,17 @@ h3{font-size:13px;margin:12px 0 6px}
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
   <section class="sec"><h2><span class="n">1</span>Lines and points<span class="chev" aria-hidden="true">▾</span></h2><div class="sb">
-  <p class="hint">Type an equation or a point. Use ^ for powers (x^2 appears as x&sup2;). Click a row’s colored circle to show or hide it. Press and hold it to change the color.</p>
+  <p class="hint">Type an equation, an inequality (like y > 2x + 1 or x <= 3), or a point. Add a restriction with braces, like y = x + 1 {-2 <= x < 4}. Use ^ for powers (x^2 appears as x&sup2;). Click a row’s colored circle to show or hide it. Press and hold it to change the color.</p>
   <div id="rows"></div>
+  <div id="params"></div>
   <div class="adds">
     <button type="button" id="add" class="primary">+ Add row</button>
     <button type="button" id="foldall">Collapse all</button>
     <span class="hint">Quick add:</span>
     <button type="button" class="chip" data-ex="y = 2x + 1">y = 2x + 1</button>
     <button type="button" class="chip" data-ex="x = 4">x = 4</button>
+    <button type="button" class="chip" data-ex="y = x + 1 {-2 ≤ x < 4}">y = x + 1 {−2 ≤ x &lt; 4}</button>
+    <button type="button" class="chip" data-ex="y ≥ x + 1">y ≥ x + 1</button>
     <button type="button" class="chip" data-ex="y = x&sup2;">y = x&sup2;</button>
     <button type="button" class="chip" data-ex="A(2, 3)">A(2, 3)</button>
   </div>
@@ -115,6 +130,7 @@ h3{font-size:13px;margin:12px 0 6px}
     <label>Step<input id="xs" value="1"></label>
     <label>Show numbers<select id="xn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
     <label>Axis name<input id="xl" value="x"></label>
+    <label>Number style<select id="xf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
   </div>
   <h3>Vertical axis (y)</h3>
   <div class="grid3">
@@ -123,7 +139,9 @@ h3{font-size:13px;margin:12px 0 6px}
     <label>Step<input id="ys" value="1"></label>
     <label>Show numbers<select id="yn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
     <label>Axis name<input id="yl" value="y"></label>
+    <label>Number style<select id="yf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
   </div>
+  <label class="trig">Trig functions use<select id="tm"><option value="rad">Radians</option><option value="deg">Degrees</option></select></label>
   <p class="hint">Step is the distance between gridlines. Ranges accept fractions and pi, like pi/2.</p>
 
   </div></section>
@@ -150,7 +168,7 @@ h3{font-size:13px;margin:12px 0 6px}
   <div class="bar proj">
     <button type="button" id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
     <button type="button" id="redo" title="Redo (Ctrl+Shift+Z)" disabled>↷ Redo</button>
-    <select id="tpl" aria-label="Start from a template"><option value="">Template…</option><option value="4q">Four quadrants (−10 to 10)</option><option value="q1">First quadrant (0 to 10)</option><option value="q1b">First quadrant (0 to 20, step 2)</option><option value="s5">Small grid (−5 to 5)</option><option value="blank">Clear everything</option></select>
+    <select id="tpl" aria-label="Start from a template"><option value="">Template…</option><option value="4q">Four quadrants (−10 to 10)</option><option value="q1">First quadrant (0 to 10)</option><option value="q1b">First quadrant (0 to 20, step 2)</option><option value="trig">Trigonometry (−2π to 2π)</option><option value="s5">Small grid (−5 to 5)</option><option value="blank">Clear everything</option></select>
     <button type="button" id="sf" title="Download your setup as a file">Save file</button>
     <button type="button" id="of" title="Open a saved setup file">Open file</button>
     <input type="file" id="openf" accept=".json,application/json" hidden>
@@ -172,6 +190,12 @@ h3{font-size:13px;margin:12px 0 6px}
 const $=s=>document.querySelector(s);
 let live=null,view=null;
 var hist=[],hi=-1,lastJ='',hT=null;
+var P={},usedP=new Set(),FUNCS={},FD={},shownP='',KDEG=false;
+const KK=()=>KDEG?Math.PI/180:1;
+const PIQ=[1,2,3,4,6,8,12];
+function nf(v,mode){if(mode=='deg')return fmt(v)+'\u00b0';
+  if(mode=='pi'){const r=v/Math.PI;for(const q of PIQ){const p=Math.round(r*q);if(Math.abs(r*q-p)<1e-6){if(p==0)return'0';const a=Math.abs(p);return(p<0?'\u2212':'')+(a==1?'':a)+'\u03c0'+(q>1?'/'+q:'')}}}
+  return fmt(v)}
 const ticks=(a,b,st)=>{const o=[];for(let k=Math.ceil(a/st-1e-9);k*st<=b+1e-9;k++)o.push([k,k*st]);return o};
 const cvx=document.createElement('canvas').getContext('2d');
 const tw=(t,sz)=>{cvx.font='bold '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
@@ -214,7 +238,9 @@ function mathHTML(str){const e=extract(str),re=new RegExp(FRRE.source,'g'),src=e
   const ph=t=>hsup(t).replace(/[\uE000-\uE0FF]/g,c=>`<span class="rad"><span class="rs">\u221a</span><span class="rb">${mathHTML(e.rads[c.charCodeAt(0)-NOUT])}</span></span>`);
   while((m=re.exec(src))){o+=ph(src.slice(last,m.index))+`<span class="fr"><span>${ph(unp(m[1]))}</span><span>${ph(unp(m[2]))}</span></span>`;last=re.lastIndex}
   return o+ph(src.slice(last))}
-function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(/.test(t)?mathHTML(t):'';el.innerHTML=h;el.hidden=!h})}
+function syncParams(){const l=[...usedP].sort(),k=l.join('');if(k===shownP)return;shownP=k;const box=$('#params');
+  box.innerHTML=l.length?'<h3>Sliders</h3>'+l.map(n=>{const q=P[n];return `<div class="par" data-p="${n}"><b>${n}</b><input type="range" data-pk="v" min="${q.mn}" max="${q.mx}" step="${q.st}" value="${q.v}" aria-label="Value of ${n}"><input type="number" data-pk="vn" value="${q.v}" step="any" aria-label="${n} value"><span class="pr"><input type="number" data-pk="mn" value="${q.mn}" title="Slider minimum" aria-label="${n} minimum"><input type="number" data-pk="mx" value="${q.mx}" title="Slider maximum" aria-label="${n} maximum"></span></div>`}).join(''):''}
+function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(|\{/.test(t)?mathHTML(t):'';el.innerHTML=h;el.hidden=!h})}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
 const sup=(s,sz)=>{const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
@@ -224,8 +250,9 @@ const supify=(el,e)=>{if(el.tagName!='INPUT'||el.type!='text')return;const c=el.
   if(e&&/^[0-9]$/.test(e.data||''))h=h.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹])([0-9])$/,(m,a,b)=>a+SUPD[b]);
   h=h.replace(/(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)\.$/,(m,z)=>unsup(z)+'.');
   h=h.replace(/\^(-?)(\d+)(?![\d.])|\^([xy])(?![a-z])/g,(m,n,d,l)=>d?(n?'⁻':'')+[...d].map(z=>SUPD[z]).join(''):l=='x'?'ˣ':'ʸ');
+  h=h.replace(/<=/g,'\u2264').replace(/>=/g,'\u2265');
   if(h!==o){el.value=h+el.value.slice(c);el.setSelectionRange(h.length,h.length)}};
-const FN={sin:Math.sin,cos:Math.cos,tan:Math.tan,sec:x=>1/Math.cos(x),csc:x=>1/Math.sin(x),cot:x=>1/Math.tan(x),arcsin:Math.asin,arccos:Math.acos,arctan:Math.atan,ln:Math.log,log:Math.log10,sqrt:Math.sqrt,abs:Math.abs};
+const FN={sin:x=>Math.sin(x*KK()),cos:x=>Math.cos(x*KK()),tan:x=>Math.tan(x*KK()),sec:x=>1/Math.cos(x*KK()),csc:x=>1/Math.sin(x*KK()),cot:x=>1/Math.tan(x*KK()),arcsin:x=>Math.asin(x)/KK(),arccos:x=>Math.acos(x)/KK(),arctan:x=>Math.atan(x)/KK(),ln:Math.log,log:Math.log10,sqrt:Math.sqrt,abs:Math.abs};
 const NAMES=['arcsin','arccos','arctan','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','pi','x','y','e'];
 
 function compile(src){
@@ -242,25 +269,47 @@ function compile(src){
     if(pk()=='|'){i++;abs++;const v=expr();if(pk()!='|')throw 0;i++;abs--;return(x,y)=>Math.abs(v(x,y))}
     m=rest.match(/^log_(\d*\.?\d+)/);
     if(m){i+=m[0].length;const b=Math.log(+m[1]),a=pk()=='('?prim():power();return(x,y)=>Math.log(a(x,y))/b}
-    const nm=NAMES.find(n=>rest.startsWith(n));if(!nm)throw 0;i+=nm.length;
+    const nm=NAMES.find(n=>rest.startsWith(n));
+    if(!nm){const ch=rest[0];
+      if(FUNCS[ch]){if(rest[1]!='(')throw 0;i++;const a=prim(),fn=FUNCS[ch];return(x,y)=>fn(a(x,y))}
+      if(ch&&'abcdhkmnpqrstuvwz'.includes(ch)){i++;usedP.add(ch);if(!P[ch])P[ch]={v:1,mn:-10,mx:10,st:.1};return()=>P[ch].v}
+      throw 0}
+    i+=nm.length;
     if(FN[nm]){const f=FN[nm],a=pk()=='('?prim():power();return(x,y)=>f(a(x,y))}
     if(nm=='x')return x=>x;if(nm=='y')return(x,y)=>y;
     const c=nm=='pi'?Math.PI:Math.E;return()=>c};
   const f=expr();if(i<t.length)throw 0;return f}
 
+function parseRestr(str){const cs=[],bounds=[];
+  const isV=e=>e=='x'||e=='y',cv=e=>{try{const f=compile(e),a=f(0,0);return(isV(e)||f(1,2)!==a||f(3,-1)!==a)?null:a}catch(_){return null}};
+  [...str.matchAll(/\{([^{}]*)\}/g)].forEach(m=>m[1].split(',').forEach(c=>{c=c.trim();if(!c)return;
+    const t=c.split(/(<=|>=|\u2264|\u2265|<|>)/);if(t.length<3||t.length%2==0)throw 0;
+    const ex=[],ops=[];for(let i=0;i<t.length;i+=2)ex.push(t[i].trim());for(let i=1;i<t.length;i+=2)ops.push(t[i]);
+    const fs=ex.map(e=>compile(e)),lo=o=>o[0]=='<'||o=='\u2264';
+    cs.push((x,y)=>ops.every((o,i)=>{const a=fs[i](x,y),b=fs[i+1](x,y);return lo(o)?a<=b+1e-9:a>=b-1e-9}));
+    ops.forEach((o,i)=>{const A=ex[i],B=ex[i+1],l=lo(o),incl=o.length==2||o=='\u2264'||o=='\u2265';
+      if(isV(A)&&cv(B)!=null)bounds.push({v:A,val:cv(B),incl});
+      else if(isV(B)&&cv(A)!=null)bounds.push({v:B,val:cv(A),incl})})}));
+  if(!cs.length)throw 0;return{test:(x,y)=>cs.every(c=>c(x,y)),bounds}}
 function parseRow(s){
   s=s.replace(/[\u2212\u2013]/g,'-').trim();if(!s)return null;
+  let restr=null;const rm=s.match(/^([^{}]*?)\s*((?:\{[^{}]*\}\s*)+)$/);if(rm){s=rm[1].trim();restr=parseRestr(rm[2]);if(!s)throw 0}
+  const dm=s.match(/^([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*(.+)$/);
+  if(dm)return{type:'f',f:compile(dm[2]),name:dm[1].toLowerCase(),restr}
   const pre=/([A-Za-z]'*)?\s*\(\s*(-?\d*\.?\d+)\s*,\s*(-?\d*\.?\d+)\s*\)/g;
   const pts=[...s.matchAll(pre)];
   if(pts.length&&s.replace(pre,'').replace(/[\s,]/g,'')==='')return{type:'pts',pts:pts.map(m=>({n:m[1]||'',x:+m[2],y:+m[3]}))};
-  const parts=s.split('=');if(parts.length>2)throw 0;
+  const im=s.match(/^(.*?)(<=|>=|\u2264|\u2265|<|>)(.*)$/);let ineq=null;
+  const parts=im?[im[1],im[3]]:s.split('=');if(parts.length>2)throw 0;
+  if(im)ineq={lt:im[2][0]=='<'||im[2]=='\u2264',incl:im[2].length==2||im[2]=='\u2264'||im[2]=='\u2265'};
   let g;
   if(parts.length==1){const f=compile(parts[0]);g=(x,y)=>y-f(x,y)}
   else{const a=compile(parts[0]),b=compile(parts[1]);g=(x,y)=>a(x,y)-b(x,y)}
-  const dy=g(.5,1)-g(.5,0);if(!isFinite(dy))throw 0;
-  if(Math.abs((g(.5,2)-g(.5,1))-dy)>1e-9*Math.max(1,Math.abs(dy)))throw 0;
-  if(dy===0){const a=g(0,0),b=g(1,0)-a;if(!isFinite(a)||!b)throw 0;return{type:'v',c:-a/b}}
-  return{type:'f',f:x=>{const a=g(x,0);return -a/(g(x,1)-a)}}}
+  const X0=[.5,2.3,7.1,-3.3,13.7,25,-11,60,-40].find(t=>isFinite(g(t,1)-g(t,0)));if(X0===undefined)throw 0;
+  const dy=g(X0,1)-g(X0,0);
+  if(Math.abs((g(X0,2)-g(X0,1))-dy)>1e-9*Math.max(1,Math.abs(dy)))throw 0;
+  if(dy===0){const a=g(0,0),b=g(1,0)-a;if(!isFinite(a)||!b)throw 0;return{type:'v',c:-a/b,ineq:ineq&&{...ineq,right:(ineq.lt?1:-1)*b<0},restr}}
+  return{type:'f',f:x=>{const a=g(x,0);return -a/(g(x,1)-a)},ineq:ineq&&{...ineq,above:(ineq.lt?1:-1)*dy<0},restr}}
 
 const COLORS=['#000000'];
 let rows=[{eq:'y = 2x + 1',color:COLORS[0],dash:'solid',w:'2.5',lab:'y = 2x + 1',pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
@@ -274,6 +323,9 @@ function renderRows(){
     d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"><button type="button" data-act="del" aria-label="Remove row" title="Remove row">\u00d7</button></div>
 <div class="kind"></div>
 <div class="pv" data-pv="eq" hidden></div>
+<div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
+<div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
+<div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><small class="hint wide only-pts">Several points? Separate names with semicolons: A; B; C</small><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>`;
     box.append(d);pvUpdate(d,i)})}
@@ -288,6 +340,9 @@ $('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
+  usedP=new Set();FUNCS={};FD={};KDEG=$('#tm').value=='deg';
+  rows.forEach(r=>{const m=String(r.eq||'').match(/^\s*([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*([^{}]*?)\s*(\{[^{}]*\}\s*)*$/);if(m){const n=m[1].toLowerCase();let d=0;FUNCS[n]=x=>{if(d>8)return NaN;d++;try{return FD[n]?FD[n](x,0):NaN}finally{d--}};r._fn=[n,m[2]]}else r._fn=null});
+  rows.forEach(r=>{if(r._fn){try{FD[r._fn[0]]=compile(r._fn[1])}catch(e){}}});
   let x0=val('x0'),x1=val('x1'),xs=val('xs'),y0=val('y0'),y1=val('y1'),ys=val('ys');
   if(live)({x0,x1,xs,y0,y1,ys}=live);
   const fig=$('#fig');
@@ -312,27 +367,47 @@ function draw(){
     +`<polygon points="${L+W+15},${ax} ${L+W+5},${ax-4.5} ${L+W+5},${ax+4.5}"/><polygon points="${L-15},${ax} ${L-5},${ax-4.5} ${L-5},${ax+4.5}"/>`
     +`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/></g>`;
   // numbers
-  const xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
+  const xm=$('#xf').value,ym=$('#yf').value,xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
   s+=`<g font-size="12" fill="#111">`;
-  if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?20:16)}" text-anchor="middle">${fmt(v)}</text>`});
-  if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${ay-8}" y="${sy(v)+4}" text-anchor="end">${fmt(v)}</text>`});
+  if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?20:16)}" text-anchor="middle">${nf(v,xm)}</text>`});
+  if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${ay-8}" y="${sy(v)+4}" text-anchor="end">${nf(v,ym)}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+16}" text-anchor="end">0</text>`;
   s+=`</g><g font-size="15" font-style="italic" fill="#111"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,15)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,15)}</text></g>`;
   if(ct)s+=`<text x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
   if(xt)s+=`<text x="${L+W/2}" y="${T+H+52}" text-anchor="middle" font-size="14" fill="#111">${sup(xt,14)}</text>`;
   if(yt)s+=`<text transform="translate(16 ${T+H/2}) rotate(-90)" text-anchor="middle" font-size="14" fill="#111">${sup(yt,14)}</text>`;
   // rows
-  const trace=f=>{const N=Math.max(600,Math.round(W)),segs=[];let cur=[],pp=null;
-    for(let k=0;k<=N;k++){const x=x0+(x1-x0)*k/N,y=f(x);
-      if(!isFinite(y)||Math.abs(y)>1e6){if(cur.length)segs.push(cur);cur=[];pp=null;continue}
+  const feats=f=>{const N=600,X=[],Y=[],va=[],ha=[],holes=[],dx=(x1-x0)/N,jump=(y1-y0)*1.2,big=Math.max(50,(y1-y0)*5),sg=Math.sign,cand=[];
+    const F=x=>{try{return f(x)}catch(e){return NaN}};
+    for(let k=0;k<=N;k++){X.push(x0+dx*k);Y.push(F(X[k]))}
+    for(let k=0;k<=N;k++){const y=Y[k];
+      if(!isFinite(y)){if((k>0&&isFinite(Y[k-1]))||(k<N&&isFinite(Y[k+1])))cand.push(X[k]);continue}
+      if(k>0&&isFinite(Y[k-1])&&Math.abs(y-Y[k-1])>jump&&sg(y)!=sg(Y[k-1])){let lo=X[k-1],hi=X[k];const a=Y[k-1];for(let t=0;t<40;t++){const m=(lo+hi)/2,fm=F(m);if(!isFinite(fm))break;if(sg(fm)==sg(a))lo=m;else hi=m}cand.push((lo+hi)/2);continue}
+      if(k>0&&k<N&&Math.abs(y)>big&&Math.abs(y)>=Math.abs(Y[k-1])&&Math.abs(y)>=Math.abs(isFinite(Y[k+1])?Y[k+1]:0))cand.push(X[k])}
+    for(let t=Math.ceil(x0*4);t<=x1*4;t++)if(!isFinite(F(t/4)))cand.push(t/4);
+    cand.sort((a,b)=>a-b);const ded=[];cand.forEach(c=>{if(!ded.length||c-ded[ded.length-1]>dx*2)ded.push(c)});
+    ded.forEach(c=>{const d=1e-6*Math.max(1,Math.abs(c)),a=F(c-d),b=F(c+d);
+      const blow=s_=>{const u=F(c+s_*d),w=F(c+s_*d*100);return isFinite(u)&&Math.abs(u)>10&&(!isFinite(w)||Math.abs(u)>Math.abs(w))};
+      if(isFinite(a)&&isFinite(b)&&Math.abs(a-b)<1e-3*(1+Math.abs(a))&&Math.abs(a)<1e6)holes.push([c,(a+b)/2]);
+      else if(blow(-1)||blow(1))va.push(c)});
+    const lim=s_=>{const a=F(s_*(1e5+.37)),b=F(s_*(1e6+.713));return isFinite(a)&&isFinite(b)&&Math.abs(a-b)<1e-3*(1+Math.abs(b))?Math.round(b*1e4)/1e4:null};
+    const cst=Math.abs(F(-3.7)-F(2.9))<1e-9&&Math.abs(F(2.9)-F(11.3))<1e-9;
+    if(!cst)[lim(1),lim(-1)].forEach(L=>{if(L!==null&&L>=y0&&L<=y1&&!ha.includes(L))ha.push(L)});
+    return{va,ha,holes}};
+  const trace=(f,rs)=>{const N=Math.max(600,Math.round(W)),segs=[],xl=[];let cur=[],pp=null;
+    for(let k=0;k<=N;k++)xl.push(x0+(x1-x0)*k/N);
+    if(rs)rs.bounds.forEach(b=>{if(b.v=='x'&&b.val>x0&&b.val<x1)xl.push(b.val)});
+    xl.sort((a,b)=>a-b);
+    for(const x of xl){const y=f(x);
+      if(!isFinite(y)||Math.abs(y)>1e6||(rs&&!rs.test(x,y))){if(cur.length)segs.push(cur);cur=[];pp=null;continue}
       const p=[sx(x),sy(y)];if(pp&&Math.abs(p[1]-pp[1])>H*1.2){segs.push(cur);cur=[]}
       cur.push(p);pp=p}
     if(cur.length)segs.push(cur);return segs};
-  let lines='',labels='',arrows='';
+  let lines='',labels='',arrows='',fills='',pats='';
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row');
   rows.forEach((r,i)=>{
     let p=null;
-    try{p=parseRow(r.eq);eqs[i]&&eqs[i].classList.remove('bad');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'')}catch(e){eqs[i]&&eqs[i].classList.add('bad');rowEls[i]&&(rowEls[i].dataset.type='bad');return}
+    try{p=parseRow(r.eq);eqs[i]&&eqs[i].classList.remove('bad');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&p.restr?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.feat='');return}
     if(!p)return;
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
@@ -342,20 +417,38 @@ function draw(){
         if(t&&r.labOn!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];labels+=lab(t,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,qi)}});
       return}
     let segs;
-    if(p.type=='v'){const n=80;segs=[[...Array(n+1)].map((_,k)=>[sx(p.c),sy(y0+(y1-y0)*k/n)])]}else segs=trace(p.f);
-    if(r.vis!==false){const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dash}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}
+    if(p.type=='v'){const n=80,yl=[...Array(n+1)].map((_,k)=>y0+(y1-y0)*k/n);if(p.restr)p.restr.bounds.forEach(b=>{if(b.v=='y'&&b.val>y0&&b.val<y1)yl.push(b.val)});yl.sort((a,b)=>a-b);segs=[];let cu=[];yl.forEach(yy=>{if(p.restr&&!p.restr.test(p.c,yy)){if(cu.length)segs.push(cu);cu=[]}else cu.push([sx(p.c),sy(yy)])});if(cu.length)segs.push(cu)}else segs=trace(p.f,p.restr);
+    if(p.restr&&r.ends!==false&&r.vis!==false)p.restr.bounds.forEach(b=>{let mx,my;
+      if(p.type=='f'&&b.v=='x'){mx=b.val;my=p.f(mx)}else if(p.type=='v'&&b.v=='y'){mx=p.c;my=b.val}else return;
+      if(!isFinite(my)||mx<x0||mx>x1||my<y0||my>y1||!p.restr.test(mx,my))return;
+      arrows+=`<circle data-i="${i}" cx="${sx(mx).toFixed(1)}" cy="${sy(my).toFixed(1)}" r="5" fill="${b.incl?r.color:'#fff'}" stroke="${r.color}" stroke-width="2"/>`});
+    if(p.type=='f'&&!p.ineq&&!p.restr){const ft=feats(p.f);
+      if(ft.va.length||ft.ha.length||ft.holes.length){rowEls[i]&&(rowEls[i].dataset.feat='1');
+        if(r.asym!==false&&r.vis!==false){
+          const dl=(a,b,c,d)=>`<line data-i="${i}" pointer-events="none" x1="${a.toFixed(1)}" y1="${b.toFixed(1)}" x2="${c.toFixed(1)}" y2="${d.toFixed(1)}" stroke="${r.color}" stroke-width="1.4" stroke-dasharray="7 5" opacity=".75"/>`;
+          ft.va.forEach(c=>{lines+=dl(sx(c),T,sx(c),T+H)});ft.ha.forEach(L=>{lines+=dl(L,sy(L),L+W,sy(L))});
+          ft.holes.forEach(([hx,hy])=>{if(hx>=x0&&hx<=x1&&hy>=y0&&hy<=y1)arrows+=`<circle data-i="${i}" cx="${sx(hx).toFixed(1)}" cy="${sy(hy).toFixed(1)}" r="4.5" fill="#fff" stroke="${r.color}" stroke-width="2"/>`})}}}
+    const dsh=p.ineq?(p.ineq.incl?'':'stroke-dasharray="9 6"'):dash;
+    if(p.ineq&&r.vis!==false&&r.fill!=='none'){
+      const fo=(+r.fo||30)/100,hatch=r.fill=='hatch';
+      if(hatch)pats+=`<pattern id="hp${i}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="9" stroke="${r.color}" stroke-width="1.4" stroke-opacity="${Math.min(1,.35+fo)}"/></pattern>`;
+      let fd='';
+      if(p.type=='v'){const cx=sx(p.c),a=p.ineq.right?cx:L,b=p.ineq.right?L+W:cx;fd=`M${a.toFixed(1)} ${T}H${b.toFixed(1)}V${T+H}H${a.toFixed(1)}Z`}
+      else{const edge=p.ineq.above?T:T+H;fd=segs.map(sg=>`M${sg[0][0].toFixed(1)} ${edge}`+sg.map(q=>`L${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('')+`L${sg[sg.length-1][0].toFixed(1)} ${edge}Z`).join('')}
+      fills+=`<path data-i="${i}" pointer-events="none" d="${fd}" fill="${hatch?`url(#hp${i})`:r.color}" fill-opacity="${hatch?1:fo}" stroke="none"/>`}
+    if(r.vis!==false){const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dsh}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}
     const vis=segs.flat().filter(q=>q[0]>=L&&q[0]<=L+W&&q[1]>=T&&q[1]<=T+H);
     const arr=r.arr||'both';
     if(vis.length>1&&r.vis!==false){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
-      const n=vis.length;if(arr=='start'||arr=='both')hd(vis[0],vis[Math.min(4,n-1)]);if(arr=='end'||arr=='both')hd(vis[n-1],vis[Math.max(0,n-5)])}
+      const n=vis.length,ed=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2;if(arr=='start'||arr=='both')(!p.restr||ed(vis[0]))&&hd(vis[0],vis[Math.min(4,n-1)]);if(arr=='end'||arr=='both')(!p.restr||ed(vis[n-1]))&&hd(vis[n-1],vis[Math.max(0,n-5)])}
     if(r.lab&&r.labOn!==false&&vis.length>1){
       const k=Math.round(r.pos/100*(vis.length-1)),q=vis[k],a=vis[Math.max(0,k-4)],b=vis[Math.min(vis.length-1,k+4)];
       let ang=r.rot?Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI:0;if(ang>90)ang-=180;if(ang<-90)ang+=180;
       const[dx,dy,an]={above:[0,-9,'middle'],below:[0,ls+3,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];
       labels+=lab(r.lab,ls,halo,`translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})`,dx,dy,an,i,0)}
   });
-  s+=`<g clip-path="url(#cp)">${lines}</g>${arrows}${labels}</svg>`;
-  fig.outerHTML=s;if(!live)snap()}
+  s+=`<defs>${pats}</defs><g clip-path="url(#cp)">${fills}${lines}</g>${arrows}${labels}</svg>`;
+  fig.outerHTML=s;syncParams();if(!live)snap()}
 
 // export
 const svgStr=()=>new XMLSerializer().serializeToString($('#fig'));
@@ -395,6 +488,10 @@ document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const eq=b.dataset.
 let gz=false,mv=false,snapT=null;const ptrs=new Map(),wrap=document.querySelector('.wrap');
 const rd=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
 const fv=n=>String(+n.toPrecision(12));
+const nicePi=r=>{const c=[1/12,1/8,1/6,1/4,1/3,1/2,1,2,4,8].map(k=>k*Math.PI);let b=c[0];for(const v of c)if(Math.abs(Math.log(v/r))<Math.abs(Math.log(b/r)))b=v;return b};
+const niceFor=a=>$('#'+a+'f').value=='pi'?nicePi:nice;
+const piStr=v=>{const r=v/Math.PI;for(const q of PIQ){const p=Math.round(r*q);if(Math.abs(r*q-p)<1e-6){if(p==0)return'0';return(p==1?'':p==-1?'-':p)+'pi'+(q>1?'/'+q:'')}}return fv(v)};
+const fvp=(v,a)=>$('#'+a+'f').value=='pi'?piStr(v):fv(v);
 const nice=r=>{const p=Math.pow(10,Math.floor(Math.log10(r))),m=r/p;return +((m<1.41?1:m<3.16?2:m<7.07?5:10)*p).toPrecision(12)};
 function begin(){if(live)return true;if(!view)return false;const l={x0:rd('x0'),x1:rd('x1'),y0:rd('y0'),y1:rd('y1'),xs:rd('xs'),ys:rd('ys'),W:view.W,H:view.H};if(Object.values(l).some(v=>!isFinite(v)))return false;live=l;gz=false;mv=false;return true}
 const toSvg=(cx,cy)=>{const r=$('#fig').getBoundingClientRect(),k=view.TW/r.width;return[(cx-r.left)*k,(cy-r.top)*k]};
@@ -402,14 +499,14 @@ const panBy=(dx,dy)=>{const wx=(live.x1-live.x0)/live.W,wy=(live.y1-live.y0)/liv
 function zoomAt(px,py,f){const l=live,w=l.x1-l.x0,h=l.y1-l.y0;if(w*f<1e-6||w*f>1e7||h*f<1e-6||h*f>1e7)return;
   const ax=l.x0+(px-view.L)/l.W*w,ay=l.y1-(py-view.T)/l.H*h;
   l.x0=ax-(ax-l.x0)*f;l.x1=ax+(l.x1-ax)*f;l.y0=ay-(ay-l.y0)*f;l.y1=ay+(l.y1-ay)*f;
-  const c=+$('#cell').value;l.xs=nice((l.x1-l.x0)/(l.W/c));l.ys=nice((l.y1-l.y0)/(l.H/c));gz=true}
+  const c=+$('#cell').value;l.xs=niceFor('x')((l.x1-l.x0)/(l.W/c));l.ys=niceFor('y')((l.y1-l.y0)/(l.H/c));gz=true}
 function commit(){clearTimeout(snapT);if(!live)return;const l=live,c=+$('#cell').value;live=null;
   if(!mv){draw();return}
   const nx=Math.max(1,Math.round(l.W/c)),ny=Math.max(1,Math.round(l.H/c));
-  const snap=(a,b,st,n)=>{let w=b-a;if(gz){st=nice(w/n);w=n*st}const a2=Math.round(((a+b)/2-w/2)/st)*st;return[a2,a2+w,st]};
-  const[x0,x1,xs]=snap(l.x0,l.x1,l.xs,nx),[y0,y1,ys]=snap(l.y0,l.y1,l.ys,ny);
-  $('#x0').value=fv(x0);$('#x1').value=fv(x1);$('#y0').value=fv(y0);$('#y1').value=fv(y1);
-  if(gz){$('#xs').value=fv(xs);$('#ys').value=fv(ys)}
+  const snap=(a,b,st,n,nz)=>{let w=b-a;if(gz){st=nz(w/n);w=n*st}const a2=Math.round(((a+b)/2-w/2)/st)*st;return[a2,a2+w,st]};
+  const[x0,x1,xs]=snap(l.x0,l.x1,l.xs,nx,niceFor('x')),[y0,y1,ys]=snap(l.y0,l.y1,l.ys,ny,niceFor('y'));
+  $('#x0').value=fvp(x0,'x');$('#x1').value=fvp(x1,'x');$('#y0').value=fvp(y0,'y');$('#y1').value=fvp(y1,'y');
+  if(gz){$('#xs').value=fvp(xs,'x');$('#ys').value=fvp(ys,'y')}
   draw()}
 let lbd=null,clickRow=null;
 wrap.addEventListener('pointerdown',e=>{if(e.button>0)return;const g=e.target.closest('.lbl'),h=e.target.closest('[data-i]');
@@ -429,6 +526,10 @@ wrap.addEventListener('wheel',e=>{if(!begin())return;e.preventDefault();mv=true;
 $('#rv').onclick=()=>{live=null;['x0','y0'].forEach(i=>$('#'+i).value='-10');['x1','y1'].forEach(i=>$('#'+i).value='10');['xs','ys'].forEach(i=>$('#'+i).value='1');draw()};
 document.querySelectorAll('.sec>h2').forEach(h=>{const t=()=>{const c=h.parentElement.classList.toggle('closed');h.setAttribute('aria-expanded',String(!c))};h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');h.onclick=t;h.onkeydown=e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();t()}}});
 
+$('#params').addEventListener('input',e=>{const d=e.target.closest('.par');if(!d)return;const q=P[d.dataset.p],k=e.target.dataset.pk,v=parseFloat(e.target.value);if(!q||!isFinite(v))return;
+  const rg=d.querySelector('[data-pk=v]'),vn=d.querySelector('[data-pk=vn]');
+  if(k=='v'||k=='vn'){q.v=v;if(v<q.mn)q.mn=v;if(v>q.mx)q.mx=v;if(k=='v')vn.value=v;else rg.value=v}else q[k]=v;
+  rg.min=q.mn;rg.max=q.mx;draw()});
 // hover highlight and row selection
 const hovs=document.createElement('style');document.head.append(hovs);let hov=null;
 function setHover(i){if(i===hov)return;hov=i;hovs.textContent=i==null?'':`#fig [data-i]:not([data-i="${i}"]){opacity:.3}`;document.querySelectorAll('.row').forEach((r,k)=>r.classList.toggle('hov',k===i))}
@@ -445,8 +546,9 @@ $('#rows').addEventListener('mouseleave',()=>setHover(null));
 // state, undo and redo, autosave, files, templates
 const FIELDS='#panel input[id],#panel select[id]';
 const ROWDEF={eq:'',color:'#000000',dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
-const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.value);return{v:1,f,rows:rows.map(({ui,folded,...r})=>r)}};
-function setState(st,keep){document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined)el.value=st.f[el.id]});
+const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.value);return{v:1,f,rows:rows.map(({ui,folded,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
+function setState(st,keep){if(st.p){P=Object.assign({},st.p);shownP=''}
+  document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined)el.value=st.f[el.id]});
   rows=(st.rows||[]).map((r,i)=>Object.assign({},ROWDEF,keep&&keep[i]?{folded:keep[i].folded,ui:keep[i].ui}:{},r));renderRows()}
 function updHist(){$('#undo').disabled=hi<=0;$('#redo').disabled=hi>=hist.length-1}
 function snap(now){clearTimeout(hT);const go=()=>{const j=JSON.stringify(getState());if(j===lastJ)return;lastJ=j;hist=hist.slice(0,hi+1);hist.push(j);if(hist.length>100)hist.shift();hi=hist.length-1;try{localStorage.setItem('cg-state',j)}catch(e){}updHist()};if(now)go();else hT=setTimeout(go,400)}
@@ -455,9 +557,10 @@ function undo(){snap(true);if(hi<=0)return;hi--;restore(hist[hi])}
 function redo(){snap(true);if(hi>=hist.length-1)return;hi++;restore(hist[hi])}
 $('#undo').onclick=undo;$('#redo').onclick=redo;
 document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey))return;const k=e.key.toLowerCase();if(k=='z'){e.preventDefault();e.shiftKey?redo():undo()}else if(k=='y'){e.preventDefault();redo()}});
-const TPL={'4q':{x0:-10,x1:10,xs:1,y0:-10,y1:10,ys:1},q1:{x0:0,x1:10,xs:1,y0:0,y1:10,ys:1},q1b:{x0:0,x1:20,xs:2,y0:0,y1:20,ys:2},s5:{x0:-5,x1:5,xs:1,y0:-5,y1:5,ys:1}};
+const TPL={trig:{x0:'-2pi',x1:'2pi',xs:'pi/2',y0:-3,y1:3,ys:1,xf:'pi',yf:'dec'},'4q':{x0:-10,x1:10,xs:1,y0:-10,y1:10,ys:1},q1:{x0:0,x1:10,xs:1,y0:0,y1:10,ys:1},q1b:{x0:0,x1:20,xs:2,y0:0,y1:20,ys:2},s5:{x0:-5,x1:5,xs:1,y0:-5,y1:5,ys:1}};
 $('#tpl').onchange=e=>{const k=e.target.value;e.target.value='';if(!k)return;snap(true);
   if(k=='blank'){rows=[];renderRows()}
+  $('#xf').value='dec';$('#yf').value='dec';
   Object.entries(TPL[k=='blank'?'4q':k]).forEach(([id,v])=>$('#'+id).value=v);draw()};
 $('#sf').onclick=()=>{try{save('coordinate-grid.json','data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(getState(),null,1)))}catch(e){note('Saving files is blocked here. Your work is saved automatically in this browser.')}};
 $('#of').onclick=()=>$('#openf').click();
