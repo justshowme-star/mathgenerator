@@ -146,21 +146,35 @@ h3{font-size:13px;margin:12px 0 6px}
 .pwg{display:inline-grid;grid-template-columns:auto auto;gap:2px 18px}
 .trig input[type=range]{flex:1;min-width:80px}
 .vo{min-width:2.2ch;text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.pvrow{display:flex;gap:8px;align-items:center}.pvrow .pv{flex:1;min-width:0}
+.pvcopy{font-size:12px;padding:3px 8px;flex:none}.pvcopy[hidden]{display:none}
+#cmenu.rmenu hr{border:0;border-top:1px solid var(--line);margin:4px 0;width:100%}
+.tbl{display:grid;gap:8px;padding:6px 0}
+.tblscroll{max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+.tbltab{border-collapse:collapse;width:100%}.tbltab th{position:sticky;top:0;background:var(--panel);font-size:12px;color:var(--mute);text-align:left;padding:4px 8px}
+.tbltab td{padding:2px 4px}.tbltab input{width:100%;min-width:0;padding:4px 6px}
+.tblopts{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mute)}.tblopts label{display:flex;gap:6px;align-items:center}
+.tblfit{font-size:13px;min-height:1.2em;font-variant-numeric:tabular-nums}
+.row.folded .tbl{display:none}
+.row.istbl[data-type="pts"] details.only-line{display:block}
+.sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
+.row:not([data-fit="sin"]) .sinonly{display:none}
 </style>
-<script type="text/javascript" nonce="a7148574c6e349368af00284de3" src="//local.adguard.org?ts=1794356656199&amp;type=content-script&amp;dmn=0139a413-d93e-4d60-aae7-f874aaff4592.frame.claudeusercontent.com&amp;url=https%3A%2F%2F0139a413-d93e-4d60-aae7-f874aaff4592.frame.claudeusercontent.com%2F_f%2F1794267088-abe0%2F_src%2Findex.html%3F__frame_t%3D1SaxhN3MnZHq2DL3q-Q0c7mH.8f0b87c8-462c-4316-bea9-9bf6d66d5805.b2c5ffdc-b547-4efc-bd9f-43856ef8e5f0.1794360474&amp;app=firefox.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="a7148574c6e349368af00284de3" src="//local.adguard.org?ts=1794356656199&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+</head>
 <body>
 <div class="app">
 <aside id="panel">
   <h1>Coordinate grid</h1>
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
-  <section class="sec"><h2><span class="n">1</span>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, or mark it as answer key only (hidden in the student copy). The toolbar switches between the answer key and student copy, and between color and black and white.</p></div>
+  <section class="sec"><h2><span class="n">1</span>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy the equation as an image, LaTeX or plain text. <b>Copy…</b> appears beside the typeset preview too. The toolbar switches between the answer key and student copy, and between color and black and white.</p></div>
   <div class="symbar" id="symbar" role="toolbar" aria-label="Math symbols"><button type="button" data-ins="^2" data-back="0" title="Square" aria-label="Square">x²</button><button type="button" data-ins="^()" data-back="1" title="Power" aria-label="Power">xⁿ</button><button type="button" data-ins="sqrt()" data-back="1" title="Square root" aria-label="Square root">√</button><button type="button" data-ins="()/()" data-back="4" title="Fraction" aria-label="Fraction">a/b</button><button type="button" data-ins="pi" data-back="0" title="Pi" aria-label="Pi">π</button><button type="button" data-ins="≤" data-back="0" title="Less than or equal to" aria-label="Less than or equal to">≤</button><button type="button" data-ins="≥" data-back="0" title="Greater than or equal to" aria-label="Greater than or equal to">≥</button><button type="button" data-ins="abs()" data-back="1" title="Absolute value" aria-label="Absolute value">|x|</button><button type="button" data-ins=" {}" data-back="1" title="Restriction" aria-label="Restriction">{ }</button><button type="button" data-ins="sin()" data-back="1" title="Sine" aria-label="Sine">sin</button><button type="button" data-ins="f(x) = " data-back="0" title="Function, like f(x) = x^2" aria-label="Function definition">f(x)</button><button type="button" data-pw="1" data-back="0" title="Piecewise function editor" aria-label="Piecewise function editor">Piecewise</button><button type="button" data-ins="ln()" data-back="1" title="Natural log" aria-label="Natural log">ln</button></div>
   <div id="rows"></div>
   <div id="params"></div>
   <label class="sol" hidden>Where inequalities overlap<select id="sol"><option value="off">Do not highlight</option><option value="shade">Highlight</option><option value="hatch">Cross-hatch</option></select></label>
   <div class="adds">
     <button type="button" id="add" class="primary">+ Add row</button>
+    <button type="button" id="addt">+ Add table</button>
     <button type="button" id="foldall">Collapse all</button>
   </div>
 
@@ -245,7 +259,7 @@ h3{font-size:13px;margin:12px 0 6px}
 const $=s=>document.querySelector(s);
 let live=null,view=null;
 var hist=[],hi=-1,lastJ='',hT=null;
-var P={},usedP=new Set(),FUNCS={},FD={},shownP='',KDEG=false;
+var P={},usedP=new Set(),FUNCS={},FD={},shownP='',KDEG=false,LW='bold';
 const KK=()=>KDEG?Math.PI/180:1;
 const PIQ=[1,2,3,4,6,8,12];
 function nf(v,mode){if(mode=='deg')return fmt(v)+'\u00b0';
@@ -253,7 +267,7 @@ function nf(v,mode){if(mode=='deg')return fmt(v)+'\u00b0';
   return fmt(v)}
 const ticks=(a,b,st)=>{const o=[];for(let k=Math.ceil(a/st-1e-9);k*st<=b+1e-9;k++)o.push([k,k*st]);return o};
 const cvx=document.createElement('canvas').getContext('2d');
-const tw=(t,sz)=>{cvx.font='bold '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
+const tw=(t,sz)=>{cvx.font=LW+' '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
 const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;
 const wsup=(t,sz)=>{let w=0,last=0,m;SUPRE.lastIndex=0;while((m=SUPRE.exec(t))){w+=tw(t.slice(last,m.index),sz)+tw(m[1]!==undefined?m[1]:m[2],sz*.7);last=SUPRE.lastIndex}return w+tw(t.slice(last),sz)};
 const FC='A-Za-z0-9.^\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
@@ -267,19 +281,19 @@ function extract(str){const rads=[];let o='',i=0;
     if(j>=str.length){o+=str[i++];continue}
     rads.push(str.slice(k+1,j));o+=String.fromCharCode(NOUT+rads.length-1);i=j+1}
   return{s:o,rads}}
-function lay(str,sz,halo,rads){
+function lay(str,sz,halo,rads){const hl=halo.includes('stroke=');
   const col=(halo.match(/fill="([^"]+)"/)||[])[1]||'#000';
   let x=0,o='',up=sz*.8,down=sz*.22,fr=false;
   const put=(L,dy)=>{o+=`<g transform="translate(${x.toFixed(1)} ${dy.toFixed(1)})">${L.svg}</g>`;x+=L.w;up=Math.max(up,L.up-dy);down=Math.max(down,L.down+dy);fr=fr||L.fr};
-  const txt=t=>{if(!t)return;put({svg:`<text x="0" y="0" xml:space="preserve" style="white-space:pre" font-size="${sz}" font-weight="bold" ${halo}>${sup(t,sz)}</text>`,w:wsup(t,sz),up:sz*.8,down:sz*.22,fr:false},0)};
+  const txt=t=>{if(!t)return;put({svg:`<text x="0" y="0" xml:space="preserve" style="white-space:pre" font-size="${sz}" font-weight="${LW}" ${halo}>${sup(t,sz)}</text>`,w:wsup(t,sz),up:sz*.8,down:sz*.22,fr:false},0)};
   const rad=inner=>{const I=layout(inner,sz,halo),sw=sz*.55,top=-(I.up+3),end=(sw+I.w+2).toFixed(1);
     const d=`M0 ${(-.28*sz).toFixed(1)} L${(.09*sz).toFixed(1)} ${(-.34*sz).toFixed(1)} L${(.26*sz).toFixed(1)} ${(.1*sz).toFixed(1)} L${(.5*sz).toFixed(1)} ${top.toFixed(1)} H${end}`;
-    put({svg:`<path d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/><g transform="translate(${sw.toFixed(1)} 0)">${I.svg}</g>`,w:sw+I.w+3,up:I.up+5,down:Math.max(I.down,sz*.14),fr:I.fr},0)};
+    put({svg:`${hl?`<path d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`:''}<path d="${d}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/><g transform="translate(${sw.toFixed(1)} 0)">${I.svg}</g>`,w:sw+I.w+3,up:I.up+5,down:Math.max(I.down,sz*.14),fr:I.fr},0)};
   const inline=t=>{let last=0;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);if(c>=NOUT&&c<NOUT+256){txt(t.slice(last,i));rad(rads[c-NOUT]);last=i+1}}txt(t.slice(last))};
   const re=new RegExp(FRRE.source,'g');let last=0,m;
   while((m=re.exec(str))){inline(str.slice(last,m.index));last=re.lastIndex;
     const fs=sz*.82,N=lay(unp(m[1]),fs,halo,rads),D=lay(unp(m[2]),fs,halo,rads),fw=Math.max(N.w,D.w)+6,yb=-sz*.3,yN=yb-3-N.down,yD=yb+2+D.up,x2=x+fw;
-    o+=`<line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="#fff" stroke-width="4.5"/><line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="${col}" stroke-width="1.6"/>`
+    o+=`${hl?`<line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="#fff" stroke-width="4.5"/>`:''}<line x1="${x.toFixed(1)}" y1="${yb.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${yb.toFixed(1)}" stroke="${col}" stroke-width="1.6"/>`
       +`<g transform="translate(${(x+(fw-N.w)/2).toFixed(1)} ${yN.toFixed(1)})">${N.svg}</g><g transform="translate(${(x+(fw-D.w)/2).toFixed(1)} ${yD.toFixed(1)})">${D.svg}</g>`;
     up=Math.max(up,N.up-yN);down=Math.max(down,yD+D.down);fr=true;x+=fw+3}
   inline(str.slice(last));return{svg:o,w:x,up,down,fr}}
@@ -295,7 +309,7 @@ function mathHTML(str){{const pw=pwParts(str);if(pw)return pwHTML(pw)}const e=ex
   return o+ph(src.slice(last))}
 function syncParams(){const l=[...usedP].sort(),k=l.join('');if(k===shownP)return;shownP=k;const box=$('#params');
   box.innerHTML=l.length?'<h3>Sliders</h3>'+l.map(n=>{const q=P[n];return `<div class="par" data-p="${n}"><b>${n}</b><input type="range" data-pk="v" min="${q.mn}" max="${q.mx}" step="${q.st}" value="${q.v}" aria-label="Value of ${n}"><input type="number" data-pk="vn" value="${q.v}" step="any" aria-label="${n} value"><span class="pr"><input type="number" data-pk="mn" value="${q.mn}" title="Slider minimum" aria-label="${n} minimum"><input type="number" data-pk="mx" value="${q.mx}" title="Slider maximum" aria-label="${n} maximum"></span></div>`}).join(''):''}
-function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(|\{/.test(t)?mathHTML(t):'';el.innerHTML=h;el.hidden=!h||!!(rows[i].pwEd&&el.dataset.pv=='eq')})}
+function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(|\{/.test(t)?mathHTML(t):'';el.innerHTML=h;const hid=!h||!!((rows[i].pwEd||rows[i].tbl)&&el.dataset.pv=='eq');el.hidden=hid;if(el.dataset.pv=='eq'){const cb=d.querySelector('.pvcopy');if(cb)cb.hidden=hid}})}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
 const sup=(s,sz)=>{const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
@@ -373,18 +387,95 @@ function pwParts(s){const m=String(s).match(/^\s*(y|[a-wzA-WZ]\s*\(\s*x\s*\))\s*
   for(const part of splitTop(m[2],',')){if(!part.trim())continue;const q=splitTop(part,':');
     if(q.length==1)rows.push({e:part.trim(),c:''});else if(q.length==2){rows.push({e:q[1].trim(),c:q[0].trim()});cond++}else return null}
   return cond&&rows.length?{lhs:m[1].replace(/\s+/g,''),rows}:null}
-function layPW(pw,sz,halo){
+function layPW(pw,sz,halo){const hl=halo.includes('stroke=');
   const col=(halo.match(/fill="([^"]+)"/)||[])[1]||'#000',n=pw.rows.length,lineH=sz*1.45;
   const pre=layout(pw.lhs+' =',sz,halo),E=pw.rows.map(q=>layout(q.e+',',sz,halo)),C=pw.rows.map(q=>layout(q.c||'otherwise',sz,halo));
   const w1=Math.max(...E.map(z=>z.w)),w2=Math.max(...C.map(z=>z.w)),bw=sz*.5,bx=pre.w+sz*.35,x1=bx+bw+sz*.35,x2=x1+w1+sz*.9;
   const H=n*lineH,y0=-sz*.3,top=y0-H/2,bot=y0+H/2,xl=bx,xr=bx+bw,xm=bx+bw/2,f=v=>v.toFixed(1);
   const d=`M${f(xr)} ${f(top)}C${f(xm)} ${f(top)} ${f(xm)} ${f(top+H*.1)} ${f(xm)} ${f(top+H*.22)}L${f(xm)} ${f(y0-H*.1)}C${f(xm)} ${f(y0-H*.03)} ${f(xl+bw*.25)} ${f(y0)} ${f(xl)} ${f(y0)}C${f(xl+bw*.25)} ${f(y0)} ${f(xm)} ${f(y0+H*.03)} ${f(xm)} ${f(y0+H*.1)}L${f(xm)} ${f(bot-H*.22)}C${f(xm)} ${f(bot-H*.1)} ${f(xm)} ${f(bot)} ${f(xr)} ${f(bot)}`;
-  let o=pre.svg+`<path d="${d}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
+  let o=pre.svg+`${hl?`<path d="${d}" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round"/>`:''}<path d="${d}" fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round"/>`;
   pw.rows.forEach((q,k)=>{const base=top+(k+.5)*lineH+sz*.3;o+=`<g transform="translate(${f(x1)} ${f(base)})">${E[k].svg}</g><g transform="translate(${f(x2)} ${f(base)})">${C[k].svg}</g>`});
   return{svg:o,w:x2+w2,up:-top,down:bot,fr:true}}
 function pwHTML(pw){return `<span class="pw">${hsup(pw.lhs)} =<svg class="pwbr2" viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M10 1C4 1 5 8 5 20L5 40C5 46 3 50 0 50C3 50 5 54 5 60L5 80C5 92 4 99 10 99" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg><span class="pwg">${pw.rows.map(q=>`<span>${mathHTML(q.e)},</span><span>${q.c?mathHTML(q.c):'otherwise'}</span>`).join('')}</span></span>`}
+function numOf(t){try{return compile(String(t))(0,0)}catch(e){return NaN}}
+const nameOf=k=>String.fromCharCode(65+k%26)+(k>=26?Math.floor(k/26):'');
+const FITS={linear:{n:2},quad:{n:3},cubic:{n:4},exp:{n:2},log:{n:2},pow:{n:2},sin:{n:4}};
+function solveLS(A,b){const n=b.length;for(let i=0;i<n;i++){let p=i;for(let r=i+1;r<n;r++)if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;if(Math.abs(A[p][i])<1e-12)return null;[A[i],A[p]]=[A[p],A[i]];[b[i],b[p]]=[b[p],b[i]];
+    for(let r=i+1;r<n;r++){const f=A[r][i]/A[i][i];for(let c=i;c<n;c++)A[r][c]-=f*A[i][c];b[r]-=f*b[i]}}
+  const x=new Array(n);for(let i=n-1;i>=0;i--){let t=b[i];for(let c=i+1;c<n;c++)t-=A[i][c]*x[c];x[i]=t/A[i][i]}return x}
+function polyFit(xs,ys,d){const A=[],b=[];for(let i=0;i<=d;i++){A.push([]);for(let j=0;j<=d;j++)A[i].push(xs.reduce((s,x)=>s+Math.pow(x,i+j),0));b.push(xs.reduce((s,x,k)=>s+ys[k]*Math.pow(x,i),0))}return solveLS(A,b)}
+function fitOf(pts,kind,per){const info=FITS[kind];if(!info)return null;const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+  if(pts.length<info.n)return{msg:'Needs at least '+info.n+' points.'};
+  const g=v=>String(+v.toPrecision(4)),M=(neg,disp)=>neg?(disp?' \u2212 ':' - '):' + ';
+  const poly=(cs,disp)=>{let o='';for(let d=cs.length-1;d>=0;d--){const c=cs[d];if(Math.abs(c)<1e-12&&d>0)continue;const a=Math.abs(c),neg=c<0;
+      let mag=(d>0&&Math.abs(a-1)<1e-12)?'':g(a);const v=d==0?'':d==1?'x':(disp?'x'+'\u00b2\u00b3'[d-2]:'x^'+d);
+      o+=(o===''?(neg?(disp?'\u2212':'-'):''):M(neg,disp))+mag+v}return o||'0'};
+  let f,text,expr;
+  if(kind=='linear'||kind=='quad'||kind=='cubic'){const d={linear:1,quad:2,cubic:3}[kind],c=polyFit(xs,ys,d);if(!c)return{msg:'Can\u2019t fit these points. Do any x values repeat?'};
+    f=x=>c.reduce((s,k,j)=>s+k*Math.pow(x,j),0);text='y = '+poly(c,true);expr='y = '+poly(c,false)}
+  else if(kind=='exp'){if(ys.some(y=>y<=0))return{msg:'Exponential needs every y to be greater than 0.'};const c=polyFit(xs,ys.map(Math.log),1);if(!c)return{msg:'Can\u2019t fit these points.'};
+    const a=Math.exp(c[0]),b=Math.exp(c[1]);f=x=>a*Math.pow(b,x);text='y = '+g(a)+'('+g(b)+')\u02e3';expr='y = '+g(a)+'*('+g(b)+')^x'}
+  else if(kind=='log'){if(xs.some(x=>x<=0))return{msg:'Logarithmic needs every x to be greater than 0.'};const c=polyFit(xs.map(Math.log),ys,1);if(!c)return{msg:'Can\u2019t fit these points.'};
+    f=x=>c[0]+c[1]*Math.log(x);text='y = '+g(c[0])+M(c[1]<0,true)+g(Math.abs(c[1]))+' ln(x)';expr='y = '+g(c[0])+M(c[1]<0,false)+g(Math.abs(c[1]))+'*ln(x)'}
+  else if(kind=='sin'){const n=xs.length,mx=xs.reduce((a,b)=>a+b,0)/n,u=xs.map(x=>x-mx),span=Math.max(...xs)-Math.min(...xs);
+    if(span<=0)return{msg:'Can\u2019t fit these points. Do any x values repeat?'};
+    const all=xs.map((_,k)=>k),stp=Math.max(1,Math.ceil(n/300)),ix=all.filter(k=>k%stp==0);
+    const so=[...u].sort((a,b)=>a-b),dd=[];for(let i=1;i<n;i++)if(so[i]-so[i-1]>1e-12)dd.push(so[i]-so[i-1]);dd.sort((a,b)=>a-b);const dm=dd.length?dd[Math.floor(dd.length/2)]:span;
+    const sse=(b,list)=>{let S=0,C=0,SS=0,CC=0,SC=0,SY=0,CY=0,Y=0;
+      for(const k of list){const sn=Math.sin(b*u[k]),cs=Math.cos(b*u[k]);S+=sn;C+=cs;SS+=sn*sn;CC+=cs*cs;SC+=sn*cs;SY+=ys[k]*sn;CY+=ys[k]*cs;Y+=ys[k]}
+      const sol=solveLS([[SS,SC,S],[SC,CC,C],[S,C,list.length]],[SY,CY,Y]);if(!sol)return null;let e=0;
+      for(const k of list){const r=ys[k]-(sol[0]*Math.sin(b*u[k])+sol[1]*Math.cos(b*u[k])+sol[2]);e+=r*r}return{e,sol}};
+    const pf=parseFloat(per);let best=null;
+    if(isFinite(pf)&&pf>0){const b=2*Math.PI/pf,r=sse(b,all);if(!r)return{msg:'Can\u2019t fit these points.'};best={b,...r}}
+    else{const b0=Math.PI/span*.5,b1=Math.PI/dm,G=4000;
+      for(let i=0;i<=G;i++){const b=b0*Math.pow(b1/b0,i/G),r=sse(b,ix);if(r&&(!best||r.e<best.e*(1-1e-9)-1e-15))best={b,...r}}
+      if(!best)return{msg:'Can\u2019t fit these points.'};
+      let lo=best.b*Math.pow(b1/b0,-1/G),hi=best.b*Math.pow(b1/b0,1/G);best={b:best.b,...sse(best.b,all)};
+      for(let it=0;it<4;it++){let bb=best;for(let i=0;i<=100;i++){const b=lo+(hi-lo)*i/100,r=sse(b,all);if(r&&r.e<bb.e)bb={b,...r}}best=bb;const w=(hi-lo)/50;lo=best.b-w;hi=best.b+w}}
+    const A=best.sol[0],B=best.sol[1],D=best.sol[2],amp=Math.hypot(A,B),b=best.b;
+    if(amp<1e-9)return{msg:'These points are flat, so there is no wave to fit.'};
+    const P=2*Math.PI/b;let c=-Math.atan2(B,A)/b+mx;c=((c%P)+P)%P;if(c>P*(1-1e-6)||c<1e-9*Math.max(1,P))c=0;
+    f=x=>amp*Math.sin(b*(x-c))+D;
+    const bd=typeof KDEG!='undefined'&&KDEG?b*180/Math.PI:b,bt=Math.abs(bd-1)<1e-9?'':g(bd),sc=c===0;
+    const arg=sc?(bt?bt+'x':'x'):(bt?bt+'(x \u2212 '+g(c)+')':'x \u2212 '+g(c)),argE=sc?(bt?bt+'*x':'x'):(bt?bt+'*(x - '+g(c)+')':'x - '+g(c));
+    const dt=Math.abs(D)<1e-9?'':M(D<0,true)+g(Math.abs(D)),de=Math.abs(D)<1e-9?'':M(D<0,false)+g(Math.abs(D));
+    text='y = '+g(amp)+' sin('+arg+')'+dt;expr='y = '+g(amp)+'*sin('+argE+')'+de;
+    const my=ys.reduce((a,b2)=>a+b2,0)/n,sr=ys.reduce((s2,y,k)=>s2+Math.pow(y-f(xs[k]),2),0),st=ys.reduce((s2,y)=>s2+Math.pow(y-my,2),0);
+    return{f,text,expr,r2:st<1e-12?1:1-sr/st,note:'Period '+g(P)+(isFinite(pf)&&pf>0?' (fixed)':'')+'  \u00b7  Amplitude '+g(amp)+'  \u00b7  Midline y = '+g(D)}}
+  else{if(xs.some(x=>x<=0)||ys.some(y=>y<=0))return{msg:'Power needs every x and y to be greater than 0.'};const c=polyFit(xs.map(Math.log),ys.map(Math.log),1);if(!c)return{msg:'Can\u2019t fit these points.'};
+    const a=Math.exp(c[0]),b=c[1];f=x=>a*Math.pow(x,b);text='y = '+g(a)+'x^'+g(b);expr='y = '+g(a)+'*x^('+g(b)+')'}
+  const my=ys.reduce((a,b)=>a+b,0)/ys.length,sr=ys.reduce((s,y,k)=>s+Math.pow(y-f(xs[k]),2),0),st=ys.reduce((s,y)=>s+Math.pow(y-my,2),0);
+  return{f,text,expr,r2:st<1e-12?1:1-sr/st}}
+function parseTable(r){const t=r.tbl,pts=[];(t.rows||[]).forEach(q=>{const x=numOf(q[0]),y=numOf(q[1]);if(String(q[0]).trim()===''||String(q[1]).trim()===''||/[xy]/i.test(q[0]+q[1])||!isFinite(x)||!isFinite(y))return;pts.push({n:t.names?nameOf(pts.length):'',x,y})});
+  return{type:'pts',pts,conn:!!t.conn,coords:!!t.coords,tbl:t,fit:t.fit&&t.fit!='none'?fitOf(pts,t.fit,t.period):null}}
+function tblSync(r){r.eq=r.tbl.rows.filter(q=>String(q[0]).trim()&&String(q[1]).trim()).map(q=>'('+String(q[0]).trim()+', '+String(q[1]).trim()+')').join(', ')}
+function tableEditorHTML(r,i){const t=r.tbl,ck=k=>t[k]?' checked':'';
+  return `<div class="tbl"><div class="tblscroll"><table class="tbltab"><thead><tr><th>x</th><th>y</th><th></th></tr></thead><tbody>${t.rows.map((q,k)=>`<tr><td><input data-tc="0" data-ti="${k}" value="${esc(q[0])}" aria-label="x value ${k+1}" inputmode="decimal"></td><td><input data-tc="1" data-ti="${k}" value="${esc(q[1])}" aria-label="y value ${k+1}" inputmode="decimal"></td><td><button type="button" class="pwx" data-act="tdel" data-ti="${k}" aria-label="Remove this row" title="Remove this row">\u00d7</button></td></tr>`).join('')}</tbody></table></div>
+<div class="pwbar"><button type="button" data-act="tadd">+ Add row</button><button type="button" data-act="tclear">Clear</button></div>
+<div class="tblopts"><label class="chk"><input type="checkbox" data-tk="conn"${ck('conn')}>Connect the points</label><label class="chk"><input type="checkbox" data-tk="names"${ck('names')}>Name the points A, B, C</label><label class="chk"><input type="checkbox" data-tk="coords"${ck('coords')}>Show coordinates</label></div>
+<div class="tblopts"><label>Best fit<select data-tk="fit">${sel([['none','None'],['linear','Linear'],['quad','Quadratic'],['cubic','Cubic'],['exp','Exponential'],['log','Logarithmic'],['pow','Power'],['sin','Sinusoidal']],t.fit||'none')}</select></label><label class="chk"><input type="checkbox" data-tk="showEq"${ck('showEq')}>Show the equation on the graph</label></div>
+<label class="sinonly">Period (optional, in x units)<input data-tk="period" value="${esc(t.period||'')}" placeholder="e.g. 12" inputmode="decimal"></label>
+<div class="tblfit" role="status" aria-live="polite"></div><div class="pwbar"><button type="button" data-act="tfitrow">Add the best fit as a new row</button></div></div>`}
+function tblEdit(e){const t=e.target,rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;
+  if(t.dataset.tc!==undefined){supify(t,e);const q=r.tbl.rows[+t.dataset.ti];if(!q)return;q[+t.dataset.tc]=t.value;tblSync(r)}
+  else if(t.dataset.tk){r.tbl[t.dataset.tk]=t.type=='checkbox'?t.checked:t.value;if(t.dataset.tk=='fit')rw.dataset.fit=t.value}
+  draw()}
+function tblAct(a,i,t){const r=rows[i];if(!r||!r.tbl)return;
+  if(a=='tadd')r.tbl.rows.push(['','']);
+  else if(a=='tdel'){if(r.tbl.rows.length<2)r.tbl.rows=[['','']];else r.tbl.rows.splice(+t.dataset.ti,1)}
+  else if(a=='tclear')r.tbl.rows=[['',''],['',''],['','']];
+  else if(a=='tfitrow'){const f=fitOf(parseTable(r).pts,r.tbl.fit,r.tbl.period);if(!f||!f.expr){toast(f&&f.msg?f.msg:'Choose a best fit first.');return}rows.splice(i+1,0,Object.assign({},ROWDEF,{eq:f.expr}))}
+  tblSync(r);renderRows();draw();
+  if(a=='tadd'){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-tc="0"]');if(q&&q.length)q[q.length-1].focus()}}
+function addTable(){let k=rows.findIndex(r=>!String(r.eq).trim()&&!r.pwEd&&!r.tbl);if(k<0){rows.push(Object.assign({},ROWDEF));k=rows.length-1}
+  rows[k].tbl={rows:[['1','2'],['2','4'],['3','5'],['4','8'],['5','9']],conn:false,names:false,coords:false,fit:'none',showEq:true};tblSync(rows[k]);renderRows();draw();
+  const el=document.querySelectorAll('.row')[k],q=el&&el.querySelector('[data-tc="0"]');if(q){q.focus();if(q.select)q.select()}}
+function pasteGrid(txt){const L=String(txt).replace(/\r/g,'').split('\n');while(L.length&&!L[L.length-1].trim())L.pop();
+  return L.map(l=>l.includes('\t')?l.split('\t'):/^\s*[-+\d.eE]+\s*[,; ]\s*[-+\d.eE]+\s*$/.test(l)?l.trim().split(/\s*[,; ]\s*/):[l])}
+function pasteInto(r,ti,tc,grid){let g=grid;if(ti==0&&tc==0&&g.length>1&&g[0].every(c=>{c=c.trim();return c===''||(/^[A-Za-z][\w ()\/.%-]*$/.test(c)&&!/^(pi|e)$/i.test(c))}))g=g.slice(1);
+  g.forEach((cells,k)=>{while(r.tbl.rows.length<=ti+k)r.tbl.rows.push(['','']);cells.forEach((c,j)=>{if(tc+j<2)r.tbl.rows[ti+k][tc+j]=c.trim()})});tblSync(r)}
 function pwEditorHTML(r,i){const m=r.pw||(r.pw=pwParts(r.eq)||{lhs:'y',rows:[{e:'',c:''}]}),n=m.rows.length;
-  return `<div class="pwed"><div class="pwrow0"><input class="pwlhs" data-pw="lhs" value="${esc(m.lhs)}" aria-label="Left side, like y or f(x)"><span class="eqs">=</span><svg class="pwbr" viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M10 1C4 1 5 8 5 20L5 40C5 46 3 50 0 50C3 50 5 54 5 60L5 80C5 92 4 99 10 99" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg><div class="pwrows">${m.rows.map((q,k)=>`<div class="pwr"><input data-pw="e" data-pi="${k}" value="${esc(q.e)}" placeholder="expression, like x + 1" aria-label="Expression ${k+1}"><span class="pwif">if</span><input data-pw="c" data-pi="${k}" value="${esc(q.c)}" placeholder="${k==n-1&&n>1?'condition, or blank for otherwise':'condition, like x < 0'}" aria-label="Condition ${k+1}"><button type="button" class="pwx" data-act="pwdel" data-pi="${k}" aria-label="Remove this piece" title="Remove this piece"${n<2?' disabled':''}>\u00d7</button></div>`).join('')}</div></div><div class="pwbar"><button type="button" data-act="pwadd">+ Add piece</button><button type="button" data-act="pwtext">Edit as one line</button></div></div>`}
+  return `<div class="pwed"><div class="pwrow0"><input class="pwlhs" data-pw="lhs" value="${esc(m.lhs)}" aria-label="Left side, like y or f(x)"><span class="eqs">=</span><svg class="pwbr" viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M10 1C4 1 5 8 5 20L5 40C5 46 3 50 0 50C3 50 5 54 5 60L5 80C5 92 4 99 10 99" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg><div class="pwrows">${m.rows.map((q,k)=>`<div class="pwr"><input data-pw="e" data-pi="${k}" value="${esc(q.e)}" placeholder="expression, like x + 1" aria-label="Expression ${k+1}"><span class="pwif">if</span><input data-pw="c" data-pi="${k}" value="${esc(q.c)}" placeholder="${k==n-1&&n>1?'condition, or blank for otherwise':'condition, like x < 0'}" aria-label="Condition ${k+1}"><button type="button" class="pwx" data-act="pwdel" data-pi="${k}" aria-label="Remove this piece" title="Remove this piece"${n<2?' disabled':''}>\u00d7</button></div>`).join('')}</div></div><div class="pwbar"><button type="button" data-act="pwadd">+ Add piece</button><button type="button" data-act="pwtext">Edit as one line</button><button type="button" data-act="copymenu">Copy…</button></div></div>`}
 function pwSync(r){const m=r.pw,old=r.eq,ok=m.rows.filter(q=>q.e.trim()||q.c.trim()),L=(m.lhs||'y').trim()||'y';
   if(!ok.length)r.eq='';else if(!ok.some(q=>q.c.trim()))r.eq=L+' = '+ok[0].e.trim();
   else r.eq=L+' = {'+ok.map(q=>q.c.trim()?q.c.trim()+': '+q.e.trim():q.e.trim()).join(', ')+'}';
@@ -451,13 +542,13 @@ const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}
 function renderRows(){
   const box=$('#rows');box.innerHTML='';
   rows.forEach((r,i)=>{
-    const d=document.createElement('div');d.className='row'+(r.folded?' folded':'');d.dataset.i=i;
+    const d=document.createElement('div');d.className='row'+(r.folded?' folded':'')+(r.tbl?' istbl':'');d.dataset.fit=r.tbl?(r.tbl.fit||'none'):'';d.dataset.i=i;
     const op=k=>(r.ui&&r.ui[k])?' open':'';
-    d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"${r.pwEd?' hidden':''}>${r.pwEd?'<span class="pwtitle">Piecewise function</span>':''}${r.keyonly?'<span class="keytag" title="Answer key only: hidden in the student copy">Key</span>':''}<button type="button" class="mbtn" data-act="menu" aria-label="Row actions" title="Row actions" aria-haspopup="menu">⋯</button></div>
-${r.pwEd?pwEditorHTML(r,i):''}
+    d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"${(r.pwEd||r.tbl)?' hidden':''}>${r.pwEd?'<span class="pwtitle">Piecewise function</span>':''}${r.tbl?'<span class="pwtitle">Data table</span>':''}${r.keyonly?'<span class="keytag" title="Answer key only: hidden in the student copy">Key</span>':''}<button type="button" class="mbtn" data-act="menu" aria-label="Row actions" title="Row actions" aria-haspopup="menu">⋯</button></div>
+${r.pwEd?pwEditorHTML(r,i):''}${r.tbl?tableEditorHTML(r,i):''}
 <div class="kind"></div>
 <button type="button" class="pwlink only-pw" data-act="pwedit"${r.pwEd?' hidden':''}>Edit as piecewise</button>
-<div class="pv" data-pv="eq" hidden></div>
+<div class="pvrow"><div class="pv" data-pv="eq" hidden></div><button type="button" class="pvcopy" data-act="copymenu" hidden>Copy…</button></div>
 <div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
 <div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
 <div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
@@ -473,9 +564,11 @@ ${r.pwEd?pwEditorHTML(r,i):''}
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details>`;
     box.append(d);pvUpdate(d,i)})}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab'){const rw=e.target.closest('.row');pvUpdate(rw,+rw.dataset.i)}draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab'){const rw=e.target.closest('.row');pvUpdate(rw,+rw.dataset.i)}draw()});
 $('#rows').addEventListener('click',e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='menu'){rowMenu(e.target,i);return}
+  if(a=='copymenu'){copyMenu(e.target,i);return}
+  if(['tadd','tdel','tclear','tfitrow'].includes(a)){tblAct(a,i,e.target);return}
   if(a.startsWith('pw')){pwAct(a,i,e.target);return}
   if(a=='del')rows.splice(i,1);
   if(a=='fold')rows[i].folded=!rows[i].folded;
@@ -595,14 +688,18 @@ function draw(){
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.kind');if(k){k.textContent=t;k.classList.toggle('err',!!t)}};
   RW.forEach((r,i)=>{
     let p=null;
-    try{p=parseRow(r.eq);if(p&&p.ineq)nIn++;eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
+    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe)fe.textContent=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):''}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
     if(!p)return;
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 4 2 4"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
     if(p.type=='pts'){
       const cs=r.lab?r.lab.split(';').map(z=>z.trim()):[];p.pts.forEach((q,qi)=>{if(r.vis!==false)lines+=`<circle data-i="${i}" cx="${sx(q.x)}" cy="${sy(q.y)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1"/><circle data-i="${i}" cx="${sx(q.x)}" cy="${sy(q.y)}" r="11" fill="transparent" style="cursor:pointer"/>`;
-        const t=(cs[qi]||q.n)+(r.coords?`(${fmt(q.x)}, ${fmt(q.y)})`:'');
+        const t=(cs[qi]||q.n)+((r.coords||p.coords)?`(${fmt(q.x)}, ${fmt(q.y)})`:'');
         if(t&&r.labOn!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];labels+=lab(t,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,qi)}});
+      if(p.conn&&r.vis!==false&&p.pts.length>1){const dd=p.pts.map((q,k)=>(k?'L':'M')+sx(q.x).toFixed(1)+' '+sy(q.y).toFixed(1)).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${Math.max(1,r.w*.7)}" stroke-linejoin="round" stroke-linecap="round"/>`}
+      if(p.fit&&p.fit.f&&r.vis!==false){const sg=trace(p.fit.f),dd=sg.map(z=>'M'+z.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
+        if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dash}/>`;
+        if(p.tbl.showEq&&r.labOn!==false){const xm=Math.max(...p.pts.map(q=>q.x)),ym=p.fit.f(xm);if(isFinite(ym))labels+=lab(p.fit.text,ls,halo,'translate(0 0)',sx(xm)+10,sy(ym)-12,'start',i,'f')}}
       return}
     let segs;if(p.type=='f'&&!p.ineq)FNS[i]=p.f;
     if(p.type=='v'){const n=80,yl=[...Array(n+1)].map((_,k)=>y0+(y1-y0)*k/n);if(p.restr)p.restr.bounds.forEach(b=>{if(b.v=='y'&&b.val>y0&&b.val<y1)yl.push(b.val)});yl.sort((a,b)=>a-b);segs=[];let cu=[];yl.forEach(yy=>{if(p.restr&&!p.restr.test(p.c,yy)){if(cu.length)segs.push(cu);cu=[]}else cu.push([sx(p.c),sy(yy)])});if(cu.length)segs.push(cu)}else if(p.type=='imp'){const mr=march(p.g,p.restr,p.ineq?(p.ineq.lt?v=>v<0:v=>v>0):null);segs=mr.chains;p._fill=mr.fill}else segs=p.pieces?p.pieces.flatMap(pc=>trace(pc.f,pc.restr)):trace(p.f,p.restr);
@@ -815,13 +912,54 @@ const onKey=e=>{if(e.target!==wrap)return;const k=e.key;let dx=0,dy=0,f=1;
   if(k=='ArrowLeft')dx=1;else if(k=='ArrowRight')dx=-1;else if(k=='ArrowUp')dy=1;else if(k=='ArrowDown')dy=-1;else if(k=='+'||k=='=')f=.5;else if(k=='-'||k=='_')f=2;else return;
   e.preventDefault();if(!begin())return;mv=true;if(f!=1)zoomAt(view.L+view.W/2,view.T+view.H/2,f);else panBy(dx*view.W*.1,dy*view.H*.1);commit()};
 wrap.addEventListener('keydown',onKey);
+const unsupAll=t=>unsup(String(t));
+function texTxt(t,rads){
+  t=unsupAll(t).replace(/\u2212/g,'-').replace(/\s*(<=|\u2264)\s*/g,' \\le ').replace(/\s*(>=|\u2265)\s*/g,' \\ge ');
+  t=t.replace(/log_(\d+)/g,'\\log_{$1}').replace(/abs\(([^()]*)\)/g,'\\left|$1\\right|');
+  t=t.replace(/(^|[^a-zA-Z\\])(arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log)(?![a-zA-Z_])/g,'$1\\$2');
+  t=t.replace(/(^|[^a-zA-Z\\])pi(?![a-zA-Z])/g,'$1\\pi ');
+  t=t.replace(/\^\(([^()]*)\)/g,'^{$1}').replace(/\^(-?\d*\.?\d+|-?[a-zA-Z])/g,'^{$1}');
+  t=t.replace(/\*/g,' \\cdot ').replace(/\s+/g,' ');
+  return t.replace(/[\uE000-\uE0FF]/g,c=>'\\sqrt{'+tex(rads[c.charCodeAt(0)-NOUT])+'}')}
+function texLay(str,rads){const re=new RegExp(FRRE.source,'g');let o='',last=0,m;
+  while((m=re.exec(str))){o+=texTxt(str.slice(last,m.index),rads)+'\\frac{'+texLay(unp(m[1]),rads)+'}{'+texLay(unp(m[2]),rads)+'}';last=re.lastIndex}
+  return o+texTxt(str.slice(last),rads)}
+function tex(str){str=String(str).trim();const pw=pwParts(str);
+  if(pw)return pw.lhs+' = \\begin{cases} '+pw.rows.map(q=>tex(q.e)+', & '+(q.c?tex(q.c):'\\text{otherwise}')).join(' \\\\ ')+' \\end{cases}';
+  const rm=str.match(/^([^{}]*?)\s*((?:\{[^{}]*\}\s*)+)$/);
+  if(rm){const conds=[...rm[2].matchAll(/\{([^{}]*)\}/g)].flatMap(m=>m[1].split(',')).map(c=>c.trim()).filter(Boolean);
+    return tex(rm[1])+(conds.length?', \\quad '+conds.map(c=>tex(c)).join(', \\; '):'')}
+  const e=extract(str);return texLay(e.s,e.rads).trim()}
+function eqDisplay(str){str=String(str).trim();if(pwParts(str))return str;
+  const rm=str.match(/^([^{}]*?)\s*((?:\{[^{}]*\}\s*)+)$/);
+  if(rm){const conds=[...rm[2].matchAll(/\{([^{}]*)\}/g)].flatMap(m=>m[1].split(',')).map(c=>c.trim()).filter(Boolean);return rm[1]+(conds.length?',   '+conds.join(',  '):'')}
+  return str}
+function eqSvg(str){const old=LW;LW='normal';let r;try{r=layout(eqDisplay(str).replace(/\*/g,'\u00b7'),24,'fill="#000"')}finally{LW=old}
+  const pad=12,w=Math.ceil(r.w+pad*2),h=Math.ceil(r.up+r.down+pad*2),bg=$('#ebg').value!='clear';
+  return{w,h,svg:`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" font-family="Helvetica,Arial,sans-serif">${bg?'<rect width="100%" height="100%" fill="#fff"/>':''}<g transform="translate(${pad} ${(pad+r.up).toFixed(1)})">${r.svg}</g></svg>`}}
+function svgToPng(svg,cb){const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),k=+$('#esz').value||2;c.width=img.width*k;c.height=img.height*k;const g=c.getContext('2d');
+    if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(img,0,0,c.width,c.height);c.toBlob(cb)};
+  img.onerror=()=>toast('Could not build the image.');img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}
+function toast(m){const n=$('#note');n.textContent=m;clearTimeout(toast.t);toast.t=setTimeout(()=>{if(n.textContent===m)n.textContent=''},3500)}
+async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg)}catch(e){try{const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove();toast(msg)}catch(e2){toast('Copying is blocked here.')}}}
+function copyEq(i,kind){const r=rows[i],t=String((r&&r.eq)||'').trim();if(!t){toast('Type an equation first.');return}
+  if(kind=='ctxt')return copyText(t,'Copied as text.');
+  if(kind=='ctex')return copyText(tex(t),'Copied as LaTeX.');
+  try{svgToPng(eqSvg(t).svg,async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);toast('Copied as an image. Paste it into your document.')}catch(e){toast('Your browser blocked copying images here. Use Copy as LaTeX instead, or open the page in its own tab.')}})}catch(e){toast('Could not copy the image.')}}
+function copyMenu(btn,i){const old=$('#cmenu');if(old){const same=old.dataset.for==='c'+i;old.remove();if(same)return}
+  const m=document.createElement('div');m.id='cmenu';m.className='rmenu';m.dataset.for='c'+i;
+  m.innerHTML='<button type="button" data-m="cimg">Copy as image</button><button type="button" data-m="ctex">Copy as LaTeX</button><button type="button" data-m="ctxt">Copy as text</button>';
+  document.body.append(m);const b=btn.getBoundingClientRect();
+  m.style.left=Math.max(8,Math.min(b.left,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
+  m.onclick=e=>{const k=e.target.dataset.m;if(!k)return;m.remove();rowAction(k,i)}}
 function rowMenu(btn,i){const old=$('#cmenu');if(old){const same=old.dataset.for==='r'+i;old.remove();if(same)return}
   const r=rows[i],m=document.createElement('div');m.id='cmenu';m.className='rmenu';m.dataset.for='r'+i;
-  m.innerHTML=`<button type="button" data-m="up"${i==0?' disabled':''}>Move up</button><button type="button" data-m="down"${i==rows.length-1?' disabled':''}>Move down</button><button type="button" data-m="dup">Duplicate</button><button type="button" data-m="key" aria-pressed="${!!r.keyonly}">${r.keyonly?'\u2713 ':''}Answer key only</button><button type="button" data-m="del" class="danger">Delete</button>`;
+  m.innerHTML=`<button type="button" data-m="up"${i==0?' disabled':''}>Move up</button><button type="button" data-m="down"${i==rows.length-1?' disabled':''}>Move down</button><button type="button" data-m="dup">Duplicate</button><button type="button" data-m="key" aria-pressed="${!!r.keyonly}">${r.keyonly?'\u2713 ':''}Answer key only</button><hr><button type="button" data-m="cimg">Copy as image</button><button type="button" data-m="ctex">Copy as LaTeX</button><button type="button" data-m="ctxt">Copy as text</button><hr><button type="button" data-m="del" class="danger">Delete</button>`;
   document.body.append(m);const b=btn.getBoundingClientRect();
   m.style.left=Math.max(8,Math.min(b.right-m.offsetWidth,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
   m.onclick=e=>{const k=e.target.dataset.m;if(!k||e.target.disabled)return;m.remove();rowAction(k,i)}}
-function rowAction(k,i){const remap=f=>rows.forEach(q=>{if(q.c_base&&q.c_base!='axis'){const n=f(+q.c_base);q.c_base=n==null?'axis':String(n)}});
+function rowAction(k,i){if(k=='cimg'||k=='ctex'||k=='ctxt'){copyEq(i,k);return}
+  const remap=f=>rows.forEach(q=>{if(q.c_base&&q.c_base!='axis'){const n=f(+q.c_base);q.c_base=n==null?'axis':String(n)}});
   if(k=='del'){rows.splice(i,1);remap(n=>n==i?null:n>i?n-1:n)}
   else if(k=='dup'){const c=JSON.parse(JSON.stringify(rows[i]));delete c.ui;delete c._fn;rows.splice(i+1,0,c);remap(n=>n>i?n+1:n)}
   else if(k=='up'||k=='down'){const j=k=='up'?i-1:i+1;if(j<0||j>=rows.length)return;[rows[i],rows[j]]=[rows[j],rows[i]];remap(n=>n==i?j:n==j?i:n)}
@@ -838,6 +976,10 @@ $('#symbar').addEventListener('click',e=>{const b=e.target.closest('button');if(
   let el=lastField&&lastField.isConnected?lastField:null;
   if(!el){if(!rows.length){rows.push(Object.assign({},ROWDEF));renderRows();draw()}const q=document.querySelector('#rows .eq');el=q}
   if(el){insertAt(el,b.dataset.ins,+b.dataset.back||0)}});
+$('#addt').onclick=addTable;
+$('#rows').addEventListener('paste',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.tc===undefined)return;
+  const grid=pasteGrid((e.clipboardData||window.clipboardData).getData('text'));if(grid.length<2&&(!grid[0]||grid[0].length<2))return;
+  const rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;e.preventDefault();pasteInto(r,+t.dataset.ti,+t.dataset.tc,grid);renderRows();draw()});
 </script>
 </body>
 </html>
