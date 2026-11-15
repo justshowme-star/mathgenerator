@@ -123,7 +123,8 @@ h3{font-size:13px;margin:12px 0 6px}
 @media(max-width:560px){.tg+.tg{padding-left:0;border-left:0}}
 .mbtn{width:30px;padding:3px 0;font-size:18px;line-height:1;flex:none}
 .keytag{font-size:11px;padding:2px 7px;border-radius:99px;background:var(--accent);color:#fff;flex:none}
-#cmenu.rmenu{width:190px;gap:2px;padding:6px}
+#cmenu.rmenu{width:240px;gap:2px;padding:6px;max-height:80vh;overflow:auto}
+#cmenu .ml{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);padding:6px 10px 2px}
 #cmenu.rmenu button{text-align:left;background:transparent;border:0;padding:7px 10px;border-radius:6px;color:var(--ink)}
 #cmenu.rmenu button:hover:not(:disabled){background:var(--bg)}#cmenu.rmenu button:disabled{opacity:.4;cursor:default}#cmenu.rmenu .danger{color:var(--bad)}
 .symbar{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 8px}
@@ -159,7 +160,15 @@ h3{font-size:13px;margin:12px 0 6px}
 .row.istbl[data-type="pts"] details.only-line{display:block}
 .sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
 .row:not([data-fit="sin"]) .sinonly{display:none}
+.rowbody{display:grid;gap:6px}
+.row.ac:not(:focus-within):not(.pin){padding:6px 10px}
+.row.ac:not(:focus-within):not(.pin) .rowbody{display:none}
+.row.ac:not(:focus-within):not(.pin) .fold{transform:rotate(-90deg)}
+.errline{font-size:12px;color:var(--bad)}.errline[hidden]{display:none}
+.pwtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
+<script>window.MathJax={startup:{typeset:false},svg:{fontCache:'none'}}</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
 </head>
 <body>
 <div class="app">
@@ -167,7 +176,7 @@ h3{font-size:13px;margin:12px 0 6px}
   <h1>Coordinate grid</h1>
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
-  <section class="sec"><h2><span class="n">1</span>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy the equation as an image, LaTeX or plain text. <b>Copy…</b> appears beside the typeset preview too. The toolbar switches between the answer key and student copy, and between color and black and white.</p></div>
+  <section class="sec"><h2><span class="n">1</span>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy or save the equation as an image, copy it for Google Docs, or copy it as LaTeX or plain text. <b>Copy…</b> appears beside the typeset preview too. The toolbar switches between the answer key and student copy, and between color and black and white.</p></div>
   <div class="symbar" id="symbar" role="toolbar" aria-label="Math symbols"><button type="button" data-ins="^2" data-back="0" title="Square" aria-label="Square">x²</button><button type="button" data-ins="^()" data-back="1" title="Power" aria-label="Power">xⁿ</button><button type="button" data-ins="sqrt()" data-back="1" title="Square root" aria-label="Square root">√</button><button type="button" data-ins="()/()" data-back="4" title="Fraction" aria-label="Fraction">a/b</button><button type="button" data-ins="pi" data-back="0" title="Pi" aria-label="Pi">π</button><button type="button" data-ins="≤" data-back="0" title="Less than or equal to" aria-label="Less than or equal to">≤</button><button type="button" data-ins="≥" data-back="0" title="Greater than or equal to" aria-label="Greater than or equal to">≥</button><button type="button" data-ins="abs()" data-back="1" title="Absolute value" aria-label="Absolute value">|x|</button><button type="button" data-ins=" {}" data-back="1" title="Restriction" aria-label="Restriction">{ }</button><button type="button" data-ins="sin()" data-back="1" title="Sine" aria-label="Sine">sin</button><button type="button" data-ins="f(x) = " data-back="0" title="Function, like f(x) = x^2" aria-label="Function definition">f(x)</button><button type="button" data-pw="1" data-back="0" title="Piecewise function editor" aria-label="Piecewise function editor">Piecewise</button><button type="button" data-ins="ln()" data-back="1" title="Natural log" aria-label="Natural log">ln</button></div>
   <div id="rows"></div>
   <div id="params"></div>
@@ -175,7 +184,7 @@ h3{font-size:13px;margin:12px 0 6px}
   <div class="adds">
     <button type="button" id="add" class="primary">+ Add row</button>
     <button type="button" id="addt">+ Add table</button>
-    <button type="button" id="foldall">Collapse all</button>
+    <button type="button" id="foldall">Expand all</button>
   </div>
 
   </div></section>
@@ -247,9 +256,16 @@ h3{font-size:13px;margin:12px 0 6px}
       <button type="button" id="dsvg">Save SVG</button>
       <button type="button" id="cpy">Copy image</button>
       <button type="button" id="prt">Print</button></div>
+    <div class="tg"><span class="tl">Google Docs</span>
+      <select id="dwr" aria-label="Wrap copied LaTeX and Docs text in"><option value="1" selected>Wrap in $ … $</option><option value="2">Wrap in $$ … $$</option><option value="0">No wrapper</option></select>
+      <select id="dcm" aria-label="What table cells contain"><option value="plain" selected>Table cells: plain math text</option><option value="docs">Table cells: Docs equation commands</option></select></div>
     <button type="button" id="gh" class="qm2" aria-label="Help for the graph" title="Help" aria-expanded="false">?</button>
   </div>
-  <div class="info" id="ginfo" hidden><p><b>Working with the graph</b></p><p>Drag to move the view. Hold Ctrl (Cmd on a Mac) and scroll to zoom, or use the + and − buttons. After you click the graph, plain scrolling, the arrow keys and + and − also work. The view snaps to the grid when you let go. On a touch screen, tap ✥ to drag the graph; otherwise your finger scrolls the page.</p><p>Drag a label to place it (double-click it to reset). Click a line or point to edit its row.</p><p>Ctrl+Z undoes and Ctrl+Shift+Z redoes. Your work saves automatically in this browser.</p></div>
+  <div class="info" id="ginfo" hidden><p><b>Working with the graph</b></p><p>Drag to move the view. Hold Ctrl (Cmd on a Mac) and scroll to zoom, or use the + and − buttons. After you click the graph, plain scrolling, the arrow keys and + and − also work. The view snaps to the grid when you let go. On a touch screen, tap ✥ to drag the graph; otherwise your finger scrolls the page.</p><p>Drag a label to place it (double-click it to reset). Click a line or point to edit its row.</p><p>Ctrl+Z undoes and Ctrl+Shift+Z redoes. Your work saves automatically in this browser.</p><details><summary>Getting equations into Google Docs</summary><ul>
+<li><b>Copy as image</b>, click in your Doc and paste (Ctrl/Cmd+V). This works for everything, including piecewise functions. Resize it in Docs if needed.</li>
+<li><b>Editable Docs equation:</b> choose <b>Copy for Docs equation</b>, then paste it into your Doc. It is wrapped in $ … $ by default; change the wrapper in the Google Docs group, or paste it into Insert → Equation without the $. Docs converts commands such as <code>\frac</code>, <code>\sqrt</code> and <code>\pi</code> when you press space after them. If pasted commands stay as plain text, click right after each command and press space.</li>
+<li><b>Piecewise functions:</b> Docs equations can’t draw these, so <b>Copy for Docs equation</b> copies them as a borderless <b>table</b>: a large brace beside one row per piece. Paste it straight into your Doc. Cells hold plain math text (x², √x, ≤) you can edit, or choose “Docs equation commands” to turn each cell into a Docs equation yourself. If borders show up, select the table and set the border width to 0.</li>
+<li>If copying the image is blocked, use <b>Download PNG</b> and insert it with Insert → Image.</li></ul></details></div>
   <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
   <div id="note" role="status"></div>
 </main>
@@ -397,6 +413,14 @@ function layPW(pw,sz,halo){const hl=halo.includes('stroke=');
   pw.rows.forEach((q,k)=>{const base=top+(k+.5)*lineH+sz*.3;o+=`<g transform="translate(${f(x1)} ${f(base)})">${E[k].svg}</g><g transform="translate(${f(x2)} ${f(base)})">${C[k].svg}</g>`});
   return{svg:o,w:x2+w2,up:-top,down:bot,fr:true}}
 function pwHTML(pw){return `<span class="pw">${hsup(pw.lhs)} =<svg class="pwbr2" viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M10 1C4 1 5 8 5 20L5 40C5 46 3 50 0 50C3 50 5 54 5 60L5 80C5 92 4 99 10 99" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg><span class="pwg">${pw.rows.map(q=>`<span>${mathHTML(q.e)},</span><span>${q.c?mathHTML(q.c):'otherwise'}</span>`).join('')}</span></span>`}
+var foldWas=null;
+function focusIn(el,q){if(!el||!q)return false;const r=rows[+el.dataset.i];el.classList.add('pin');try{q.focus({preventScroll:true})}catch(e){}
+  if(!(r&&r.pin))el.classList.remove('pin');if(el.scrollIntoView)el.scrollIntoView({block:'nearest'});return document.activeElement===q}
+function focusRow(i){const el=document.querySelectorAll('.row')[i];focusIn(el,el&&el.querySelector('input.eq:not([hidden]),.pwed input,.tbl input'))}
+function foldToggle(i,rw){const r=rows[i];if(!r)return;const was=foldWas!==null?foldWas:!!(r.pin||(rw.matches&&rw.matches(':focus-within')));foldWas=null;
+  if(was){r.pin=false;const ae=document.activeElement;if(ae&&ae.blur&&rw.contains&&rw.contains(ae))ae.blur()}else r.pin=true;
+  rw.classList.toggle('pin',!!r.pin);const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
+$('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.fold');if(!b)return;const rw=b.closest('.row'),r=rows[+rw.dataset.i];foldWas=!!(r&&(r.pin||rw.matches(':focus-within')))},true);
 function numOf(t){try{return compile(String(t))(0,0)}catch(e){return NaN}}
 const nameOf=k=>String.fromCharCode(65+k%26)+(k>=26?Math.floor(k/26):'');
 const FITS={linear:{n:2},quad:{n:3},cubic:{n:4},exp:{n:2},log:{n:2},pow:{n:2},sin:{n:4}};
@@ -466,10 +490,11 @@ function tblAct(a,i,t){const r=rows[i];if(!r||!r.tbl)return;
   else if(a=='tclear')r.tbl.rows=[['',''],['',''],['','']];
   else if(a=='tfitrow'){const f=fitOf(parseTable(r).pts,r.tbl.fit,r.tbl.period);if(!f||!f.expr){toast(f&&f.msg?f.msg:'Choose a best fit first.');return}rows.splice(i+1,0,Object.assign({},ROWDEF,{eq:f.expr}))}
   tblSync(r);renderRows();draw();
-  if(a=='tadd'){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-tc="0"]');if(q&&q.length)q[q.length-1].focus()}}
+  if(a!='tadd')focusRow(i);
+  if(a=='tadd'){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-tc="0"]');if(q&&q.length)focusIn(el,q[q.length-1])}}
 function addTable(){let k=rows.findIndex(r=>!String(r.eq).trim()&&!r.pwEd&&!r.tbl);if(k<0){rows.push(Object.assign({},ROWDEF));k=rows.length-1}
-  rows[k].tbl={rows:[['1','2'],['2','4'],['3','5'],['4','8'],['5','9']],conn:false,names:false,coords:false,fit:'none',showEq:true};tblSync(rows[k]);renderRows();draw();
-  const el=document.querySelectorAll('.row')[k],q=el&&el.querySelector('[data-tc="0"]');if(q){q.focus();if(q.select)q.select()}}
+  rows[k].tbl={rows:[['',''],['',''],['','']],conn:false,names:false,coords:false,fit:'none',showEq:true};tblSync(rows[k]);renderRows();draw();
+  const el=document.querySelectorAll('.row')[k],q=el&&el.querySelector('[data-tc="0"]');if(q){focusIn(el,q);if(q.select)q.select()}}
 function pasteGrid(txt){const L=String(txt).replace(/\r/g,'').split('\n');while(L.length&&!L[L.length-1].trim())L.pop();
   return L.map(l=>l.includes('\t')?l.split('\t'):/^\s*[-+\d.eE]+\s*[,; ]\s*[-+\d.eE]+\s*$/.test(l)?l.trim().split(/\s*[,; ]\s*/):[l])}
 function pasteInto(r,ti,tc,grid){let g=grid;if(ti==0&&tc==0&&g.length>1&&g[0].every(c=>{c=c.trim();return c===''||(/^[A-Za-z][\w ()\/.%-]*$/.test(c)&&!/^(pi|e)$/i.test(c))}))g=g.slice(1);
@@ -480,8 +505,8 @@ function pwSync(r){const m=r.pw,old=r.eq,ok=m.rows.filter(q=>q.e.trim()||q.c.tri
   if(!ok.length)r.eq='';else if(!ok.some(q=>q.c.trim()))r.eq=L+' = '+ok[0].e.trim();
   else r.eq=L+' = {'+ok.map(q=>q.c.trim()?q.c.trim()+': '+q.e.trim():q.e.trim()).join(', ')+'}';
   if(r.lab&&r.lab===old)r.lab=r.eq}
-function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'x + 1',c:'x < 0'},{e:'x\u00b2',c:'0 \u2264 x < 2'},{e:'3',c:''}]};r.pwEd=true;pwSync(r);renderRows();draw();
-  const el=document.querySelectorAll('.row')[i],q=el&&el.querySelector('[data-pw="e"]');if(q){q.focus();if(q.select)q.select()}}
+function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'',c:''},{e:'',c:''}]};r.pwEd=true;pwSync(r);renderRows();draw();
+  const el=document.querySelectorAll('.row')[i],q=el&&el.querySelector('[data-pw="e"]');if(q){focusIn(el,q);if(q.select)q.select()}}
 function pwFromPalette(el){const rw=el&&el.closest?el.closest('.row'):null;
   if(rw&&el.classList.contains('eq')){const i=+rw.dataset.i,r=rows[i],m=String(r.eq).match(/^\s*(y|[a-wzA-WZ]\s*\(\s*x\s*\))\s*=?\s*$/);
     if(!r.eq.trim()||m){newPW(i,m?m[1].replace(/\s+/g,''):'y');return}
@@ -495,7 +520,8 @@ function pwAct(a,i,t){const r=rows[i];if(!r)return;let at=-1;
     else if(a=='pwdel'){if(m.rows.length<2)return;m.rows.splice(+t.dataset.pi,1)}
     pwSync(r)}
   renderRows();draw();
-  if(at>=0){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-pw="e"]');if(q&&q[at])q[at].focus()}}
+  if(at<0)focusRow(i);
+  if(at>=0){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-pw="e"]');if(q&&q[at])focusIn(el,q[at])}}
 function pwEdit(e){const t=e.target,rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.pw)return;supify(t,e);
   const k=t.dataset.pw;if(k=='lhs')r.pw.lhs=t.value;else{const q=r.pw.rows[+t.dataset.pi];if(!q)return;q[k]=t.value}
   pwSync(r);const qe=rw.querySelector('.eq');if(qe)qe.value=r.eq;const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=r.lab;
@@ -542,10 +568,10 @@ const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}
 function renderRows(){
   const box=$('#rows');box.innerHTML='';
   rows.forEach((r,i)=>{
-    const d=document.createElement('div');d.className='row'+(r.folded?' folded':'')+(r.tbl?' istbl':'');d.dataset.fit=r.tbl?(r.tbl.fit||'none'):'';d.dataset.i=i;
+    const d=document.createElement('div');d.className='row ac'+(r.pin?' pin':'')+(r.tbl?' istbl':'');d.dataset.fit=r.tbl?(r.tbl.fit||'none'):'';d.dataset.i=i;
     const op=k=>(r.ui&&r.ui[k])?' open':'';
-    d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-expanded="${r.folded?'false':'true'}" title="${r.folded?'Show settings':'Hide settings'}">${r.folded?'▸':'▾'}</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"${(r.pwEd||r.tbl)?' hidden':''}>${r.pwEd?'<span class="pwtitle">Piecewise function</span>':''}${r.tbl?'<span class="pwtitle">Data table</span>':''}${r.keyonly?'<span class="keytag" title="Answer key only: hidden in the student copy">Key</span>':''}<button type="button" class="mbtn" data-act="menu" aria-label="Row actions" title="Row actions" aria-haspopup="menu">⋯</button></div>
-${r.pwEd?pwEditorHTML(r,i):''}${r.tbl?tableEditorHTML(r,i):''}
+    d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-label="Show or hide this row’s settings" title="Show or hide settings">▾</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"${(r.pwEd||r.tbl)?' hidden':''}>${r.pwEd?'<span class="pwtitle">Piecewise function</span>':''}${r.tbl?'<span class="pwtitle">Data table</span>':''}${r.keyonly?'<span class="keytag" title="Answer key only: hidden in the student copy">Key</span>':''}<button type="button" class="mbtn" data-act="menu" aria-label="Row actions" title="Row actions" aria-haspopup="menu">⋯</button></div>
+<div class="errline" hidden></div><div class="rowbody">${r.pwEd?pwEditorHTML(r,i):''}${r.tbl?tableEditorHTML(r,i):''}
 <div class="kind"></div>
 <button type="button" class="pwlink only-pw" data-act="pwedit"${r.pwEd?' hidden':''}>Edit as piecewise</button>
 <div class="pvrow"><div class="pv" data-pv="eq" hidden></div><button type="button" class="pvcopy" data-act="copymenu" hidden>Copy…</button></div>
@@ -562,21 +588,22 @@ ${r.pwEd?pwEditorHTML(r,i):''}${r.tbl?tableEditorHTML(r,i):''}
 <label>Number of rectangles<input data-k="c_n" value="${esc(r.c_n??'6')}"></label>
 <label>Area is between this curve and<select data-k="c_base"><option value="axis"${!r.c_base||r.c_base=='axis'?' selected':''}>the x-axis</option>${rows.map((q,k)=>k==i?'':`<option value="${k}"${String(r.c_base)==String(k)?' selected':''}>Row ${k+1}: ${esc(String(q.eq||'').slice(0,18))}</option>`).join('')}</select></label>
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
-<label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details>`;
-    box.append(d);pvUpdate(d,i)})}
+<label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details></div>`;
+    box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
 $('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab'){const rw=e.target.closest('.row');pvUpdate(rw,+rw.dataset.i)}draw()});
-$('#rows').addEventListener('click',e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
+const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='menu'){rowMenu(e.target,i);return}
   if(a=='copymenu'){copyMenu(e.target,i);return}
   if(['tadd','tdel','tclear','tfitrow'].includes(a)){tblAct(a,i,e.target);return}
   if(a.startsWith('pw')){pwAct(a,i,e.target);return}
   if(a=='del')rows.splice(i,1);
-  if(a=='fold')rows[i].folded=!rows[i].folded;
+  if(a=='fold'){foldToggle(i,e.target.closest('.row'));return}
   if(a=='key')rows[i].keyonly=!rows[i].keyonly;
-  if(a=='dot'){if(held){held=false;return}rows[i].vis=rows[i].vis===false}
-  if(a=='useeq')rows[i].lab=rows[i].eq.replace(/\s+/g,' ').trim();
-  renderRows();draw()});
-$('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const q=document.querySelectorAll('.eq');q[q.length-1].focus()};
+  if(a=='dot'){if(held){held=false;return}rows[i].vis=rows[i].vis===false;e.target.classList.toggle('off',rows[i].vis===false);e.target.setAttribute('aria-pressed',String(rows[i].vis!==false));draw();return}
+  if(a=='useeq'){const rw=e.target.closest('.row');rows[i].lab=rows[i].eq.replace(/\s+/g,' ').trim();const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
+  renderRows();draw()};
+$('#rows').addEventListener('click',onRowsClick);
+$('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
@@ -685,7 +712,7 @@ function draw(){
       cur.push(p);pp=p}
     if(cur.length)segs.push(cur);return segs};
   let lines='',labels='',arrows='',fills='',pats='',FNS=[],REG=[],nIn=0;
-  const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.kind');if(k){k.textContent=t;k.classList.toggle('err',!!t)}};
+  const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
   RW.forEach((r,i)=>{
     let p=null;
     try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe)fe.textContent=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):''}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
@@ -783,8 +810,8 @@ const note=m=>$('#note').textContent=m;
 function suffix(){return($('#ver').value=='student'?'-student':'-key')+($('#bw').value=='bw'?'-bw':'')}
 function save(name,href){const a=document.createElement('a');a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove()}
 function toPng(cb){const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),k=+$('#esz').value||2;c.width=img.width*k;c.height=img.height*k;const g=c.getContext('2d');if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(img,0,0,c.width,c.height);c.toBlob(cb)};img.onerror=()=>note('Could not build the image.');img.src=uri()}
-$('#dsvg').onclick=()=>{try{save('coordinate-grid'+suffix()+'.svg',uri())}catch(e){note('Saving is blocked here. Open the page as a local file to save.')}};
-$('#dpng').onclick=()=>{try{toPng(b=>save('coordinate-grid'+suffix()+'.png',URL.createObjectURL(b)))}catch(e){note('Saving is blocked here. Open the page as a local file to save.')}};
+$('#dsvg').onclick=()=>saveFile('coordinate-grid'+suffix()+'.svg',svgStr());
+$('#dpng').onclick=()=>{try{toPng(b=>saveFile('coordinate-grid'+suffix()+'.png',b))}catch(e){toast('Could not build the image.')}};
 $('#cpy').onclick=()=>{try{toPng(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);note('Image copied.')}catch(e){note('Copying is blocked here. Use Save PNG from a local copy.')}})}catch(e){note('Copying is blocked here.')}};
 $('#prt').onclick=()=>{try{window.print()}catch(e){note('Printing is blocked here.')}};
 
@@ -800,7 +827,7 @@ function openMenu(btn,i){closeMenu();const m=document.createElement('div');m.id=
   m.innerHTML='<div class="pal">'+PAL.map(c=>`<button type="button" data-c="${c}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')+'</div><label>Custom<input type="color" value="'+rows[i].color+'"></label>';
   document.body.append(m);const b=btn.getBoundingClientRect();
   m.style.left=Math.max(8,Math.min(b.left,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
-  m.onclick=e=>{const c=e.target.dataset.c;if(c){rows[i].color=c;closeMenu();renderRows();draw()}};
+  m.onclick=e=>{const c=e.target.dataset.c;if(c){rows[i].color=c;closeMenu();btn.style.setProperty('--c',c);draw()}};
   m.querySelector('input').oninput=e=>{rows[i].color=e.target.value;btn.style.setProperty('--c',e.target.value);draw()}}
 $('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest('.dot');held=false;clearTimeout(ht);if(!b)return;ht=setTimeout(()=>{held=true;openMenu(b,+b.closest('.row').dataset.i)},450)});
 ['pointerup','pointerleave','pointercancel'].forEach(t=>$('#rows').addEventListener(t,()=>clearTimeout(ht),true));
@@ -808,7 +835,7 @@ $('#rows').addEventListener('contextmenu',e=>{const b=e.target.closest('.dot');i
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#cmenu')&&!e.target.closest('.dot')&&!e.target.closest('.mbtn'))closeMenu()});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeMenu()});
 window.addEventListener('scroll',closeMenu,true);
-$('#foldall').onclick=()=>{const all=rows.length&&rows.every(r=>r.folded);rows.forEach(r=>r.folded=!all);renderRows();draw();$('#foldall').textContent=all?'Collapse all':'Expand all'};
+$('#foldall').onclick=()=>{const all=rows.length&&rows.every(q=>q.pin);rows.forEach(q=>q.pin=!all);const ae=document.activeElement;if(ae&&ae.blur&&ae.closest&&ae.closest('#rows'))ae.blur();renderRows();draw()};
 
 
 // pan and zoom
@@ -861,10 +888,10 @@ $('#params').addEventListener('input',e=>{const d=e.target.closest('.par');if(!d
 // hover highlight and row selection
 const hovs=document.createElement('style');document.head.append(hovs);let hov=null;
 function setHover(i){if(i===hov)return;hov=i;hovs.textContent=i==null?'':`#fig [data-i]:not([data-i="${i}"]){opacity:.3}`;document.querySelectorAll('.row').forEach((r,k)=>r.classList.toggle('hov',k===i))}
-function selectRow(i){const r=rows[i];if(!r)return;if(r.folded){r.folded=false;renderRows();draw()}
+function selectRow(i){const r=rows[i];if(!r)return;
   const sec=document.querySelector('.sec');if(sec&&sec.classList.contains('closed'))sec.querySelector('h2').click();
   const el=document.querySelectorAll('.row')[i];if(!el)return;el.scrollIntoView({block:'nearest',behavior:'smooth'});el.classList.remove('flash');void el.offsetWidth;el.classList.add('flash');
-  const q=el.querySelector('.eq');if(q&&!matchMedia('(pointer:coarse)').matches)q.focus({preventScroll:true})}
+  const q=el.querySelector('input.eq:not([hidden]),.pwed input,.tbl input');if(matchMedia('(pointer:coarse)').matches){r.pin=true;el.classList.add('pin')}else if(q)focusIn(el,q)}
 wrap.addEventListener('pointermove',e=>{if(e.buttons||lbd)return;const h=e.target.closest('[data-i]');setHover(h?+h.dataset.i:null)});
 wrap.addEventListener('pointerleave',()=>setHover(null));
 wrap.addEventListener('dblclick',e=>{const g=e.target.closest('.lbl');if(!g)return;const r=rows[+g.dataset.i];if(r&&r.off){delete r.off[g.dataset.k];draw()}});
@@ -874,10 +901,10 @@ $('#rows').addEventListener('mouseleave',()=>setHover(null));
 // state, undo and redo, autosave, files, templates
 const FIELDS='#panel input[id],#panel select[id]';
 const ROWDEF={eq:'',color:'#000000',dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
-const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.value);return{v:1,f,rows:rows.map(({ui,folded,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
+const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.value);return{v:1,f,rows:rows.map(({ui,folded,pin,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
 function setState(st,keep){if(st.p){P=Object.assign({},st.p);shownP=''}
   document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined)el.value=st.f[el.id]});
-  rows=(st.rows||[]).map((r,i)=>Object.assign({},ROWDEF,keep&&keep[i]?{folded:keep[i].folded,ui:keep[i].ui}:{},r));renderRows()}
+  rows=(st.rows||[]).map((r,i)=>Object.assign({},ROWDEF,keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r));renderRows()}
 function setSaved(t,bad){const el=$('#saved');if(!el)return;el.textContent=t;el.classList.toggle('bad',!!bad)}
 function savedMsg(ok){setSaved(ok?'Saved '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not saved. Use Save file.',!ok)}
 function updHist(){$('#undo').disabled=hi<=0;$('#redo').disabled=hi>=hist.length-1}
@@ -897,7 +924,7 @@ $('#tpl').onchange=e=>{const k=e.target.value;e.target.value='';if(!k)return;sna
   if(k=='blank'){rows=[];renderRows()}
   $('#xf').value='dec';$('#yf').value='dec';$('#tm').value='rad';$('#xn').value='1';$('#yn').value='1';$('#cell').value='28';$('#ns').value='12';
   Object.entries(TPL[k=='blank'?'4q':k]).forEach(([id,v])=>$('#'+id).value=v);draw()};
-$('#sf').onclick=()=>{try{save('coordinate-grid.json','data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(getState(),null,1)))}catch(e){note('Saving files is blocked here. Your work is saved automatically in this browser.')}};
+$('#sf').onclick=()=>saveFile('coordinate-grid.json',JSON.stringify(getState(),null,1));
 $('#of').onclick=()=>$('#openf').click();
 $('#openf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const fr=new FileReader();fr.onload=()=>{try{const st=JSON.parse(fr.result);if(!st||!Array.isArray(st.rows))throw 0;snap(true);setState(st);draw();note('Opened '+f.name)}catch(err){note('That file could not be read.')}};fr.readAsText(f)};
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
@@ -924,8 +951,8 @@ function texTxt(t,rads){
 function texLay(str,rads){const re=new RegExp(FRRE.source,'g');let o='',last=0,m;
   while((m=re.exec(str))){o+=texTxt(str.slice(last,m.index),rads)+'\\frac{'+texLay(unp(m[1]),rads)+'}{'+texLay(unp(m[2]),rads)+'}';last=re.lastIndex}
   return o+texTxt(str.slice(last),rads)}
-function tex(str){str=String(str).trim();const pw=pwParts(str);
-  if(pw)return pw.lhs+' = \\begin{cases} '+pw.rows.map(q=>tex(q.e)+', & '+(q.c?tex(q.c):'\\text{otherwise}')).join(' \\\\ ')+' \\end{cases}';
+function tex(str,opt){str=String(str).trim();const pw=pwParts(str);
+  if(pw)return pw.lhs+' = \\begin{cases} '+pw.rows.map(q=>tex(q.e)+((opt&&opt.nc)?'':',')+' & '+(q.c?tex(q.c):'\\text{otherwise}')).join(' \\\\ ')+' \\end{cases}';
   const rm=str.match(/^([^{}]*?)\s*((?:\{[^{}]*\}\s*)+)$/);
   if(rm){const conds=[...rm[2].matchAll(/\{([^{}]*)\}/g)].flatMap(m=>m[1].split(',')).map(c=>c.trim()).filter(Boolean);
     return tex(rm[1])+(conds.length?', \\quad '+conds.map(c=>tex(c)).join(', \\; '):'')}
@@ -940,46 +967,102 @@ function eqSvg(str){const old=LW;LW='normal';let r;try{r=layout(eqDisplay(str).r
 function svgToPng(svg,cb){const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),k=+$('#esz').value||2;c.width=img.width*k;c.height=img.height*k;const g=c.getContext('2d');
     if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(img,0,0,c.width,c.height);c.toBlob(cb)};
   img.onerror=()=>toast('Could not build the image.');img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)}
-function toast(m){const n=$('#note');n.textContent=m;clearTimeout(toast.t);toast.t=setTimeout(()=>{if(n.textContent===m)n.textContent=''},3500)}
+function toast(m){const n=$('#note');n.textContent=m;clearTimeout(toast.t);toast.t=setTimeout(()=>{if(n.textContent===m)n.textContent=''},3500+m.length*35)}
+let dlP=null;
+async function saveFile(name,data){let dl=null;
+  try{if(typeof claude!=='undefined'){dlP=dlP||claude.use('downloads');dl=await dlP}}catch(e){}
+  if(dl){try{const r=await dl.save({filename:name,data});toast(r&&r.status=='delivered'?'Sent.':'Saved '+name+'.')}catch(e){toast(e&&e.code=='declined'?'Save cancelled.':'Could not save: '+((e&&e.message)||'unavailable'))}return}
+  try{const type=/\.svg$/.test(name)?'image/svg+xml':/\.json$/.test(name)?'application/json':'text/plain',blob=data instanceof Blob?data:new Blob([data],{type}),url=URL.createObjectURL(blob);save(name,url);setTimeout(()=>URL.revokeObjectURL(url),4000)}
+  catch(e){toast('Saving is blocked here. Open the page in claude.ai or as a local file to save.')}}
 async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg)}catch(e){try{const a=document.createElement('textarea');a.value=t;document.body.append(a);a.select();document.execCommand('copy');a.remove();toast(msg)}catch(e2){toast('Copying is blocked here.')}}}
-function copyEq(i,kind){const r=rows[i],t=String((r&&r.eq)||'').trim();if(!t){toast('Type an equation first.');return}
+const DOCS=(()=>{const BB={R:'ℝ',Z:'ℤ',N:'ℕ',Q:'ℚ'};
+function toDocs(s){const un=/\\begin\{/.test(s);
+for(let i=0;i<3;i++)s=s.replace(/\\binom\{([^{}]*)\}\{([^{}]*)\}/g,'$1 \\choose $2').replace(/\\(?:text|mathrm)\{([^{}]*)\}/g,'$1');
+s=s.replace(/\\mathbb\{(\w)\}/g,(m,c)=>BB[c]||c).replace(/\\(?:left|right)\.?/g,'').replace(/\\[dt]frac/g,'\\frac')
+.replace(/\\overrightarrow\{([^{}]*)\}/g,'$1\u20D7').replace(/\\vec\{([^{}]*)\}/g,'$1\u20D7').replace(/\\hat\{([^{}]*)\}/g,'$1\u0302')
+.replace(/\^\\circ|\^\{\\circ\}/g,'°').replace(/\\le(?![a-z])/g,'\\leq').replace(/\\ge(?![a-z])/g,'\\geq').replace(/\\ne(?![a-z])/g,'\\neq')
+.replace(/\\mid/g,'|').replace(/\\iff/g,'⇔').replace(/\\therefore/g,'∴').replace(/\\square/g,'□').replace(/\\[,;!]/g,'').replace(/\\ /g,' ').replace(/\\([{}])/g,'$1');
+return {t:s.replace(/\s+/g,' ').trim(),un}}
+const SU={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻','=':'⁼','(':'⁽',')':'⁾',n:'ⁿ',i:'ⁱ',x:'ˣ',y:'ʸ',a:'ᵃ',t:'ᵗ',k:'ᵏ',m:'ᵐ',r:'ʳ'},SB={'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉','+':'₊','-':'₋',n:'ₙ',i:'ᵢ',x:'ₓ',a:'ₐ',e:'ₑ',o:'ₒ',m:'ₘ',k:'ₖ',t:'ₜ',r:'ᵣ'};
+const GK={theta:'θ',alpha:'α',beta:'β',pi:'π',Delta:'Δ',phi:'φ',sigma:'σ',omega:'ω',lambda:'λ',mu:'μ',infty:'∞',pm:'±',mp:'∓',cdot:'·',times:'×',leq:'≤',geq:'≥',neq:'≠',in:'∈',cup:'∪',cap:'∩',to:'→',Rightarrow:'⇒',circ:'∘',cdots:'⋯'};
+const mp=(a,M,f)=>[...a].every(c=>M[c])?[...a].map(c=>M[c]).join(''):f+'('+a+')';
+function plain(s){s=toDocs(s).t.replace(/(\S+) \\choose (\S+)/g,'C($1,$2)');
+s=s.replace(/\^\{([^{}]*)\}/g,(m,a)=>mp(a,SU,'^')).replace(/\^([A-Za-z0-9])/g,(m,a)=>mp(a,SU,'^')).replace(/_\{([^{}]*)\}/g,(m,a)=>mp(a,SB,'_')).replace(/_([A-Za-z0-9])/g,(m,a)=>mp(a,SB,'_'));
+s=s.replace(/\\sqrt\[([^\]]*)\]\{([^{}]*)\}/g,(m,n,x)=>mp(n,SU,'^')+'√('+x+')').replace(/\\sqrt\{([^{}]*)\}/g,(m,x)=>/^\w+$/.test(x)?'√'+x:'√('+x+')');
+s=s.replace(/\\([A-Za-z]+)/g,(m,c)=>c==='frac'?m:GK[c]||c);
+for(let i=0;i<3;i++)s=s.replace(/\\frac\{([^{}]*)\}\{([^{}]*)\}/g,(m,a,b,o,str)=>{const ok=t=>/^(\d+\.?\d*|[A-Za-z])$/.test(t),r=(ok(a)?a:'('+a+')')+'/'+(ok(b)?b:'('+b+')');return /^[\w(√]/.test(str.slice(o+m.length))||(o>0&&/[\w)]$/.test(str.slice(0,o)))?'('+r+')':r});
+return s.replace(/[{}]/g,'').replace(/\s+/g,' ').trim()}
+function tbl(v){const m=v.match(/^([\s\S]*?)\\begin\{(cases|pmatrix|bmatrix|vmatrix)\}([\s\S]*)\\end\{\2\}([\s\S]*)$/);if(!m||/\\begin/.test(m[3]))return null;
+const f=s=>$('#dcm').value==='docs'?toDocs(s).t:plain(s),e=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'),
+rows=m[3].split(/\\\\/).map(r=>r.split('&').map(c=>f(c.trim()))).filter(r=>r.some(c=>c)),n=rows.length;if(!n)return null;
+const BR={cases:['{',''],pmatrix:['(',')'],bmatrix:['[',']'],vmatrix:['|','|']}[m[2]],rs=` rowspan="${n}"`,w=Math.max(...rows.map(r=>r[0]===undefined?0:r.length));
+const W=a=>Math.max(30,Math.round(Math.max(0,...a.map(t=>t.length))*8.5+26)),big=`font-size:${Math.max(n,1)*22}px;`,cases=m[2]==='cases',pre=f(m[1].trim()),post=f(m[4].trim());
+const wp=W([pre]),wq=W([post]),wb=Math.max(36,n*14),we=W(rows.map(r=>r[0]||'')),wc=W(rows.map(r=>r[1]||'')),wm=Array.from({length:w},(_,j)=>W(rows.map(r=>r[j]||'')));
+const cs=(t,x,st,wd)=>`<td${x||''} width="${wd}" style="border:0;padding:2px 8px;vertical-align:middle;white-space:nowrap;width:${wd}px;min-width:${wd}px;${st||''}">${e(t)}</td>`;
+const cols=[...(pre?[wp]:[]),wb,...(cases?[we,wc]:wm),...(BR[1]?[wb]:[]),...(post?[wq]:[])];
+const html=`<table style="border-collapse:collapse;border:0;table-layout:fixed;width:${cols.reduce((x,y)=>x+y,0)}px"><colgroup>${cols.map(c=>`<col width="${c}" style="width:${c}px">`).join('')}</colgroup>`+rows.map((r,i)=>'<tr>'+(i?'':(pre?cs(pre,rs,'',wp):'')+cs(BR[0],rs,big,wb))+
+(cases?cs(r[0]||'',0,'',we)+cs(r[1]||'',0,'',wc):wm.map((wd,j)=>cs(r[j]||'',0,'text-align:center',wd)).join(''))+(i?'':(BR[1]?cs(BR[1],rs,big,wb):'')+(post?cs(post,rs,'',wq):''))+'</tr>').join('')+'</table>';
+return{html,text:(pre?pre+' ':'')+rows.map(r=>r.join('\t')).join('\n')+(post?' '+post:'')}}
+
+return{toDocs,plain,tbl}})();
+var MJWAIT=3000;
+const wrapDocs=t=>({1:'$'+t+'$',2:'$$'+t+'$$'}[$('#dwr').value]||t);
+const COPYITEMS='<div class="ml">Google Docs</div><button type="button" data-m="cimg">Copy as image</button><button type="button" data-m="cdoc">Copy for Docs equation</button><button type="button" data-m="ctex">Copy LaTeX</button><button type="button" data-m="simg">Download PNG</button><div class="ml">Other</div><button type="button" data-m="ctxt">Copy as text</button>';
+const mjReady=()=>new Promise((res,rej)=>{const t0=Date.now(),t=()=>{if(window.MathJax&&MathJax.startup&&MathJax.startup.promise)MathJax.startup.promise.then(res,rej);else if(Date.now()-t0>MJWAIT)rej(new Error('MathJax unavailable'));else setTimeout(t,50)};t()});
+async function mjBlob(latex){await mjReady();const host=document.createElement('div');host.style.cssText='position:absolute;left:-99999px;top:0;visibility:hidden';document.body.append(host);
+  try{host.replaceChildren(await MathJax.tex2svgPromise(latex,{display:true}));const svg=host.querySelector('svg');if(!svg||host.querySelector('[data-mjx-error]'))throw new Error('LaTeX error');
+    const r=svg.getBoundingClientRect(),k=+$('#esz').value||2,p=8*k,w=r.width*k,h=r.height*k,c=svg.cloneNode(true);c.setAttribute('width',w);c.setAttribute('height',h);
+    const x=new XMLSerializer().serializeToString(c).replace(/currentColor/g,'#000');
+    const im=new Image();await new Promise((ok,no)=>{im.onload=ok;im.onerror=no;im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(x)});
+    const cv=document.createElement('canvas');cv.width=w+2*p;cv.height=h+2*p;const g=cv.getContext('2d');
+    if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height)}g.drawImage(im,p,p,w,h);
+    return await new Promise(ok=>cv.toBlob(ok,'image/png'))}finally{host.remove()}}
+function eqPng(t){return mjBlob(tex(t)).catch(()=>new Promise((ok,no)=>{try{svgToPng(eqSvg(t).svg,ok)}catch(e){no(e)}}))}
+async function copyEq(i,kind){const r=rows[i],t=String((r&&r.eq)||'').trim();if(!t){toast('Type an equation first.');return}
   if(kind=='ctxt')return copyText(t,'Copied as text.');
-  if(kind=='ctex')return copyText(tex(t),'Copied as LaTeX.');
-  try{svgToPng(eqSvg(t).svg,async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);toast('Copied as an image. Paste it into your document.')}catch(e){toast('Your browser blocked copying images here. Use Copy as LaTeX instead, or open the page in its own tab.')}})}catch(e){toast('Could not copy the image.')}}
+  if(kind=='ctex')return copyText(wrapDocs(tex(t)),'LaTeX copied.');
+  if(kind=='simg'){try{saveFile('equation.png',await eqPng(t))}catch(e){toast('Could not build the image. Check the equation.')}return}
+  if(kind=='cimg'){try{await navigator.clipboard.write([new ClipboardItem({'image/png':eqPng(t)})]);toast('Image copied. Paste it into your Doc.')}catch(e){toast('Image copy blocked: use Download PNG.')}return}
+  if(kind=='cdoc'){try{const L=tex(t,{nc:true}).replace(/\\quad/g,'\\ '),tb=DOCS.tbl(L);
+      if(tb){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([tb.html],{type:'text/html'}),'text/plain':new Blob([tb.text],{type:'text/plain'})})]);toast('Copied as a table. Paste it into your Doc.');return}
+      const d=DOCS.toDocs(L);await navigator.clipboard.writeText(wrapDocs(d.t));toast(d.un?'Copied, but Docs equations can\u2019t do this layout: use Copy as image.':'Copied. Paste into your Doc, or into Insert \u2192 Equation without the $ wrapper.')}
+    catch(e){toast('Copy blocked: use Copy as image or Download PNG.')}}}
 function copyMenu(btn,i){const old=$('#cmenu');if(old){const same=old.dataset.for==='c'+i;old.remove();if(same)return}
   const m=document.createElement('div');m.id='cmenu';m.className='rmenu';m.dataset.for='c'+i;
-  m.innerHTML='<button type="button" data-m="cimg">Copy as image</button><button type="button" data-m="ctex">Copy as LaTeX</button><button type="button" data-m="ctxt">Copy as text</button>';
+  m.innerHTML=COPYITEMS;
   document.body.append(m);const b=btn.getBoundingClientRect();
   m.style.left=Math.max(8,Math.min(b.left,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
   m.onclick=e=>{const k=e.target.dataset.m;if(!k)return;m.remove();rowAction(k,i)}}
 function rowMenu(btn,i){const old=$('#cmenu');if(old){const same=old.dataset.for==='r'+i;old.remove();if(same)return}
   const r=rows[i],m=document.createElement('div');m.id='cmenu';m.className='rmenu';m.dataset.for='r'+i;
-  m.innerHTML=`<button type="button" data-m="up"${i==0?' disabled':''}>Move up</button><button type="button" data-m="down"${i==rows.length-1?' disabled':''}>Move down</button><button type="button" data-m="dup">Duplicate</button><button type="button" data-m="key" aria-pressed="${!!r.keyonly}">${r.keyonly?'\u2713 ':''}Answer key only</button><hr><button type="button" data-m="cimg">Copy as image</button><button type="button" data-m="ctex">Copy as LaTeX</button><button type="button" data-m="ctxt">Copy as text</button><hr><button type="button" data-m="del" class="danger">Delete</button>`;
+  m.innerHTML=`<button type="button" data-m="up"${i==0?' disabled':''}>Move up</button><button type="button" data-m="down"${i==rows.length-1?' disabled':''}>Move down</button><button type="button" data-m="dup">Duplicate</button><button type="button" data-m="key" aria-pressed="${!!r.keyonly}">${r.keyonly?'\u2713 ':''}Answer key only</button><hr>${COPYITEMS}<hr><button type="button" data-m="del" class="danger">Delete</button>`;
   document.body.append(m);const b=btn.getBoundingClientRect();
   m.style.left=Math.max(8,Math.min(b.right-m.offsetWidth,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
   m.onclick=e=>{const k=e.target.dataset.m;if(!k||e.target.disabled)return;m.remove();rowAction(k,i)}}
-function rowAction(k,i){if(k=='cimg'||k=='ctex'||k=='ctxt'){copyEq(i,k);return}
+function rowAction(k,i){if(['cimg','simg','cdoc','ctex','ctxt'].includes(k)){copyEq(i,k);return}
   const remap=f=>rows.forEach(q=>{if(q.c_base&&q.c_base!='axis'){const n=f(+q.c_base);q.c_base=n==null?'axis':String(n)}});
   if(k=='del'){rows.splice(i,1);remap(n=>n==i?null:n>i?n-1:n)}
   else if(k=='dup'){const c=JSON.parse(JSON.stringify(rows[i]));delete c.ui;delete c._fn;rows.splice(i+1,0,c);remap(n=>n>i?n+1:n)}
   else if(k=='up'||k=='down'){const j=k=='up'?i-1:i+1;if(j<0||j>=rows.length)return;[rows[i],rows[j]]=[rows[j],rows[i]];remap(n=>n==i?j:n==j?i:n)}
   else if(k=='key')rows[i].keyonly=!rows[i].keyonly;
-  renderRows();draw()}
-const PWT='{x < 0: x + 1, 0 <= x < 2: x^2, 3}';
+  renderRows();draw();
+  if(k=='dup')focusRow(i+1);else if(k=='up')focusRow(i-1);else if(k=='down')focusRow(i+1);else if(k=='key')focusRow(i)}
 let lastField=null;
 document.addEventListener('focusin',e=>{const t=e.target;if(t&&t.tagName=='INPUT'&&t.type=='text'&&t.closest&&t.closest('#panel')&&!t.closest('.par'))lastField=t});
 function insertAt(el,txt,back){const a=el.selectionStart==null?el.value.length:el.selectionStart,b=el.selectionEnd==null?a:el.selectionEnd;
   el.value=el.value.slice(0,a)+txt+el.value.slice(b);const c=a+txt.length-(back||0);el.focus();el.setSelectionRange(c,c);el.dispatchEvent(new Event('input',{bubbles:true}))}
 $('#symbar').addEventListener('mousedown',e=>e.preventDefault());
-$('#symbar').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+const onSymClick=e=>{const b=e.target.closest('button');if(!b)return;
   if(b.dataset.pw){pwFromPalette(lastField&&lastField.isConnected?lastField:null);return}
   let el=lastField&&lastField.isConnected?lastField:null;
-  if(!el){if(!rows.length){rows.push(Object.assign({},ROWDEF));renderRows();draw()}const q=document.querySelector('#rows .eq');el=q}
-  if(el){insertAt(el,b.dataset.ins,+b.dataset.back||0)}});
+  if(el){const rw=el.closest&&el.closest('.row');if(rw&&!focusIn(rw,el)){const hd=rw.querySelector('input.eq:not([hidden])');if(hd){el=hd;focusIn(rw,hd)}}}
+  if(!el){let q=document.querySelector('#rows .eq:not([hidden])');if(!q){rows.push(Object.assign({},ROWDEF));renderRows();draw();q=document.querySelector('#rows .eq:not([hidden])')}el=q}
+  if(el)insertAt(el,b.dataset.ins,+b.dataset.back||0)};
+$('#symbar').addEventListener('click',onSymClick);
 $('#addt').onclick=addTable;
 $('#rows').addEventListener('paste',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.tc===undefined)return;
   const grid=pasteGrid((e.clipboardData||window.clipboardData).getData('text'));if(grid.length<2&&(!grid[0]||grid[0].length<2))return;
-  const rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;e.preventDefault();pasteInto(r,+t.dataset.ti,+t.dataset.tc,grid);renderRows();draw()});
+  const rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;e.preventDefault();pasteInto(r,+t.dataset.ti,+t.dataset.tc,grid);renderRows();draw();focusRow(i)});
 </script>
 </body>
 </html>
