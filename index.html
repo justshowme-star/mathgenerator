@@ -265,7 +265,7 @@ h3{font-size:13px;margin:12px 0 6px}
         <optgroup label="Trig, degrees (MCR3U)"><option value="deg">0° to 720°, 30° grid (two cycles)</option><option value="deg2">−360° to 360°, 30° grid</option></optgroup>
         <option value="blank">Clear everything</option></select>
     <span class="tsep" aria-hidden="true"></span>
-     <div class="exbtns"><button type="button" id="cpy">Copy image</button></div>
+	<button type="button" id="cpy2" title="Copy the graph image">Copy image</button>
     <button type="button" id="sf" title="Download your setup as a file">Save file</button>
     <button type="button" id="of" title="Open a saved setup file">Open file</button>
     <span id="saved" class="saved" role="status" aria-live="polite"></span>
@@ -825,6 +825,7 @@ function toPng(cb){const img=new Image();img.onload=()=>{const c=document.create
 $('#dsvg').onclick=()=>saveFile('coordinate-grid'+suffix()+'.svg',svgStr());
 $('#dpng').onclick=()=>{try{toPng(b=>saveFile('coordinate-grid'+suffix()+'.png',b))}catch(e){toast('Could not build the image.')}};
 $('#cpy').onclick=()=>{try{toPng(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);note('Image copied.')}catch(e){note('Copying is blocked here. Use Save PNG from a local copy.')}})}catch(e){note('Copying is blocked here.')}};
+$('#cpy2').onclick=$('#cpy').onclick;
 $('#prt').onclick=()=>{try{window.print()}catch(e){note('Printing is blocked here.')}};
 
 document.querySelectorAll('#ct,#xt,#yt,#xl,#yl').forEach(el=>el.addEventListener('input',e=>supify(el,e)));
