@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ONG Coordinate Grid with Labeled Lines</title>
+<title>Coordinate Grid with Labeled Lines</title>
 <style>
 :root{--bg:#eef2f6;--panel:#fff;--ink:#14202e;--mute:#5b6b7c;--line:#cfd8e2;--accent:#1f5fbf;--bad:#c62828;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--panel:#17212c;--ink:#e6edf4;--mute:#93a3b4;--line:#2b3948;--accent:#6aa3f0;--bad:#ff8a80}}
@@ -298,7 +298,7 @@ const cvx=document.createElement('canvas').getContext('2d');
 const tw=(t,sz)=>{cvx.font=LW+' '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
 const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;
 const wsup=(t,sz)=>{let w=0,last=0,m;SUPRE.lastIndex=0;while((m=SUPRE.exec(t))){w+=tw(t.slice(last,m.index),sz)+tw(m[1]!==undefined?m[1]:m[2],sz*.7);last=SUPRE.lastIndex}return w+tw(t.slice(last),sz)};
-const FC='A-Za-z0-9.^\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
+const FC='A-Za-z0-9.^\u03c0\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
 const FRRE=new RegExp('(\\([^()]*\\)|['+FC+']+)/(\\([^()]*\\)|['+FC+']+)','g');
 const unp=t=>/^\(.*\)$/.test(t)?t.slice(1,-1):t;
 const NOUT=0xE000;
@@ -635,11 +635,12 @@ function draw(){
   $('#note').textContent='';
   const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xt=$('#xt').value,yt=$('#yt').value;
   const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),tf=Math.max(14,nsz+2),
-    mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,tw(nf(v,m),nsz))}return w},
+    numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
+    mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
     fsn=Math.max(15,nsz+3),ytx=Math.max(16,Math.ceil(.72*tf)+6),
     L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?Math.max(36,ytx+Math.ceil(.2*tf)+14):24),Math.ceil(tw($('#yl').value,fsn)/2)+6),
     R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(tw($('#xl').value,fsn))+5),T=Math.max(ct?58:34,22+Math.ceil(.72*fsn)),
-    B=Math.max(xt?64:44,Math.ceil(1.25*nsz+14+(xt?tf+10:0)));
+    B=Math.max(xt?64:44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14+(xt?tf+10:0)));;
   {const o=$('#nso');if(o)o.textContent=nsz}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
@@ -659,9 +660,15 @@ function draw(){
     +`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/></g>`;
   // numbers
   const xm=$('#xf').value,ym=$('#yf').value,xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
-  const sKeep=s;s='';s+=`<g font-size="${nsz}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,nsz*.3).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none">`;
-  if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?nsz+8:nsz+4)}" text-anchor="middle">${nf(v,xm)}</text>`});
-  if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${nf(v,ym)}</text>`});
+  const numHalo=`fill="#111" stroke="#fff" stroke-width="${Math.max(3,nsz*.3).toFixed(1)}" paint-order="stroke" stroke-linejoin="round"`;
+  const numLay=t=>{const old=LW;LW='normal';try{return layout(t,nsz,numHalo)}finally{LW=old}};
+  const sKeep=s;s='';s+=`<g font-size="${nsz}" ${numHalo} pointer-events="none">`;
+  if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;const t=nf(v,xm);
+    if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(sx(v)-r.w/2).toFixed(1)} ${(ax+(ax>T+H-1?8:4)+r.up).toFixed(1)})">${r.svg}</g>`}
+    else s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?nsz+8:nsz+4)}" text-anchor="middle">${t}</text>`});
+  if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;const t=nf(v,ym);
+    if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(ay-8-r.w).toFixed(1)} ${(sy(v)+nsz*.3).toFixed(1)})">${r.svg}</g>`}
+    else s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${t}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+nsz+4}" text-anchor="end">0</text>`;
   s+=`</g><g font-size="${fsn}" font-style="italic" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,fsn)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,fsn)}</text></g>`;
   const nums=s;s=sKeep;
