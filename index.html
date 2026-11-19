@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Coordinate Grid with Labeled Lines</title>
+<title>ONG Coordinate Grid with Labeled Lines</title>
 <style>
 :root{--bg:#eef2f6;--panel:#fff;--ink:#14202e;--mute:#5b6b7c;--line:#cfd8e2;--accent:#1f5fbf;--bad:#c62828;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1720;--panel:#17212c;--ink:#e6edf4;--mute:#93a3b4;--line:#2b3948;--accent:#6aa3f0;--bad:#ff8a80}}
@@ -636,7 +636,9 @@ function draw(){
   const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xt=$('#xt').value,yt=$('#yt').value;
   const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),tf=Math.max(14,nsz+2),
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,tw(nf(v,m),nsz))}return w},
-    L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?36:24)),R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16),T=ct?58:34,
+    fsn=Math.max(15,nsz+3),ytx=Math.max(16,Math.ceil(.72*tf)+6),
+    L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?Math.max(36,ytx+Math.ceil(.2*tf)+14):24),Math.ceil(tw($('#yl').value,fsn)/2)+6),
+    R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(tw($('#xl').value,fsn))+5),T=Math.max(ct?58:34,22+Math.ceil(.72*fsn)),
     B=Math.max(xt?64:44,Math.ceil(1.25*nsz+14+(xt?tf+10:0)));
   {const o=$('#nso');if(o)o.textContent=nsz}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
@@ -657,14 +659,15 @@ function draw(){
     +`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/></g>`;
   // numbers
   const xm=$('#xf').value,ym=$('#yf').value,xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
-  s+=`<g font-size="${nsz}" fill="#111">`;
+  const sKeep=s;s='';s+=`<g font-size="${nsz}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,nsz*.3).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none">`;
   if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?nsz+8:nsz+4)}" text-anchor="middle">${nf(v,xm)}</text>`});
   if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${nf(v,ym)}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+nsz+4}" text-anchor="end">0</text>`;
-  s+=`</g><g font-size="${Math.max(15,nsz+3)}" font-style="italic" fill="#111"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,15)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,15)}</text></g>`;
+  s+=`</g><g font-size="${fsn}" font-style="italic" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,fsn)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,fsn)}</text></g>`;
+  const nums=s;s=sKeep;
   if(ct)s+=`<text x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
   if(xt)s+=`<text x="${L+W/2}" y="${T+H+B-12}" text-anchor="middle" font-size="${tf}" fill="#111">${sup(xt,tf)}</text>`;
-  if(yt)s+=`<text transform="translate(16 ${T+H/2}) rotate(-90)" text-anchor="middle" font-size="${tf}" fill="#111">${sup(yt,tf)}</text>`;
+  if(yt)s+=`<text transform="translate(${ytx} ${T+H/2}) rotate(-90)" text-anchor="middle" font-size="${tf}" fill="#111">${sup(yt,tf)}</text>`;
   // rows
   const march=(g,rs,ins)=>{
     const cw=4,nx=Math.max(8,Math.ceil(W/cw)),ny=Math.max(8,Math.ceil(H/cw)),dxp=W/nx,dyp=H/ny,V=[];
@@ -812,7 +815,7 @@ function draw(){
     if(mode=='hatch')pats+=`<pattern id="hso" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0L6 6M6 0L0 6" stroke="#000" stroke-width="1" fill="none"/></pattern>`;
     const rect=`<rect x="${L}" y="${T}" width="${W}" height="${H}" fill="${mode=='hatch'?'url(#hso)':'#000'}" fill-opacity="${mode=='hatch'?1:.28}" pointer-events="none"/>`;
     fills+=REG.reduceRight((acc,q)=>`<g clip-path="url(#ci${q.i})">${acc}</g>`,rect)}
-  s+=`<defs>${pats}</defs><g clip-path="url(#cp)">${fills}${lines}</g>${arrows}${labels}</svg>`;
+  s+=`<defs>${pats}</defs><g clip-path="url(#cp)">${fills}${lines}</g>${arrows}${nums}${labels}</svg>`;
   fig.outerHTML=s;syncParams();if(!live)snap()}
 
 // export
