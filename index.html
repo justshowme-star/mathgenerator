@@ -604,7 +604,9 @@ function renderRows(){
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>
 <details data-d="c" class="only-calc"${op('c')}><summary>Calculus tools</summary><div class="g2 calc">
 <label class="chk wide"><input type="checkbox" data-k="c_tan"${r.c_tan?' checked':''}>Tangent line at x = <input class="sm" data-k="c_ta" value="${esc(r.c_ta??'1')}"></label>
+<label class="chk wide" style="padding-left:20px"><input type="checkbox" data-k="c_taneq"${r.c_taneq?' checked':''}>Show tangent equation</label>
 <label class="chk wide"><input type="checkbox" data-k="c_sec"${r.c_sec?' checked':''}>Secant line from x = <input class="sm" data-k="c_sa" value="${esc(r.c_sa??'0')}"> to <input class="sm" data-k="c_sb" value="${esc(r.c_sb??'2')}"></label>
+<label class="chk wide" style="padding-left:20px"><input type="checkbox" data-k="c_seceq"${r.c_seceq?' checked':''}>Show secant slope</label>
 <label class="wide">Shade area or draw a sum<select data-k="c_ar">${sel([['none','None'],['area','Area under the curve'],['left','Left rectangles'],['right','Right rectangles'],['mid','Midpoint rectangles'],['trap','Trapezoids']],r.c_ar||'none')}</select></label>
 <label>From x<input data-k="c_aa" value="${esc(r.c_aa??'0')}"></label><label>To x<input data-k="c_ab" value="${esc(r.c_ab??'2')}"></label>
 <label>Number of rectangles<input data-k="c_n" value="${esc(r.c_n??'6')}"></label>
@@ -808,12 +810,12 @@ function draw(){
     const dot=(u,v)=>{arrows+=`<circle data-i="${i}" cx="${sx(u).toFixed(1)}" cy="${sy(v).toFixed(1)}" r="4.5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`};
     const across=(a,m,fa)=>`<line data-i="${i}" x1="${sx(x0).toFixed(1)}" y1="${sy(fa+m*(x0-a)).toFixed(1)}" x2="${sx(x1).toFixed(1)}" y2="${sy(fa+m*(x1-a)).toFixed(1)}" stroke="${col}" stroke-width="${Math.max(1.5,r.w*.8)}" stroke-dasharray="7 4"/>`;
     if(r.c_tan){const a=cnum(r.c_ta??'1'),fa=f(a),h=1e-5*Math.max(1,Math.abs(a)),m=(f(a+h)-f(a-h))/(2*h);
-      if(isFinite(a)&&isFinite(fa)&&isFinite(m)){lines+=across(a,m,fa);dot(a,fa);const b=fa-m*a;
+      if(isFinite(a)&&isFinite(fa)&&isFinite(m)){lines+=across(a,m,fa);dot(a,fa);if(r.c_taneq){const b=fa-m*a;
         const t=Math.abs(m)<1e-9?'y = '+fn2(b):'y = '+(Math.abs(m-1)<1e-9?'':Math.abs(m+1)<1e-9?'\u2212':fn2(m))+'x'+(Math.abs(b)<1e-9?'':(b<0?' \u2212 ':' + ')+fn2(Math.abs(b)));
-        labels+=lab(t,ls,halo,'translate(0 0)',sx(a)+12,sy(fa)-12,'start',i,'t')}}
+        labels+=lab(t,ls,halo,'translate(0 0)',sx(a)+12,sy(fa)-12,'start',i,'t')}}}
     if(r.c_sec){const a=cnum(r.c_sa??'0'),b=cnum(r.c_sb??'2');
       if(isFinite(a)&&isFinite(b)&&a!==b){const fa=f(a),fb=f(b);if(isFinite(fa)&&isFinite(fb)){const m=(fb-fa)/(b-a);lines+=across(a,m,fa);dot(a,fa);dot(b,fb);
-        labels+=lab('m = '+fn2(m),ls,halo,'translate(0 0)',sx((a+b)/2)+10,sy((fa+fb)/2)-10,'start',i,'s')}}}
+        if(r.c_seceq)labels+=lab('m = '+fn2(m),ls,halo,'translate(0 0)',sx((a+b)/2)+10,sy((fa+fb)/2)-10,'start',i,'s')}}}
     const mode=r.c_ar||'none';
     if(mode!='none'){const a=cnum(r.c_aa??'0'),b=cnum(r.c_ab??'2');
       if(isFinite(a)&&isFinite(b)&&a!==b){
