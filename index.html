@@ -328,22 +328,6 @@ function extract(str){const subs=[];let o='',i=0;
     o+=str[i++];
   }
   return{s:o,subs}}
-const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z\u03c0]))/gi;
-const wsup=(t,sz)=>{let w=0,last=0,m;SUPRE.lastIndex=0;while((m=SUPRE.exec(t))){w+=tw(t.slice(last,m.index),sz)+tw(m[1]!==undefined?m[1]:m[2],sz*.7);last=SUPRE.lastIndex}return w+tw(t.slice(last),sz)};
-const FC='A-Za-z0-9.^\u03c0\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
-const FRRE=new RegExp('(\\([^()]*\\)|['+FC+']+)/(\\([^()]*\\)|['+FC+']+)','g');
-const unp=t=>/^\(.*\)$/.test(t)?t.slice(1,-1):t;
-const NOUT=0xE000;
-function extract(str){const subs=[];let o='',i=0;
-  while(i<str.length){let k=-1,t='rad';
-    if(str.startsWith('sqrt(',i))k=i+4;
-    else if(str[i]=='\u221a'&&str[i+1]=='(')k=i+1;
-    else if(str[i]=='^'&&str[i+1]=='('){k=i+1;t='sup'}
-    if(k<0){o+=str[i++];continue}
-    let d=0,j=k;for(;j<str.length;j++){if(str[j]=='(')d++;else if(str[j]==')'&&--d==0)break}
-    if(j>=str.length){o+=str[i++];continue}
-    subs.push({t,v:str.slice(k+1,j)});o+=String.fromCharCode(NOUT+subs.length-1);i=j+1}
-  return{s:o,subs}}
 function lay(str,sz,halo,subs){const hl=halo.includes('stroke=');
   const col=(halo.match(/fill="([^"]+)"/)||[])[1]||'#000';
   let x=0,o='',up=sz*.8,down=sz*.22,fr=false;
@@ -389,23 +373,7 @@ const FN={sin:x=>Math.sin(x*KK()),cos:x=>Math.cos(x*KK()),tan:x=>Math.tan(x*KK()
 const NAMES=['arcsin','arccos','arctan','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','pi','x','y','e'];
 
 function compile(src){
-  const t=unsup(src).replace(/[\u2212\u2013]/g,'-').replace(/\u03c0/g,'pi').replace(/\u221a/g,'sqrt').replace(/\s+/g,'').toLowerCase().replace(/\*\*/g,'^');\{|(^|[^a-zA-Z])pi(?![a-zA-Z])/i.test(t)?mathHTML(t):'';el.innerHTML=h;const hid=!h||!!((rows[i].pwEd||rows[i].tbl)&&el.dataset.pv=='eq');el.hidden=hid;if(el.dataset.pv=='eq'){const bb=d.querySelector('.pvbtns');if(bb)bb.hidden=!String(rows[i].eq||'').trim()||!!rows[i].tbl}})}
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
-const sup=(s,sz)=>{s=piSym(s);const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z\u03c0]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
-const SUPD='⁰¹²³⁴⁵⁶⁷⁸⁹',unsupCh=c=>c=='⁻'?'-':c=='ˣ'?'x':c=='ʸ'?'y':String(SUPD.indexOf(c));
-const unsup=s=>s.replace(/⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+|ˣ|ʸ/g,m=>'^'+[...m].map(unsupCh).join(''));
-const supify=(el,e)=>{if(el.tagName!='INPUT'||el.type!='text')return;const c=el.selectionStart,o=el.value.slice(0,c);let h=o;
-  if(e&&/^[0-9]$/.test(e.data||''))h=h.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹])([0-9])$/,(m,a,b)=>a+SUPD[b]);
-  h=h.replace(/(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)\.$/,(m,z)=>unsup(z)+'.');
-  h=h.replace(/\^(-?)(\d+)(?![\d.])|\^([xy])(?![a-z])/g,(m,n,d,l)=>d?(n?'⁻':'')+[...d].map(z=>SUPD[z]).join(''):l=='x'?'ˣ':'ʸ');
-  h=h.replace(/<=/g,'\u2264').replace(/>=/g,'\u2265');
-  if(h!==o){el.value=h+el.value.slice(c);el.setSelectionRange(h.length,h.length)}};
-const FN={sin:x=>Math.sin(x*KK()),cos:x=>Math.cos(x*KK()),tan:x=>Math.tan(x*KK()),sec:x=>1/Math.cos(x*KK()),csc:x=>1/Math.sin(x*KK()),cot:x=>1/Math.tan(x*KK()),arcsin:x=>Math.asin(x)/KK(),arccos:x=>Math.acos(x)/KK(),arctan:x=>Math.atan(x)/KK(),ln:Math.log,log:Math.log10,sqrt:Math.sqrt,abs:Math.abs};
-const NAMES=['arcsin','arccos','arctan','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','pi','x','y','e'];
-
-function compile(src){
-  const t=unsup(src).replace(/[\u2212\u2013]/g,'-').replace(/\u03c0/g,'pi').replace(/\s+/g,'').toLowerCase().replace(/\*\*/g,'^');
+  const t=unsup(src).replace(/[\u2212\u2013]/g,'-').replace(/\u03c0/g,'pi').replace(/\u221a/g,'sqrt').replace(/\s+/g,'').toLowerCase().replace(/\*\*/g,'^');
   let i=0,abs=0;const pk=()=>t[i];
   const expr=()=>{let v=term();while(pk()=='+'||pk()=='-'){const o=t[i++],l=v,r=term();v=o=='+'?(x,y)=>l(x,y)+r(x,y):(x,y)=>l(x,y)-r(x,y)}return v};
   const term=()=>{let v=unary();while(i<t.length&&(pk()=='*'||pk()=='/'||/[0-9.a-z(]/.test(pk())||(pk()=='|'&&!abs))){let o='*';if(pk()=='*'||pk()=='/')o=t[i++];const l=v,r=unary();v=o=='*'?(x,y)=>l(x,y)*r(x,y):(x,y)=>l(x,y)/r(x,y)}return v};
