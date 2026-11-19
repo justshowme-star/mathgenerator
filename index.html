@@ -631,7 +631,7 @@ function draw(){
   const RW=(STU||BW)?rows.map(r=>{let o=r;
     if(BW){o={...r,color:'#000000',fill:r.fill==='none'?'none':'hatch',c_fill:'hatch',fo:70,c_fo:70};
       if(r.color&&r.color!=='#000000'&&(r.dash||'solid')==='solid'){if(!cmap[r.color])cmap[r.color]=['dashed','dotted','dashdot'][cix++%3];o.dash=cmap[r.color]}}
-    if(STU&&r.keyonly)o={...o,vis:false};return o}):rows;
+    if(STU&&r.keyonly)o={...o,vis:false,labOn:false};return o}):rows;
   document.querySelectorAll('.row').forEach((el,i)=>el.classList.toggle('keyhid',STU&&!!(rows[i]&&rows[i].keyonly)));
   usedP=new Set();FUNCS={};FD={};KDEG=$('#tm').value=='deg';
   RW.forEach(r=>{const m=String(r.eq||'').match(/^\s*([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*([^{}]*?)\s*(\{[^{}]*\}\s*)*$/);const pw=pwTry(r.eq),n=pw&&pw.name?pw.name:(m?m[1].toLowerCase():null);if(n){let d=0;FUNCS[n]=x=>{if(d>8)return NaN;d++;try{return FD[n]?FD[n](x,0):NaN}finally{d--}};r._fn=[n,pw&&pw.name?null:m[2],pw&&pw.name?pw:null]}else r._fn=null});
@@ -644,11 +644,16 @@ function draw(){
   const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xt=$('#xt').value,yt=$('#yt').value;
   const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),tf=Math.max(14,nsz+2),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
+    titleW=t=>{const old=LW;LW='normal';try{return wsup(t,tf)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
-    fsn=Math.max(15,nsz+3),ytx=Math.max(16,Math.ceil(.72*tf)+6),
-    L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?Math.max(36,ytx+Math.ceil(.2*tf)+14):24),Math.ceil(tw($('#yl').value,fsn)/2)+6),
-    R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(tw($('#xl').value,fsn))+5),T=Math.max(ct?58:34,22+Math.ceil(.72*fsn)),
-    B=Math.max(xt?64:44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14+(xt?tf+10:0)));;
+    ctHalf=ct?Math.ceil(wsup(ct,18)/2-W/2)+12:0,
+    xtHalf=xt?Math.ceil(titleW(xt)/2-W/2)+12:0,
+    ytHalf=yt?Math.ceil(titleW(yt)/2-H/2)+12:0,
+    fsn=Math.max(15,nsz+3),ytx=Math.max(16,Math.ceil(.9*tf)+6),
+    L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?Math.max(36,ytx+Math.ceil(.2*tf)+14):24),Math.ceil(tw($('#yl').value,fsn)/2)+6,ctHalf,xtHalf),
+    R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(tw($('#xl').value,fsn))+5,ctHalf,xtHalf),
+    T=Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn),ytHalf),
+    B=Math.max(xt?64:44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14+(xt?tf+10:0)),ytHalf);
   {const o=$('#nso');if(o)o.textContent=nsz}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
