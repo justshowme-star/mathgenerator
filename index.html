@@ -296,7 +296,8 @@ function nf(v,mode){if(mode=='deg')return fmt(v)+'\u00b0';
 const ticks=(a,b,st)=>{const o=[];for(let k=Math.ceil(a/st-1e-9);k*st<=b+1e-9;k++)o.push([k,k*st]);return o};
 const cvx=document.createElement('canvas').getContext('2d');
 const tw=(t,sz)=>{cvx.font=LW+' '+sz+'px Helvetica,Arial,sans-serif';return cvx.measureText(t).width};
-const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;
+const piSym=t=>String(t).replace(/(^|[^a-zA-Z])pi(?![a-zA-Z])/gi,'$1\u03c0');
+const SUPRE=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z\u03c0]))/gi;
 const wsup=(t,sz)=>{let w=0,last=0,m;SUPRE.lastIndex=0;while((m=SUPRE.exec(t))){w+=tw(t.slice(last,m.index),sz)+tw(m[1]!==undefined?m[1]:m[2],sz*.7);last=SUPRE.lastIndex}return w+tw(t.slice(last),sz)};
 const FC='A-Za-z0-9.^\u03c0\u00b2\u00b3\u00b9\u2070-\u2079\u207b\u02e3\u02b8\uE000-\uE0FF';
 const FRRE=new RegExp('(\\([^()]*\\)|['+FC+']+)/(\\([^()]*\\)|['+FC+']+)','g');
@@ -325,22 +326,22 @@ function lay(str,sz,halo,rads){const hl=halo.includes('stroke=');
       +`<g transform="translate(${(x+(fw-N.w)/2).toFixed(1)} ${yN.toFixed(1)})">${N.svg}</g><g transform="translate(${(x+(fw-D.w)/2).toFixed(1)} ${yD.toFixed(1)})">${D.svg}</g>`;
     up=Math.max(up,N.up-yN);down=Math.max(down,yD+D.down);fr=true;x+=fw+3}
   inline(str.slice(last));return{svg:o,w:x,up,down,fr}}
-function layout(str,sz,halo){{const pw=pwParts(str);if(pw)return layPW(pw,sz,halo)}const e=extract(str);return lay(e.s,sz,halo,e.rads)}
+function layout(str,sz,halo){str=piSym(str);{const pw=pwParts(str);if(pw)return layPW(pw,sz,halo)}const e=extract(str);return lay(e.s,sz,halo,e.rads)}
 function lab(str,sz,halo,tf,dx,dy,an,i,k){const r=layout(str,sz,halo),o=(rows[i]&&rows[i].off&&rows[i].off[k])||[0,0];
   if(dy<=-8)dy-=Math.max(0,r.down-sz*.25);else if(dy>=sz)dy=Math.max(dy,r.up+5);
   const ox=an=='middle'?-r.w/2:an=='end'?-r.w:0;
   return `<g class="lbl" data-i="${i}" data-k="${k}" style="cursor:move" transform="translate(${o[0].toFixed(1)} ${o[1].toFixed(1)})"><g transform="${tf}"><g transform="translate(${(dx+ox).toFixed(1)} ${dy.toFixed(1)})">${r.svg}</g></g></g>`}
-const hsup=t=>esc(t).replace(/\^\(([^)]*)\)|\^(-?\d*\.?\d+|-?[a-z])/gi,(m,a,b)=>'<sup>'+(a!==undefined?a:b).replace(/-/g,'\u2212')+'</sup>');
-function mathHTML(str){{const pw=pwParts(str);if(pw)return pwHTML(pw)}const e=extract(str),re=new RegExp(FRRE.source,'g'),src=e.s;let o='',last=0,m;
+const hsup=t=>esc(t).replace(/\^\(([^)]*)\)|\^(-?\d*\.?\d+|-?[a-z\u03c0])/gi,(m,a,b)=>'<sup>'+(a!==undefined?a:b).replace(/-/g,'\u2212')+'</sup>');
+function mathHTML(str){str=piSym(str);{const pw=pwParts(str);if(pw)return pwHTML(pw)}const e=extract(str),re=new RegExp(FRRE.source,'g'),src=e.s;let o='',last=0,m;
   const ph=t=>hsup(t).replace(/[\uE000-\uE0FF]/g,c=>`<span class="rad"><span class="rs">\u221a</span><span class="rb">${mathHTML(e.rads[c.charCodeAt(0)-NOUT])}</span></span>`);
   while((m=re.exec(src))){o+=ph(src.slice(last,m.index))+`<span class="fr"><span>${ph(unp(m[1]))}</span><span>${ph(unp(m[2]))}</span></span>`;last=re.lastIndex}
   return o+ph(src.slice(last))}
 function syncParams(){const l=[...usedP].sort(),k=l.join('');if(k===shownP)return;shownP=k;const box=$('#params');
   box.innerHTML=l.length?'<h3>Sliders</h3>'+l.map(n=>{const q=P[n];return `<div class="par" data-p="${n}"><b>${n}</b><input type="range" data-pk="v" min="${q.mn}" max="${q.mx}" step="${q.st}" value="${q.v}" aria-label="Value of ${n}"><input type="number" data-pk="vn" value="${q.v}" step="any" aria-label="${n} value"><span class="pr"><input type="number" data-pk="mn" value="${q.mn}" title="Slider minimum" aria-label="${n} minimum"><input type="number" data-pk="mx" value="${q.mx}" title="Slider maximum" aria-label="${n} maximum"></span></div>`}).join(''):''}
-function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(|\{/.test(t)?mathHTML(t):'';el.innerHTML=h;const hid=!h||!!((rows[i].pwEd||rows[i].tbl)&&el.dataset.pv=='eq');el.hidden=hid;if(el.dataset.pv=='eq'){const bb=d.querySelector('.pvbtns');if(bb)bb.hidden=!String(rows[i].eq||'').trim()||!!rows[i].tbl}})}
+function pvUpdate(d,i){d.querySelectorAll('.pv').forEach(el=>{const t=String(rows[i][el.dataset.pv]||''),h=/\/|sqrt\(|\u221a\(|\{|(^|[^a-zA-Z])pi(?![a-zA-Z])/i.test(t)?mathHTML(t):'';el.innerHTML=h;const hid=!h||!!((rows[i].pwEd||rows[i].tbl)&&el.dataset.pv=='eq');el.hidden=hid;if(el.dataset.pv=='eq'){const bb=d.querySelector('.pvbtns');if(bb)bb.hidden=!String(rows[i].eq||'').trim()||!!rows[i].tbl}})}
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=n=>{n=+n.toFixed(6);if(Object.is(n,-0))n=0;return(n<0?'\u2212':'')+Math.abs(n)};
-const sup=(s,sz)=>{const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
+const sup=(s,sz)=>{s=piSym(s);const d=(sz*.4).toFixed(1),re=/\^(?:\(([^)]*)\)|(-?\d*\.?\d+|-?[a-z\u03c0]))/gi;let o='',n=0,last=0,m;while((m=re.exec(s))){o+=esc(s.slice(last,m.index))+`<tspan dy="-${d}" font-size="${(sz*.7).toFixed(1)}">${esc((m[1]!==undefined?m[1]:m[2]).replace(/-/g,'−'))}</tspan><tspan dy="${d}">`;n++;last=re.lastIndex}return o+esc(s.slice(last))+'</tspan>'.repeat(n)};
 const SUPD='⁰¹²³⁴⁵⁶⁷⁸⁹',unsupCh=c=>c=='⁻'?'-':c=='ˣ'?'x':c=='ʸ'?'y':String(SUPD.indexOf(c));
 const unsup=s=>s.replace(/⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+|ˣ|ʸ/g,m=>'^'+[...m].map(unsupCh).join(''));
 const supify=(el,e)=>{if(el.tagName!='INPUT'||el.type!='text')return;const c=el.selectionStart,o=el.value.slice(0,c);let h=o;
@@ -612,7 +613,7 @@ const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.targe
   if(a=='fold'){foldToggle(i,e.target.closest('.row'));return}
   if(a=='key')rows[i].keyonly=!rows[i].keyonly;
   if(a=='dot'){if(held){held=false;return}rows[i].vis=rows[i].vis===false;e.target.classList.toggle('off',rows[i].vis===false);e.target.setAttribute('aria-pressed',String(rows[i].vis!==false));draw();return}
-  if(a=='useeq'){const rw=e.target.closest('.row');rows[i].lab=rows[i].eq.replace(/\s+/g,' ').trim();const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
+  if(a=='useeq'){const rw=e.target.closest('.row');rows[i].lab=piSym(rows[i].eq.replace(/\s+/g,' ').trim());const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
   renderRows();draw()};
 $('#rows').addEventListener('click',onRowsClick);
 $('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
