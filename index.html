@@ -111,12 +111,35 @@ h3{font-size:13px;margin:12px 0 6px}
 .zoomc{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px;z-index:5}
 .zoomc button{width:34px;height:34px;padding:0;font-size:18px;line-height:1;display:grid;place-items:center;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.18)}
 .zoomc button[aria-pressed="true"],.zoomc button[aria-expanded="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
-.axespop{position:absolute;right:22px;top:118px;z-index:30;width:min(340px,calc(100vw - 44px));max-height:calc(100vh - 140px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.axespop{position:absolute;right:22px;top:118px;z-index:30;width:min(370px,calc(100vw - 44px));max-height:calc(100vh - 140px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
 .axespop[hidden]{display:none}
-.axespop-hd{display:flex;align-items:center;gap:8px;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--line);font-weight:600;font-size:15px}
+.axespop-hd{display:flex;align-items:center;gap:8px;padding-bottom:10px;margin-bottom:4px;border-bottom:1px solid var(--line);font-weight:600;font-size:15px}
 .axespop-hd .qm{margin-left:auto}
 .axespop-x{width:24px;height:24px;border-radius:50%;padding:0;font-size:16px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
-.axespop h3{margin:12px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.axespop h3{margin:12px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
+.ax-blk{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:10px}
+.ax-blk:has(.ax-chk input:not(:checked)) .ax-sub{opacity:.45}
+.ax-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ax-chk{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;user-select:none}
+.ax-chk input{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
+.ax-lblbox{position:relative;width:148px;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px 5px;transition:border-color .15s}
+.ax-lblbox:focus-within{border-color:var(--accent)}
+.ax-lblbox span{position:absolute;top:-7px;left:8px;padding:0 4px;background:var(--panel);font-size:11px;line-height:1;color:var(--mute)}
+.ax-lblbox:focus-within span{color:var(--accent)}
+.ax-lblbox input{width:100%;border:0;background:transparent;padding:0;font-size:14px;color:var(--ink)}
+.ax-lblbox input:focus-visible{outline:none}
+.ax-sub{display:grid;gap:8px;transition:opacity .15s}
+.ax-rng{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ax-bounds{display:inline-flex;align-items:baseline;gap:4px}
+.ax-ineq{font-family:"Times New Roman",Georgia,serif;font-size:16px;color:var(--ink);white-space:nowrap}
+.ax-uline{border:0;border-bottom:1.5px solid var(--line);border-radius:0;background:transparent;padding:2px 4px;text-align:center;font-size:14px;color:var(--ink);font-variant-numeric:tabular-nums}
+.ax-uline:focus{outline:none;border-bottom-color:var(--accent)}
+.ax-bounds .ax-uline{width:62px}
+.ax-step{display:inline-flex;align-items:baseline;gap:5px;font-size:14px;color:var(--mute);margin-left:auto}
+.ax-step .ax-uline{width:52px}
+.ax-opts{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.ax-opts label{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--mute)}
+.ax-opts select{padding:2px 6px;font-size:12px;border-radius:5px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
 .grid2 label{display:grid;gap:2px;font-size:13px;color:var(--mute)}
 .grid2 input[type=range]{height:28px}
@@ -285,24 +308,38 @@ h3{font-size:13px;margin:12px 0 6px}
   <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Graph settings" title="Graph settings" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
   <div id="axespop" class="axespop" role="dialog" aria-label="Graph settings" hidden>
     <div class="axespop-hd"><span>Graph settings</span><button type="button" id="axh" class="qm" aria-label="Help for Graph settings" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close graph settings" title="Close">×</button></div>
-    <div id="axinfo" class="info" hidden><p><b>Range &amp; step:</b> From and To set the visible range. Step is the distance between gridlines. Fractions and <code>pi</code> work, like <code>pi/2</code>. Dragging or zooming the graph updates these boxes when you let go.</p><p><b>Grid &amp; titles:</b> Adjust gridline weight, minor subdivisions, and square size. Axis labels default to <code>x</code> and <code>y</code> until changed, and powers like <code>x^2</code> format automatically.</p></div>
-    <h3>Horizontal axis (x)</h3>
-    <div class="grid3">
-      <label>From<input id="x0" value="-10"></label>
-      <label>To<input id="x1" value="10"></label>
-      <label>Step<input id="xs" value="1"></label>
-      <label>Show numbers<select id="xn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
-      <label>Axis label<input id="xl" placeholder="x"></label>
-      <label>Number style<select id="xf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
+    <div id="axinfo" class="info" hidden><p><b>Axes &amp; range:</b> Uncheck <b>X-Axis</b> or <b>Y-Axis</b> to hide that axis line and its labels. Edit the inequality bounds or <b>Step</b> using numbers, fractions, or <code>pi</code> (like <code>pi/2</code>).</p><p><b>Labels &amp; grid:</b> Axis labels default to <code>x</code> and <code>y</code> until you type something else, and powers like <code>x^2</code> format automatically.</p></div>
+    <div class="ax-blk">
+      <div class="ax-top">
+        <label class="ax-chk"><input type="checkbox" id="xax" checked><span>X-Axis</span></label>
+        <label class="ax-lblbox"><span>Label</span><input id="xl" placeholder="e.g. &ldquo;x&rdquo;"></label>
+      </div>
+      <div class="ax-sub">
+        <div class="ax-rng">
+          <div class="ax-bounds"><input id="x0" class="ax-uline" value="-10" aria-label="X minimum"><span class="ax-ineq">≤ <i>x</i> ≤</span><input id="x1" class="ax-uline" value="10" aria-label="X maximum"></div>
+          <label class="ax-step"><span>Step:</span><input id="xs" class="ax-uline" value="1" aria-label="X step"></label>
+        </div>
+        <div class="ax-opts">
+          <label>Numbers<select id="xn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
+          <label>Style<select id="xf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
+        </div>
+      </div>
     </div>
-    <h3>Vertical axis (y)</h3>
-    <div class="grid3">
-      <label>From<input id="y0" value="-10"></label>
-      <label>To<input id="y1" value="10"></label>
-      <label>Step<input id="ys" value="1"></label>
-      <label>Show numbers<select id="yn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
-      <label>Axis label<input id="yl" placeholder="y"></label>
-      <label>Number style<select id="yf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
+    <div class="ax-blk">
+      <div class="ax-top">
+        <label class="ax-chk"><input type="checkbox" id="yax" checked><span>Y-Axis</span></label>
+        <label class="ax-lblbox"><span>Label</span><input id="yl" placeholder="e.g. &ldquo;y&rdquo;"></label>
+      </div>
+      <div class="ax-sub">
+        <div class="ax-rng">
+          <div class="ax-bounds"><input id="y0" class="ax-uline" value="-10" aria-label="Y minimum"><span class="ax-ineq">≤ <i>y</i> ≤</span><input id="y1" class="ax-uline" value="10" aria-label="Y maximum"></div>
+          <label class="ax-step"><span>Step:</span><input id="ys" class="ax-uline" value="1" aria-label="Y step"></label>
+        </div>
+        <div class="ax-opts">
+          <label>Numbers<select id="yn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
+          <label>Style<select id="yf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
+        </div>
+      </div>
     </div>
     <h3><span>Grid</span><button type="button" id="rv" class="ax-rv" title="Back to x and y from −10 to 10, step 1">Reset view</button></h3>
     <div class="grid2">
@@ -724,12 +761,13 @@ function draw(){
     ticks(x0,x1,xs).forEach(([k,v])=>s+=ln(sx(v),T,sx(v),T+H,gc[1],1));
     ticks(y0,y1,ys).forEach(([k,v])=>s+=ln(L,sy(v),L+W,sy(v),gc[1],1))}
   // axes
+  const xOn=$('#xax').checked,yOn=$('#yax').checked;
   const ax=y0<=0&&y1>=0?sy(0):T+H,ay=x0<=0&&x1>=0?sx(0):L;
-  s+=`<g stroke="#111" stroke-width="1.8"><line x1="${L-6}" y1="${ax}" x2="${L+W+6}" y2="${ax}"/><line x1="${ay}" y1="${T-6}" x2="${ay}" y2="${T+H+6}"/></g><g fill="#111">`
-    +`<polygon points="${L+W+15},${ax} ${L+W+5},${ax-4.5} ${L+W+5},${ax+4.5}"/><polygon points="${L-15},${ax} ${L-5},${ax-4.5} ${L-5},${ax+4.5}"/>`
-    +`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/></g>`;
+  s+=`<g stroke="#111" stroke-width="1.8">${xOn?`<line x1="${L-6}" y1="${ax}" x2="${L+W+6}" y2="${ax}"/>`:''}${yOn?`<line x1="${ay}" y1="${T-6}" x2="${ay}" y2="${T+H+6}"/>`:''}</g><g fill="#111">`
+    +(xOn?`<polygon points="${L+W+15},${ax} ${L+W+5},${ax-4.5} ${L+W+5},${ax+4.5}"/><polygon points="${L-15},${ax} ${L-5},${ax-4.5} ${L-5},${ax+4.5}"/>`:'')
+    +(yOn?`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/>`:'')+`</g>`;
   // numbers
-  const xm=$('#xf').value,ym=$('#yf').value,xe=+$('#xn').value,ye=+$('#yn').value,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
+  const xm=$('#xf').value,ym=$('#yf').value,xe=xOn?+$('#xn').value:0,ye=yOn?+$('#yn').value:0,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
   const numHalo=`fill="#111" stroke="#fff" stroke-width="${Math.max(3,nsz*.3).toFixed(1)}" paint-order="stroke" stroke-linejoin="round"`;
   const numLay=t=>{const old=LW;LW='normal';try{return layout(t,nsz,numHalo)}finally{LW=old}};
   const sKeep=s;s='';s+=`<g font-size="${nsz}" ${numHalo} pointer-events="none">`;
@@ -740,7 +778,7 @@ function draw(){
     if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(ay-8-r.w).toFixed(1)} ${(sy(v)+nsz*.3).toFixed(1)})">${r.svg}</g>`}
     else s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${t}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+nsz+4}" text-anchor="end">0</text>`;
-  s+=`</g><g font-size="${fsn}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none"><text x="${L+W+22}" y="${ax+5}"${/\s/.test(xl)?'':' font-style="italic"'}>${sup(xl,fsn)}</text><text x="${ay}" y="${T-22}" text-anchor="middle"${/\s/.test(yl)?'':' font-style="italic"'}>${sup(yl,fsn)}</text></g>`;
+  s+=`</g><g font-size="${fsn}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none">${xOn?`<text x="${L+W+22}" y="${ax+5}"${/\s/.test(xl)?'':' font-style="italic"'}>${sup(xl,fsn)}</text>`:''}${yOn?`<text x="${ay}" y="${T-22}" text-anchor="middle"${/\s/.test(yl)?'':' font-style="italic"'}>${sup(yl,fsn)}</text>`:''}</g>`;
   const nums=s;s=sKeep;
   if(ct)s+=`<text x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
   // rows
@@ -993,9 +1031,9 @@ $('#rows').addEventListener('mouseleave',()=>setHover(null));
 // state, undo and redo, autosave, files, templates
 const FIELDS='#panel input[id]:not(.nosave),#panel select[id]:not(.nosave),#axespop input[id]:not(.nosave),#axespop select[id]:not(.nosave)';
 const ROWDEF={eq:'',color:'#000000',dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
-const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.value);return{v:1,f,rows:rows.map(({ui,folded,pin,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
+const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.type=='checkbox'?el.checked:el.value);return{v:1,f,rows:rows.map(({ui,folded,pin,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
 function setState(st,keep){if(st.p){P=Object.assign({},st.p);shownP=''}
-  document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined)el.value=st.f[el.id]});
+  document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined){if(el.type=='checkbox')el.checked=!!st.f[el.id];else el.value=st.f[el.id]}});
   rows=(st.rows||[]).map((r,i)=>Object.assign({},ROWDEF,keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r));renderRows()}
 function setSaved(t,bad){const el=$('#saved');if(!el)return;el.textContent=t;el.classList.toggle('bad',!!bad)}
 function savedMsg(ok){setSaved(ok?'Saved '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not saved. Use Save file.',!ok)}
@@ -1030,11 +1068,12 @@ $('#rst-yes').onclick=()=>{
   rows=[Object.assign({},ROWDEF)];
   const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',ls:'15',sol:'off',ver:'key',bw:'color'};
   Object.entries(defs).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
+  $('#xax').checked=true;$('#yax').checked=true;
   syncSeg();renderRows();draw();note('All work cleared.');
 };
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
 lastJ=JSON.stringify(getState());hist=[lastJ];hi=0;clearTimeout(hT);updHist();
-document.querySelectorAll('.sec .qm').forEach(b=>{b.onclick=()=>{const inf=b.closest('.sec').querySelector('.info');inf.hidden=!inf.hidden;b.setAttribute('aria-expanded',String(!inf.hidden))}});
+document.querySelectorAll('.sec .qm').forEach(b=>{b.addEventListener('keydown',e=>e.stopPropagation());b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.sec');if(sec&&sec.classList.contains('closed'))sec.querySelector('h2').click();const inf=sec.querySelector('.info');inf.hidden=!inf.hidden;b.setAttribute('aria-expanded',String(!inf.hidden))})});
 $('#gh').onclick=()=>{const i=$('#ginfo');i.hidden=!i.hidden;$('#gh').setAttribute('aria-expanded',String(!i.hidden))};
 const syncSeg=()=>document.querySelectorAll('[data-seg]').forEach(b=>b.setAttribute('aria-pressed',String($('#'+b.dataset.seg).value===b.dataset.v)));
 document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>{const inp=$('#'+b.dataset.seg);if(inp.value!==b.dataset.v){inp.value=b.dataset.v;syncSeg();draw()}});
