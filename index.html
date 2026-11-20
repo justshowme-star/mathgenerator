@@ -104,7 +104,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .calc .sm{width:68px;padding:3px 5px}
 .row:not([data-type="f"]) .only-calc,.row[data-ineq="1"] .only-calc{display:none}
 .ax-nlrow{padding:10px 0 8px;border-bottom:1px solid var(--line)}
-.axespop.nl-on .ax-blk:nth-of-type(3){opacity:.4;pointer-events:none}
+.axespop.nl-on .ax-blk+.ax-blk{opacity:.4;pointer-events:none}
 .qm,.qm2{width:24px;height:24px;border-radius:50%;padding:0;font-size:13px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
 .qm{margin-left:auto}.qm+.chev{margin-left:8px}
 .bar.proj .qm2{margin-left:auto}
@@ -758,7 +758,7 @@ function draw(){
   if(![x0,x1,xs,y0,y1,ys].every(isFinite)||x1<=x0||y1<=y0||xs<=0||ys<=0||(x1-x0)/xs>200||(y1-y0)/ys>200){$('#note').textContent='Check the axis ranges: \u201cTo\u201d must be larger than \u201cFrom\u201d, and \u201cCount by\u201d must be positive.';return}
   $('#note').textContent='';
   const NL=$('#nl').checked,axPopEl=$('#axespop');if(axPopEl)axPopEl.classList.toggle('nl-on',NL);
-  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()\vert{}\vert{}'x',yl=$('#yl').value.trim()||'y';
+  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()||'x',yl=$('#yl').value.trim()||'y';
   const W=live?live.W:(x1-x0)/xs*cell,H=NL?96:(live?live.H:(y1-y0)/ys*cell),nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
@@ -885,7 +885,7 @@ function draw(){
       const rArr=(xEnd,dir)=>{const sz=11+sw*.6,hw=sz*.45;arrows+=`<polygon data-i="${i}" points="0,0 ${-dir*sz},${-hw} ${-dir*sz},${hw}" fill="${r.color}" transform="translate(${xEnd.toFixed(1)} ${ax.toFixed(1)})"/>`};
       let lx=p.c;
       if(p.neq){arrows+=`<line data-i="${i}" x1="${L-12}" y1="${ax}" x2="${L+W+12}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;rArr(L-15,-1);rArr(L+W+15,1);dot(p.c,false)}
-      else if(p.interval){const[a,b,incA,incB]=p.interval,lo=Math.max(a,x0),hi=Math.min(b,x1);if(lo<=hi)arrows+=`<line data-i="${i}" x1="${sx(lo).toFixed(1)}" y1="${ax}" x2="${sx(hi).toFixed(1)}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;dot(a,incA);dot(b,incB);lx=(lo+hi)/2}
+      else if(p.ineq&&p.ineq.compound){if(!isFinite(p.c)||!isFinite(p.hi))return;const a=p.c,b=p.hi,lo=Math.max(a,x0),hi=Math.min(b,x1);if(lo<=hi)arrows+=`<line data-i="${i}" x1="${sx(lo).toFixed(1)}" y1="${ax}" x2="${sx(hi).toFixed(1)}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;dot(a,p.ineq.incl);dot(b,p.ineq.hiIncl);lx=(lo+hi)/2}
       else if(p.ineq){const cx=sx(Math.max(x0,Math.min(x1,p.c))),ex=p.ineq.right?L+W+12:L-12;if((p.ineq.right&&p.c<=x1)||(!p.ineq.right&&p.c>=x0)){arrows+=`<line data-i="${i}" x1="${cx.toFixed(1)}" y1="${ax}" x2="${ex.toFixed(1)}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;rArr(p.ineq.right?L+W+15:L-15,p.ineq.right?1:-1)}dot(p.c,p.ineq.incl);lx=p.ineq.right?(Math.max(p.c,x0)+x1)/2:(x0+Math.min(p.c,x1))/2}
       else dot(p.c,true);
       if(r.lab&&r.labOn!==false&&lx>=x0&&lx<=x1)labels+=lab(r.lab,ls,halo,'translate(0 0)',sx(lx),ax-13,'middle',i,0);
@@ -920,17 +920,19 @@ function draw(){
       const fo=(+r.fo||30)/100,hatch=r.fill=='hatch';
       if(hatch&&r.fill!=='none')pats+=`<pattern id="hp${i}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(${[45,-45,0,90,30,-30][i%6]})"><line x1="0" y1="0" x2="0" y2="9" stroke="${r.color}" stroke-width="1.4" stroke-opacity="${Math.min(1,.35+fo)}"/></pattern>`;
       let fd='';
-      if(p.interval){const[a,b]=p.interval,ca=sx(Math.max(a,x0)),cb=sx(Math.min(b,x1));if(ca<=cb)fd=`M${ca.toFixed(1)} ${T}H${cb.toFixed(1)}V${T+H}H${ca.toFixed(1)}Z`}
+      const cmp=p.ineq&&p.ineq.compound;
+      if(cmp){if(isFinite(p.c)&&isFinite(p.hi)){const ca=sx(Math.max(p.c,x0)),cb=sx(Math.min(p.hi,x1));if(ca<=cb)fd=`M${ca.toFixed(1)} ${T}H${cb.toFixed(1)}V${T+H}H${ca.toFixed(1)}Z`}}
       else if(p.type=='v'){const cx=sx(p.c),a=p.ineq.right?cx:L,b=p.ineq.right?L+W:cx;fd=`M${a.toFixed(1)} ${T}H${b.toFixed(1)}V${T+H}H${a.toFixed(1)}Z`}
       else if(p.type=='imp')fd=p._fill||'';
       else{const edge=p.ineq.above?T:T+H;fd=segs.map(sg=>`M${sg[0][0].toFixed(1)} ${edge}`+sg.map(q=>`L${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('')+`L${sg[sg.length-1][0].toFixed(1)} ${edge}Z`).join('')}
       if(r.fill!=='none'&&fd)fills+=`<path data-i="${i}" pointer-events="none" d="${fd}" fill="${hatch?`url(#hp${i})`:r.color}" fill-opacity="${hatch?1:fo}" stroke="none"/>`;if(fd)REG.push({i,fd})}
+    const cmp=p.ineq&&p.ineq.compound;
     if(r.vis!==false){
-      if(p.interval){const[a,b,incA,incB]=p.interval;[[a,incA],[b,incB]].forEach(([xv,inc])=>{if(xv>=x0&&xv<=x1)lines+=`<line data-i="${i}" x1="${sx(xv).toFixed(1)}" y1="${T}" x2="${sx(xv).toFixed(1)}" y2="${T+H}" stroke="${r.color}" stroke-width="${r.w}" ${inc?'':'stroke-dasharray="9 6"'}/>`})}
+      if(cmp){if(isFinite(p.c)&&isFinite(p.hi))[[p.c,p.ineq.incl],[p.hi,p.ineq.hiIncl]].forEach(([xv,inc])=>{if(xv>=x0&&xv<=x1)lines+=`<line data-i="${i}" x1="${sx(xv).toFixed(1)}" y1="${T}" x2="${sx(xv).toFixed(1)}" y2="${T+H}" stroke="${r.color}" stroke-width="${r.w}" ${inc?'':'stroke-dasharray="9 6"'}/>`})}
       else{const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dsh}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}}
     const vis=segs.flat().filter(q=>q[0]>=L&&q[0]<=L+W&&q[1]>=T&&q[1]<=T+H);
     const arr=r.arr||'both';
-    if(vis.length>1&&r.vis!==false&&p.type!='imp'&&!p.interval){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
+    if(vis.length>1&&r.vis!==false&&p.type!='imp'&&!cmp){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
       const n=vis.length,ed=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2;if(arr=='start'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[0]))&&hd(vis[0],vis[Math.min(4,n-1)]);if(arr=='end'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[n-1]))&&hd(vis[n-1],vis[Math.max(0,n-5)])}
     if(r.lab&&r.labOn!==false&&vis.length>1){
       const k=Math.round(r.pos/100*(vis.length-1)),q=vis[k],a=vis[Math.max(0,k-4)],b=vis[Math.min(vis.length-1,k+4)];
@@ -952,16 +954,22 @@ function draw(){
         let a=xs2[k-1],b=xs2[k+1];for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a),fc=safe(fn,c),fd=safe(fn,d);if(isMax?fc>fd:fc<fd)b=d;else a=c}
         const xm=(a+b)/2,ym=safe(fn,xm);if(isFinite(ym)&&cont(fn,xm))out.push({x:xm,y:ym,place:isMax?'above':'below'})}
       return out};
-    RW.forEach((r,i)=>{const f=FNS[i];if(!f||r.vis===false||(!r.k_int&&!r.k_ext&&!r.k_poi))return;
+    RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||!r.kp)return;
       const pts=[],ok=(x,y)=>isFinite(x)&&isFinite(y)&&x>=x0-1e-9&&x<=x1+1e-9&&y>=y0-1e-9&&y<=y1+1e-9&&(!RESTRS[i]||RESTRS[i].test(x,y));
       const add=(x,y,pl)=>{x=snap0(x);y=snap0(y);if(!ok(x,y))return;if(!pts.some(q=>Math.abs(q.x-x)<Math.max(1e-5,(x1-x0)*1e-4)&&Math.abs(q.y-y)<Math.max(1e-5,(y1-y0)*1e-4)))pts.push({x,y,place:pl||'above'})};
-      if(r.k_int){if(x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');rootsOf(f).forEach(rx=>add(rx,0,'above'))}
-      if(r.k_ext)extOf(f).forEach(q=>add(q.x,q.y,q.place));
-      if(r.k_poi){FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].k_poi))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
-        VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1)return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')})}
+      if(f){
+        if(x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');
+        rootsOf(f).forEach(rx=>add(rx,0,'above'));
+        extOf(f).forEach(q=>add(q.x,q.y,q.place));
+        FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].kp))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
+        VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1)return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')});
+      }else{
+        add(vx,0,'above');
+        FNS.forEach((g,j)=>{if(!g||(RW[j]&&RW[j].kp))return;const ry=safe(g,vx);if(!RESTRS[j]||RESTRS[j].test(vx,ry))add(vx,ry,'right')});
+      }
       const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
       pts.forEach((q,ki)=>{arrows+=`<circle data-i="${i}" cx="${sx(q.x).toFixed(1)}" cy="${sy(q.y).toFixed(1)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1.5"/>`;
-        if(r.k_lbl!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[q.place];labels+=lab(`(${fmt(q.x)}, ${fmt(q.y)})`,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,'kp'+ki)}})});
+        if(r.kplab!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[q.place];labels+=lab(`(${fmt(q.x)}, ${fmt(q.y)})`,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,'kp'+ki)}})});
   }
   const cnum=t=>{try{return compile(String(t))(0,0)}catch(e){return NaN}};
   const fn2=n=>Math.abs(n)<1e-9?'0':String(+n.toFixed(3)).replace('-','\u2212');
