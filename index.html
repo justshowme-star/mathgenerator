@@ -1153,14 +1153,37 @@ function draw(){
     if(r.inv&&!p.ineq&&(p.type=='f'||p.type=='v')&&r.vis!==false){
       if(r.invmir!==false&&!hasMir){hasMir=true;const m0=Math.max(x0,y0),m1=Math.min(x1,y1);if(m0<m1)lines+=`<line pointer-events="none" x1="${sx(m0).toFixed(1)}" y1="${sy(m0).toFixed(1)}" x2="${sx(m1).toFixed(1)}" y2="${sy(m1).toFixed(1)}" stroke="#64748b" stroke-width="1.4" stroke-dasharray="5 5" opacity=".7"/>`}
       const idsh=r.dash=='solid'?'stroke-dasharray="7 5"':dsh;
-      if(p.type=='v'){if(p.c>=y0&&p.c<=y1)lines+=`<line data-i="${i}" x1="${L}" y1="${sy(p.c).toFixed(1)}" x2="${L+W}" y2="${sy(p.c).toFixed(1)}" stroke="${r.color}" stroke-width="${r.w}" ${idsh}/>`}
-      else{const d0=Math.min(x0,y0),d1=Math.max(x1,y1),traceInv=(fn,rs)=>{const N=Math.max(600,Math.round(Math.max(W,H))),out=[],tl=[];let cu=[],pp=null;
+      const ihd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon data-i="${i}" points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
+      const ied=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2;
+      if(p.type=='v'){if(p.c>=y0&&p.c<=y1){
+        const n=80,xl=[...Array(n+1)].map((_,k)=>x0+(x1-x0)*k/n);if(p.restr)p.restr.bounds.forEach(b=>{if(b.v=='y'&&b.val>x0&&b.val<x1)xl.push(b.val)});xl.sort((a,b)=>a-b);
+        const vsegs=[];let cu=[];xl.forEach(xx=>{if(p.restr&&!p.restr.test(p.c,xx)){if(cu.length)vsegs.push(cu);cu=[]}else cu.push([sx(xx),sy(p.c)])});if(cu.length)vsegs.push(cu);
+        const vdd=vsegs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
+        if(vdd)lines+=`<path data-i="${i}" d="${vdd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" ${idsh}/>`;
+        if(p.restr&&r.ends!==false)p.restr.bounds.forEach(b=>{if(b.v=='y'&&b.val>=x0&&b.val<=x1&&p.restr.test(p.c,b.val))arrows+=`<circle data-i="${i}" cx="${sx(b.val).toFixed(1)}" cy="${sy(p.c).toFixed(1)}" r="5" fill="${b.incl?r.color:'#fff'}" stroke="${r.color}" stroke-width="2"/>`});
+        const vvis=vsegs.filter(sg=>sg.length>1);if(vvis.length){const s0=vvis[0],s1=vvis[vvis.length-1];if(arr=='start'||arr=='both')(!p.restr||ied(s0[0]))&&ihd(s0[0],s0[Math.min(4,s0.length-1)]);if(arr=='end'||arr=='both')(!p.restr||ied(s1[s1.length-1]))&&ihd(s1[s1.length-1],s1[Math.max(0,s1.length-5)])}}}
+      else{const d0=Math.min(x0,y0),d1=Math.max(x1,y1),traceInv=(fn,rs)=>{const N=Math.max(600,Math.round(Math.max(W,H))),out=[],tl=[];let cu=[],pp=null,ptT=null,py=NaN,pin=false;
+          const ok=(t,y)=>isFinite(y)&&Math.abs(y)<=1e6&&(!rs||rs.test(t,y)),inV=(t,y)=>y>=x0&&y<=x1&&t>=y0&&t<=y1;
+          const edgeD=(vt,nt)=>{let lo=vt,hi=nt,vy=fn(lo);for(let k=0;k<28;k++){const m=(lo+hi)/2,fm=fn(m);if(ok(m,fm)){lo=m;vy=fm}else hi=m}return[sx(vy),sy(lo)]};
+          const edgeB=(tA,tB)=>{let lo=tA,hi=tB,vy=fn(lo);for(let k=0;k<28;k++){const m=(lo+hi)/2,fm=fn(m);if(ok(m,fm)&&inV(m,fm)){lo=m;vy=fm}else hi=m}return[sx(vy),sy(lo)]};
           for(let k=0;k<=N;k++)tl.push(d0+(d1-d0)*k/N);if(rs)rs.bounds.forEach(b=>{if(b.v=='x'&&b.val>d0&&b.val<d1)tl.push(b.val)});tl.sort((a,b)=>a-b);
-          for(const t of tl){const y=fn(t);if(!isFinite(y)||Math.abs(y)>1e6||(rs&&!rs.test(t,y))){if(cu.length)out.push(cu);cu=[];pp=null;continue}const pt=[sx(y),sy(t)];if(pp&&(Math.abs(pt[0]-pp[0])>W*1.2||Math.abs(pt[1]-pp[1])>H*1.2)){out.push(cu);cu=[]}cu.push(pt);pp=pt}
+          for(const t of tl){const y=fn(t);
+            if(!ok(t,y)){if(cu.length&&y!==y&&ptT!==null){const ep=edgeD(ptT,t);if(!pp||(Math.abs(ep[0]-pp[0])<=W*1.2&&Math.abs(ep[1]-pp[1])<=H*1.2))cu.push(ep)}if(cu.length)out.push(cu);cu=[];pp=null;ptT=t;py=y;pin=false;continue}
+            if(!cu.length&&ptT!==null&&py!==py){const ep=edgeD(t,ptT);cu.push(ep);pp=ep;pin=inV(t,y)}
+            const pt=[sx(y),sy(t)],invNow=inV(t,y),jmp=pp&&(Math.abs(pt[0]-pp[0])>W*1.2||Math.abs(pt[1]-pp[1])>H*1.2);
+            if(jmp){if(cu.length)out.push(cu);cu=[];pp=null;pin=false}
+            if(pp&&!jmp&&pin!==invNow)cu.push(invNow?edgeB(t,ptT):edgeB(ptT,t));
+            cu.push(pt);pp=pt;ptT=t;py=y;pin=invNow}
           if(cu.length)out.push(cu);return out};
         const isegs=p.pieces?p.pieces.flatMap(pc=>traceInv(pc.f,pc.restr)):traceInv(p.f,p.restr);
         const idd=isegs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
         if(idd)lines+=`<path data-i="${i}" d="${idd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${idsh}/>`;
+        const ivis=isegs.map(sg=>sg.filter(q=>q[0]>=L-.5&&q[0]<=L+W+.5&&q[1]>=T-.5&&q[1]<=T+H+.5)).filter(sg=>sg.length>1);
+        if(ivis.length){const refF=sg=>{for(let k=1;k<sg.length;k++)if(Math.hypot(sg[k][0]-sg[0][0],sg[k][1]-sg[0][1])>=2)return sg[k];return sg[sg.length-1]},refB=sg=>{const q=sg[sg.length-1];for(let k=sg.length-2;k>=0;k--)if(Math.hypot(sg[k][0]-q[0],sg[k][1]-q[1])>=2)return sg[k];return sg[0]};
+          const s0=ivis[0],s1=ivis[ivis.length-1];
+          if(arr=='start'||arr=='both')((!p.restr&&!p.pieces)||ied(s0[0]))&&ihd(s0[0],refF(s0));
+          if(arr=='end'||arr=='both')((!p.restr&&!p.pieces)||ied(s1[s1.length-1]))&&ihd(s1[s1.length-1],refB(s1))}
+        if(p.pieces&&r.ends!==false){const cs=[];p.pieces.forEach(pc=>pc.restr.bounds.forEach(b=>{if(b.v!='x'||b.val<y0||b.val>y1)return;const my=pc.f(b.val);if(!isFinite(my)||my<x0||my>x1||!pc.restr.test(b.val,my))return;cs.push([my,b.val,b.incl])}));cs.forEach(([bx,by,inc])=>{if(!inc&&cs.some(q=>q[2]&&Math.abs(q[0]-bx)<1e-9&&Math.abs(q[1]-by)<1e-9))return;arrows+=`<circle data-i="${i}" cx="${sx(bx).toFixed(1)}" cy="${sy(by).toFixed(1)}" r="5" fill="${inc?r.color:'#fff'}" stroke="${r.color}" stroke-width="2"/>`})}
         if(p.restr&&r.ends!==false)p.restr.bounds.forEach(b=>{if(b.v!='x')return;const my=p.f(b.val);if(!isFinite(my)||my<x0||my>x1||b.val<y0||b.val>y1||!p.restr.test(b.val,my))return;arrows+=`<circle data-i="${i}" cx="${sx(my).toFixed(1)}" cy="${sy(b.val).toFixed(1)}" r="5" fill="${b.incl?r.color:'#fff'}" stroke="${r.color}" stroke-width="2"/>`})}}
   });
   if(!NL){
