@@ -127,6 +127,14 @@ h3{font-size:13px;margin:12px 0 6px}
 .axespop-more{margin-top:12px;padding-top:8px;border-top:1px solid var(--line)}
 .axespop-more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);user-select:none;padding:2px 0}
 .axespop-more-body{margin-top:8px;display:grid;gap:2px}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--mute);padding:3px 8px;font-size:13px;border-radius:4px;line-height:1.25}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:500}
+.tools .exbtn[aria-expanded="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.expop{width:min(310px,calc(100vw - 44px))}
+.expop .exbtns{margin-top:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.expop .grid2{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 @media(pointer:fine){#mvb{display:none}}
 @media print{.zoomc,.axespop{display:none}}
 .kind.err{color:var(--bad)}
@@ -212,24 +220,6 @@ h3{font-size:13px;margin:12px 0 6px}
   </div>
 
   </div></section>
-<section class="sec closed"><h2><span class="n">2</span>View<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Answer key</b> shows everything. <b>Student copy</b> hides rows marked <b>Key</b> (use the ⋯ menu on a row). <b>Black and white</b> draws everything in black and turns shading into hatching, which photocopies better.</p></div>
-  <div class="grid3">
-    <label>Version<select id="ver" class="nosave" title="Student copy hides rows marked as answer key only"><option value="key">Answer key</option><option value="student">Student copy</option></select></label>
-    <label>Colors<select id="bw" class="nosave"><option value="color">Color</option><option value="bw">Black and white</option></select></label>
-  </div>
-</div></section>
-<section class="sec closed"><h2><span class="n">3</span>Export<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p>Save or copy the whole graph as a picture. <b>1×</b> is the size you see; choose a larger size for a sharper picture. The Google Docs settings control how copied equations are wrapped and what the cells of a piecewise table contain.</p></div>
-  <div class="grid3">
-    <label>PNG size<select id="esz" class="nosave"><option value="1" selected>1× (as shown)</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option></select></label>
-    <label>Background<select id="ebg" class="nosave"><option value="white">White</option><option value="clear">Transparent</option></select></label>
-  </div>
-  <div class="exbtns"><button type="button" id="dpng" class="primary">Save PNG</button><button type="button" id="dsvg">Save SVG</button><button type="button" id="cpy">Copy image</button><button type="button" id="prt">Print</button></div>
-  <h3>Google Docs equations</h3>
-  <div class="grid3">
-    <label>Wrap copied text in<select id="dwr" class="nosave"><option value="1" selected>$ … $</option><option value="2">$$ … $$</option><option value="0">No wrapper</option></select></label>
-    <label>Table cells hold<select id="dcm" class="nosave"><option value="plain" selected>Plain math text</option><option value="docs">Docs equation commands</option></select></label>
-  </div>
-</div></section>
 </aside>
 
 <main class="stage">
@@ -242,13 +232,44 @@ h3{font-size:13px;margin:12px 0 6px}
         <optgroup label="Trigonometry, degrees"><option value="deg">0° to 720°, 30° grid (two cycles)</option><option value="deg2">−360° to 360°, 30° grid</option></optgroup>
         </select>
     <span class="tsep" aria-hidden="true"></span>
-	<button type="button" id="cpy2" title="Copy the graph image">Copy image</button>
+    <div class="seg" role="group" aria-label="Version">
+      <button type="button" data-seg="ver" data-v="key" aria-pressed="true" title="Show all rows including answer key">Key</button>
+      <button type="button" data-seg="ver" data-v="student" aria-pressed="false" title="Hide rows marked as answer key only">Student</button>
+    </div>
+    <div class="seg" role="group" aria-label="Colors">
+      <button type="button" data-seg="bw" data-v="color" aria-pressed="true" title="Draw in color">Color</button>
+      <button type="button" data-seg="bw" data-v="bw" aria-pressed="false" title="Black and white for photocopying">B&amp;W</button>
+    </div>
+    <input type="hidden" id="ver" value="key" class="nosave">
+    <input type="hidden" id="bw" value="color" class="nosave">
+    <span class="tsep" aria-hidden="true"></span>
+    <button type="button" id="cpy2" title="Copy the graph image">Copy image</button>
+    <button type="button" id="exb" class="exbtn" aria-expanded="false" aria-controls="expop" title="Save, print, and export options">Export ▾</button>
+    <span class="tsep" aria-hidden="true"></span>
     <button type="button" id="sf" title="Download your setup as a file">Save file</button>
     <button type="button" id="of" title="Open a saved setup file">Open file</button>
     <button type="button" id="rst" class="danger" title="Clear everything and reset to defaults">Reset</button>
     <span id="saved" class="saved" role="status" aria-live="polite"></span>
     <input type="file" id="openf" accept=".json,application/json" hidden>
     <button type="button" id="gh" class="qm2" aria-label="Help for the graph" title="Help" aria-expanded="false">?</button>
+  </div>
+  <div id="expop" class="axespop expop" role="dialog" aria-label="Export and print" hidden>
+    <div class="axespop-hd"><span>Export &amp; print</span><button type="button" id="exh" class="qm" aria-label="Help for Export and print" title="Help" aria-expanded="false">?</button><button type="button" id="exx" class="axespop-x" aria-label="Close export options" title="Close">×</button></div>
+    <div id="exinfo" class="info" hidden><p>Save or print the graph as a picture. <b>1×</b> matches the screen size; choose 2×–4× for sharper prints. Google Docs settings control how copied equations are formatted.</p></div>
+    <div class="exbtns">
+      <button type="button" id="dpng" class="primary">Save PNG</button>
+      <button type="button" id="dsvg">Save SVG</button>
+      <button type="button" id="cpy">Copy image</button>
+      <button type="button" id="prt">Print</button>
+    </div>
+    <div class="grid2">
+      <label>PNG size<select id="esz" class="nosave"><option value="1" selected>1× (as shown)</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option></select></label>
+      <label>Background<select id="ebg" class="nosave"><option value="white">White</option><option value="clear">Transparent</option></select></label>
+    </div>
+    <div class="grid2">
+      <label>Docs wrapper<select id="dwr" class="nosave"><option value="1" selected>$ … $</option><option value="2">$$ … $$</option><option value="0">No wrapper</option></select></label>
+      <label>Piecewise cells<select id="dcm" class="nosave"><option value="plain" selected>Plain math text</option><option value="docs">Docs commands</option></select></label>
+    </div>
   </div>
   <div class="info" id="ginfo" hidden><p><b>Working with the graph</b></p><p>Drag to move the view. Hold Ctrl (Cmd on a Mac) and scroll to zoom, or use the + and − buttons. After you click the graph, plain scrolling, the arrow keys and + and − also work. The view snaps to the grid when you let go. On a touch screen, tap ✥ to drag the graph; otherwise your finger scrolls the page.</p><p>Drag a label to place it (double-click it to reset). Click a line or point to edit its row.</p><p>Ctrl+Z undoes and Ctrl+Shift+Z redoes. Your work saves automatically in this browser.</p><details><summary>Getting equations into Google Docs</summary><ul>
 <li>Use the <b>Copy for Docs</b> and <b>Copy as image</b> buttons under an equation, or the same options in the row’s ⋯ menu.</li>
@@ -989,28 +1010,43 @@ $('#rst').onclick=()=>{
   rows=[Object.assign({},ROWDEF)];
   const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',ls:'15',sol:'off',ver:'key',bw:'color'};
   Object.entries(defs).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
-  renderRows();draw();note('All work cleared.');
+  syncSeg();renderRows();draw();note('All work cleared.');
 };
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
 lastJ=JSON.stringify(getState());hist=[lastJ];hi=0;clearTimeout(hT);updHist();
 document.querySelectorAll('.qm').forEach(b=>{b.addEventListener('keydown',e=>e.stopPropagation());b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.sec');if(sec.classList.contains('closed'))sec.querySelector('h2').click();const inf=sec.querySelector('.info');inf.hidden=!inf.hidden;b.setAttribute('aria-expanded',String(!inf.hidden))})});
 $('#gh').onclick=()=>{const i=$('#ginfo');i.hidden=!i.hidden;$('#gh').setAttribute('aria-expanded',String(!i.hidden))};
-$('#ver').onchange=draw;$('#bw').onchange=draw;
+const syncSeg=()=>document.querySelectorAll('[data-seg]').forEach(b=>b.setAttribute('aria-pressed',String($('#'+b.dataset.seg).value===b.dataset.v)));
+document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>{const inp=$('#'+b.dataset.seg);if(inp.value!==b.dataset.v){inp.value=b.dataset.v;syncSeg();draw()}});
 const zoomBtn=f=>{if(!begin())return;mv=true;zoomAt(view.L+view.W/2,view.T+view.H/2,f);commit()};
 $('#zi').onclick=()=>zoomBtn(.5);$('#zo').onclick=()=>zoomBtn(2);
-const axPop=$('#axespop'),axBtn=$('#axb');
+const axPop=$('#axespop'),axBtn=$('#axb'),exPop=$('#expop'),exBtn=$('#exb');
 const closeAxes=()=>{if(!axPop.hidden){axPop.hidden=true;axBtn.setAttribute('aria-expanded','false')}};
+const closeExp=()=>{if(!exPop.hidden){exPop.hidden=true;exBtn.setAttribute('aria-expanded','false')}};
 const openAxes=()=>{
+  closeExp();
   const st=$('.stage').getBoundingClientRect(),b=axBtn.getBoundingClientRect();
   axPop.style.right=Math.max(8,st.right-b.right)+'px';
   axPop.style.top=Math.max(8,b.bottom-st.top+6)+'px';
   axPop.hidden=false;axBtn.setAttribute('aria-expanded','true');
 };
+const openExp=()=>{
+  closeAxes();
+  exPop.hidden=false;exBtn.setAttribute('aria-expanded','true');
+  const st=$('.stage').getBoundingClientRect(),b=exBtn.getBoundingClientRect();
+  exPop.style.left=Math.max(8,Math.min(b.left-st.left,st.width-exPop.offsetWidth-8))+'px';
+  exPop.style.top=Math.max(8,b.bottom-st.top+6)+'px';
+};
 axBtn.onclick=()=>axPop.hidden?openAxes():closeAxes();
-$('#axx').onclick=closeAxes;
+exBtn.onclick=()=>exPop.hidden?openExp():closeExp();
+$('#axx').onclick=closeAxes;$('#exx').onclick=closeExp();
 $('#axh').onclick=()=>{const i=$('#axinfo');i.hidden=!i.hidden;$('#axh').setAttribute('aria-expanded',String(!i.hidden))};
-document.addEventListener('pointerdown',e=>{if(!axPop.hidden&&!e.target.closest('#axespop')&&!e.target.closest('#axb'))closeAxes()});
-document.addEventListener('keydown',e=>{if(e.key=='Escape')closeAxes()});
+$('#exh').onclick=()=>{const i=$('#exinfo');i.hidden=!i.hidden;$('#exh').setAttribute('aria-expanded',String(!i.hidden))};
+document.addEventListener('pointerdown',e=>{
+  if(!axPop.hidden&&!e.target.closest('#axespop')&&!e.target.closest('#axb'))closeAxes();
+  if(!exPop.hidden&&!e.target.closest('#expop')&&!e.target.closest('#exb'))closeExp();
+});
+document.addEventListener('keydown',e=>{if(e.key=='Escape'){closeAxes();closeExp()}});
 $('#mvb').onclick=()=>{const on=wrap.classList.toggle('mv');$('#mvb').setAttribute('aria-pressed',String(!!on))};
 const onKey=e=>{if(e.target!==wrap)return;const k=e.key;let dx=0,dy=0,f=1;
   if(k=='ArrowLeft')dx=1;else if(k=='ArrowRight')dx=-1;else if(k=='ArrowUp')dy=1;else if(k=='ArrowDown')dy=-1;else if(k=='+'||k=='=')f=.5;else if(k=='-'||k=='_')f=2;else return;
