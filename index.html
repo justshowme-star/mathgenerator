@@ -98,10 +98,13 @@ h3{font-size:13px;margin:12px 0 6px}
 .trig{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mute)}
 .row:not([data-feat="1"]) .only-feat{display:none}
 .row:not([data-type="f"]):not([data-type="v"]) .only-kp,.row[data-ineq="1"] .only-kp,.row[data-type="v"] .only-fn{display:none}
-.kp-lbl[hidden],.inv-sub[hidden]{display:none}
+.kp-lbl[hidden],.inv-sub[hidden],.norm-sub[hidden]{display:none}
 .row:not([data-type="f"]):not([data-type="v"]) .only-inv,.row[data-ineq="1"] .only-inv{display:none}
+.row:not([data-type="vec"]) .only-vec,.row:not([data-norm="1"]) .only-norm{display:none}
+.row[data-fit="none"] .fitonly,.row:not([data-fit]) .fitonly{display:none}
 .row[data-type="imp"]:not([data-ineq="1"]) .kind::after{content:"Curve (circle, ellipse, or other)"}
 .row[data-type="param"] .kind::after{content:"Parametric curve"}
+.row[data-type="vec"] .kind::after{content:"2D Vector"}
 .calc .sm{width:68px;padding:3px 5px}
 .row:not([data-type="f"]) .only-calc,.row[data-ineq="1"] .only-calc{display:none}
 .ax-nlrow{padding:10px 0 8px;border-bottom:1px solid var(--line)}
@@ -220,9 +223,9 @@ h3{font-size:13px;margin:12px 0 6px}
 .sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
 .row:not([data-fit="sin"]) .sinonly{display:none}
 .rowbody{display:grid;gap:6px}
-.row.ac:not(:focus-within):not(.pin){padding:6px 10px}
-.row.ac:not(:focus-within):not(.pin) .rowbody{display:none}
-.row.ac:not(:focus-within):not(.pin) .fold{transform:rotate(-90deg)}
+.row.ac:not(:focus-within):not(.pin):not(.par-hold){padding:6px 10px}
+.row.ac:not(:focus-within):not(.pin):not(.par-hold) .rowbody{display:none}
+.row.ac:not(:focus-within):not(.pin):not(.par-hold) .fold{transform:rotate(-90deg)}
 .errline{font-size:12px;color:var(--bad)}.errline[hidden]{display:none}
 .pwtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tools{gap:8px;padding-bottom:10px;margin-bottom:10px;align-items:center}
@@ -248,7 +251,7 @@ h3{font-size:13px;margin:12px 0 6px}
     <input type="file" id="openf" class="nosave" accept=".json,application/json" hidden>
   </div>
 
-  <section class="sec"><h2>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>(cos(t), sin(t))</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy or save the equation as an image, copy it for Google Docs, or copy it as LaTeX or plain text. <b>Copy for Docs</b> and <b>Copy as image</b> buttons also sit under each equation. The <b>Key | Student</b> and <b>Color | B&amp;W</b> switches in the top toolbar toggle between the answer key and student copy, and between color and black and white.</p></div>
+  <section class="sec"><h2>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>(cos(t), sin(t))</code> <code>u = [3, 4]</code> <code>normpdf(x, 0, 1)</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy or save the equation as an image, copy it for Google Docs, or copy it as LaTeX or plain text. <b>Copy for Docs</b> and <b>Copy as image</b> buttons also sit under each equation. The <b>Key | Student</b> and <b>Color | B&amp;W</b> switches in the top toolbar toggle between the answer key and student copy, and between color and black and white.</p></div>
   <div class="symbar" id="symbar" role="toolbar" aria-label="Math symbols"><button type="button" data-ins="^2" data-back="0" title="Square" aria-label="Square">x²</button><button type="button" data-ins="^()" data-back="1" title="Power" aria-label="Power">xⁿ</button><button type="button" data-ins="√()" data-back="1" title="Square root" aria-label="Square root">√</button><button type="button" data-ins="()/()" data-back="4" title="Fraction" aria-label="Fraction">a/b</button><button type="button" data-ins="pi" data-back="0" title="Pi" aria-label="Pi">π</button><button type="button" data-ins="≤" data-back="0" title="Less than or equal to" aria-label="Less than or equal to">≤</button><button type="button" data-ins="≥" data-back="0" title="Greater than or equal to" aria-label="Greater than or equal to">≥</button><button type="button" data-ins="abs()" data-back="1" title="Absolute value" aria-label="Absolute value">|x|</button><button type="button" data-ins=" {}" data-back="1" title="Restriction" aria-label="Restriction">{ }</button><button type="button" data-ins="sin()" data-back="1" title="Sine" aria-label="Sine">sin</button><button type="button" data-ins="f(x) = " data-back="0" title="Function, like f(x) = x^2" aria-label="Function definition">f(x)</button><button type="button" data-pw="1" data-back="0" title="Piecewise function editor" aria-label="Piecewise function editor">Piecewise</button><button type="button" data-ins="ln()" data-back="1" title="Natural log" aria-label="Natural log">ln</button></div>
   <div id="rows"></div>
   <div id="params"></div>
@@ -457,13 +460,20 @@ const supify=(el,e)=>{if(el.tagName!='INPUT'||el.type!='text')return;const c=el.
   if(e&&/^[0-9]$/.test(e.data||''))h=h.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹])([0-9])$/,(m,a,b)=>a+SUPD[b]);
   h=h.replace(/(⁻?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)\.$/,(m,z)=>unsup(z)+'.');
   h=h.replace(/\^(-?)(\d+)(?![\d.])|\^([xy])(?![a-z])/g,(m,n,d,l)=>d?(n?'⁻':'')+[...d].map(z=>SUPD[z]).join(''):l=='x'?'ˣ':'ʸ');
-  h=h.replace(/<=/g,'\u2264').replace(/>=/g,'\u2265').replace(/sqrt/gi,'\u221a');
+  h=h.replace(/<=/g,'\u2264').replace(/>=/g,'\u2265').replace(/!=/g,'\u2260').replace(/sqrt/gi,'\u221a');
   if(h!==o){el.value=h+el.value.slice(c);el.setSelectionRange(h.length,h.length)}};
 const FN={sin:x=>Math.sin(x*KK()),cos:x=>Math.cos(x*KK()),tan:x=>Math.tan(x*KK()),sec:x=>1/Math.cos(x*KK()),csc:x=>1/Math.sin(x*KK()),cot:x=>1/Math.tan(x*KK()),arcsin:x=>Math.asin(x)/KK(),arccos:x=>Math.acos(x)/KK(),arctan:x=>Math.atan(x)/KK(),ln:Math.log,log:Math.log10,sqrt:Math.sqrt,abs:Math.abs};
 const NAMES=['arcsin','arccos','arctan','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','pi','x','y','e'];
 
+const deriv1=(fn,x)=>{const h=1e-5*Math.max(1,Math.abs(x));return(fn(x+h)-fn(x-h))/(2*h)};
+const deriv2=(fn,x)=>{const h=1e-4*Math.max(1,Math.abs(x));return(fn(x+h)-2*fn(x)+fn(x-h))/(h*h)};
+const normPdf=(x,mu=0,sig=1)=>sig>0?Math.exp(-.5*Math.pow((x-mu)/sig,2))/(sig*Math.sqrt(2*Math.PI)):NaN;
+const normCdf=z=>{const s=z<0?-1:1,x=Math.abs(z)/Math.SQRT2,t=1/(1+.3275911*x);
+  const y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);
+  return .5*(1+s*y)};
+
 function compile(src,pvar){
-  const t=unsup(src).replace(/[\u2212\u2013]/g,'-').replace(/\u03c0/g,'pi').replace(/\u221a/g,'sqrt').replace(/\s+/g,'').toLowerCase().replace(/\*\*/g,'^');
+  const t=unsup(src).replace(/[\u2212\u2013]/g,'-').replace(/[\u2018\u2019]/g,"'").replace(/\u03c0/g,'pi').replace(/\u221a/g,'sqrt').replace(/\s+/g,'').toLowerCase().replace(/\*\*/g,'^');
   let i=0,abs=0;const pk=()=>t[i];
   const expr=()=>{let v=term();while(pk()=='+'||pk()=='-'){const o=t[i++],l=v,r=term();v=o=='+'?(x,y,z)=>l(x,y,z)+r(x,y,z):(x,y,z)=>l(x,y,z)-r(x,y,z)}return v};
   const term=()=>{let v=unary();while(i<t.length&&(pk()=='*'||pk()=='/'||/[0-9.a-z(]/.test(pk())||(pk()=='|'&&!abs))){let o='*';if(pk()=='*'||pk()=='/')o=t[i++];const l=v,r=unary();v=o=='*'?(x,y,z)=>l(x,y,z)*r(x,y,z):(x,y,z)=>l(x,y,z)/r(x,y,z)}return v};
@@ -474,12 +484,18 @@ function compile(src,pvar){
     if(m){i+=m[0].length;const n=+m[0];return()=>n}
     if(pk()=='('){i++;const v=expr();if(pk()!=')')throw 0;i++;return v}
     if(pk()=='|'){i++;abs++;const v=expr();if(pk()!='|')throw 0;i++;abs--;return(x,y,z)=>Math.abs(v(x,y,z))}
+    m=rest.match(/^norm(?:al)?pdf\(/);
+    if(m){i+=m[0].length;const args=[expr()];while(pk()==','){i++;args.push(expr())}if(pk()!=')'||(args.length!=1&&args.length!=3))throw 0;i++;
+      return args.length==1?(x,y,z)=>normPdf(args[0](x,y,z)):(x,y,z)=>normPdf(args[0](x,y,z),args[1](x,y,z),args[2](x,y,z))}
     m=rest.match(/^log_(\d*\.?\d+)/);
     if(m){i+=m[0].length;const b=Math.log(+m[1]),a=pk()=='('?prim():power();return(x,y,z)=>Math.log(a(x,y,z))/b}
     if(pvar&&rest[0]==pvar&&!/[a-z]/.test(rest[1]||'')){i++;return(x,y,z)=>z}
     const nm=NAMES.find(n=>rest.startsWith(n));
     if(!nm){const ch=rest[0];
-      if(FUNCS[ch]){if(rest[1]!='(')throw 0;i++;const a=prim(),fn=FUNCS[ch];return(x,y,z)=>fn(a(x,y,z))}
+      if(FUNCS[ch]){
+        if(rest.startsWith(ch+"''(")){i+=3;const a=prim(),fn=FUNCS[ch];return(x,y,z)=>deriv2(fn,a(x,y,z))}
+        if(rest.startsWith(ch+"'(")){i+=2;const a=prim(),fn=FUNCS[ch];return(x,y,z)=>deriv1(fn,a(x,y,z))}
+        if(rest[1]!='(')throw 0;i++;const a=prim(),fn=FUNCS[ch];return(x,y,z)=>fn(a(x,y,z))}
       if(ch&&'abcdhkmnpqrstuvwz'.includes(ch)){i++;usedP.add(ch);if(!P[ch])P[ch]={v:1,mn:-10,mx:10,st:.1};return()=>P[ch].v}
       throw 0}
     i+=nm.length;
@@ -494,12 +510,12 @@ function diagnose(s){s=String(s||'').trim();if(!s)return'';
   if((s.match(/\{/g)||[]).length!=(s.match(/\}/g)||[]).length)return'The braces { } around the restriction don\u2019t match.';
   if(/=\s*\{[^]*:[^]*\}\s*$/.test(s))return'I can\u2019t read this piecewise function. Try y = {x < 0: x + 1, 0 \u2264 x < 2: x\u00b2, 3}.';
   const main=s.replace(/\{[^{}]*\}/g,'').trim();
-  if(/[+\-*\/^=<>\u2264\u2265\u221a]$/.test(main))return'Something is missing after \u201c'+main.slice(-1)+'\u201d.';
-  if(/^[*\/^=]/.test(main))return'Something is missing before \u201c'+main[0]+'\u201d.';
-  const cmp=main.match(/<=|>=|\u2264|\u2265|<|>/g)||[];
+  if(/[+\-*\/^=<>\u2264\u2265\u2260\u221a]$/.test(main))return'Something is missing after \u201c'+main.slice(-1)+'\u201d.';
+  if(/^[*\/^=\u2260]/.test(main))return'Something is missing before \u201c'+main[0]+'\u201d.';
+  const cmp=main.match(/<=|>=|\u2264|\u2265|!=|\u2260|<|>/g)||[];
   if(cmp.length>2||(cmp.length==2&&/[yY]/.test(main)))return'Use one 2D inequality per row, or a 1D chain like \u22122 < x \u2264 4.';
   if((main.match(/=/g)||[]).length>1&&!cmp.length)return'Use only one = sign in a row.';
-  const known=['x','y','e','pi','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','arcsin','arccos','arctan'];
+  const known=['x','y','e','pi','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','arcsin','arccos','arctan','normpdf','normalpdf'];
   for(const t of (main.toLowerCase().replace(/log_\d+/g,'log').match(/[a-z]+/g)||[])){if(known.includes(t))continue;
     if(t.length>1&&!/^[abcdhkmnpqrstuvwz]+$/.test(t))return'I don\u2019t recognize \u201c'+t+'\u201d.';
     if(t.length==1&&/[ijlo]/.test(t))return'\u201c'+t+'\u201d isn\u2019t a variable I know. Use x, y, or a slider letter like a, b or k.';
@@ -600,7 +616,7 @@ function tableEditorHTML(r,i){const t=r.tbl,ck=k=>t[k]?' checked':'';
   return `<div class="tbl"><div class="tblscroll"><table class="tbltab"><thead><tr><th>x</th><th>y</th><th></th></tr></thead><tbody>${t.rows.map((q,k)=>`<tr><td><input data-tc="0" data-ti="${k}" value="${esc(q[0])}" aria-label="x value ${k+1}" inputmode="decimal"></td><td><input data-tc="1" data-ti="${k}" value="${esc(q[1])}" aria-label="y value ${k+1}" inputmode="decimal"></td><td><button type="button" class="pwx" data-act="tdel" data-ti="${k}" aria-label="Remove this row" title="Remove this row">\u00d7</button></td></tr>`).join('')}</tbody></table></div>
 <div class="pwbar"><button type="button" data-act="tadd">+ Add row</button><button type="button" data-act="tclear">Clear</button></div>
 <div class="tblopts"><label class="chk"><input type="checkbox" data-tk="conn"${ck('conn')}>Connect the points</label><label class="chk"><input type="checkbox" data-tk="names"${ck('names')}>Name the points A, B, C</label><label class="chk"><input type="checkbox" data-tk="coords"${ck('coords')}>Show coordinates</label></div>
-<div class="tblopts"><label>Best fit<select data-tk="fit">${sel([['none','None'],['linear','Linear'],['quad','Quadratic'],['cubic','Cubic'],['exp','Exponential'],['log','Logarithmic'],['pow','Power'],['sin','Sinusoidal']],t.fit||'none')}</select></label><label class="chk"><input type="checkbox" data-tk="showEq"${ck('showEq')}>Show the equation on the graph</label></div>
+<div class="tblopts"><label>Best fit<select data-tk="fit">${sel([['none','None'],['linear','Linear'],['quad','Quadratic'],['cubic','Cubic'],['exp','Exponential'],['log','Logarithmic'],['pow','Power'],['sin','Sinusoidal']],t.fit||'none')}</select></label><label class="chk"><input type="checkbox" data-tk="showEq"${ck('showEq')}>Show the equation on the graph</label><label class="chk fitonly"><input type="checkbox" data-tk="resid"${ck('resid')}>Show residual plot (y − ŷ)</label></div>
 <label class="sinonly">Period (optional, in x units)<input data-tk="period" value="${esc(t.period||'')}" placeholder="e.g. 12" inputmode="decimal"></label>
 <div class="tblfit" role="status" aria-live="polite"></div><div class="pwbar"><button type="button" data-act="tfitrow">Add the best fit as a new row</button></div></div>`}
 function tblEdit(e){const t=e.target,rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;
@@ -611,7 +627,7 @@ function tblAct(a,i,t){const r=rows[i];if(!r||!r.tbl)return;
   if(a=='tadd')r.tbl.rows.push(['','']);
   else if(a=='tdel'){if(r.tbl.rows.length<2)r.tbl.rows=[['','']];else r.tbl.rows.splice(+t.dataset.ti,1)}
   else if(a=='tclear')r.tbl.rows=[['',''],['',''],['','']];
-  else if(a=='tfitrow'){const f=fitOf(parseTable(r).pts,r.tbl.fit,r.tbl.period);if(!f||!f.expr){toast(f&&f.msg?f.msg:'Choose a best fit first.');return}rows.splice(i+1,0,Object.assign({},ROWDEF,{eq:f.expr}))}
+  else if(a=='tfitrow'){const f=fitOf(parseTable(r).pts,r.tbl.fit,r.tbl.period);if(!f||!f.expr){toast(f&&f.msg?f.msg:'Choose a best fit first.');return}rows.splice(i+1,0,Object.assign({},ROWDEF,{eq:f.expr}));rows.forEach(q=>{if(q.c_base&&q.c_base!='axis'&&+q.c_base>i)q.c_base=String(+q.c_base+1)})}
   tblSync(r);renderRows();draw();
   if(a!='tadd')focusRow(i);
   if(a=='tadd'){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-tc="0"]');if(q&&q.length)focusIn(el,q[q.length-1])}}
@@ -633,7 +649,7 @@ function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'',c:''},{e:''
 function pwFromPalette(el){const rw=el&&el.closest?el.closest('.row'):null;
   if(rw&&el.classList.contains('eq')){const i=+rw.dataset.i,r=rows[i],m=String(r.eq).match(/^\s*(y|[a-wzA-WZ]\s*\(\s*x\s*\))\s*=?\s*$/);
     if(!r.eq.trim()||m){newPW(i,m?m[1].replace(/\s+/g,''):'y');return}
-    rows.splice(i+1,0,Object.assign({},ROWDEF));newPW(i+1,'y');return}
+    rows.splice(i+1,0,Object.assign({},ROWDEF));rows.forEach(q=>{if(q.c_base&&q.c_base!='axis'&&+q.c_base>i)q.c_base=String(+q.c_base+1)});newPW(i+1,'y');return}
   let k=rows.findIndex(r=>!String(r.eq).trim());if(k<0){rows.push(Object.assign({},ROWDEF));k=rows.length-1}newPW(k,'y')}
 function pwAct(a,i,t){const r=rows[i];if(!r)return;let at=-1;
   if(a=='pwtext')r.pwEd=false;
@@ -661,9 +677,42 @@ function parseRestr(str){const cs=[],ss=[],bounds=[];
       if(isV(A)&&cv(B)!=null)bounds.push({v:A,val:cv(B),incl});
       else if(isV(B)&&cv(A)!=null)bounds.push({v:B,val:cv(A),incl})})}));
   if(!cs.length)throw 0;return{test:(x,y)=>cs.every(c=>c(x,y)),strict:(x,y)=>ss.every(c=>c(x,y)),bounds}}
+var VECS={};
+function splitSum(str){const out=[];let d=0,b=0,a=0,cur='',sgn=1;
+  for(let i=0;i<str.length;i++){const c=str[i];
+    if(c=='(')d++;else if(c==')')d--;else if(c=='[')b++;else if(c==']')b--;else if(c=='<')a++;else if(c=='>')a--;
+    if(d==0&&b==0&&a==0&&(c=='+'||c=='-')){if(cur.trim())out.push([sgn,cur.trim()]);sgn=c=='-'?-1:1;cur=''}
+    else cur+=c}
+  if(cur.trim())out.push([sgn,cur.trim()]);return out}
+function evalVec(expr){const terms=splitSum(expr);if(!terms.length)return null;let dx=0,dy=0;const list=[];
+  for(const[sgn,raw]of terms){
+    const bm=raw.match(/^(.*?)(?:\[(.*)\]|<(.*)>)$/);
+    if(bm){const sc=bm[1].trim()?compile(bm[1].trim())(0,0):1,parts=splitTop(bm[2]!==undefined?bm[2]:bm[3],',');
+      if(parts.length!=2||!parts[0].trim()||!parts[1].trim())return null;
+      const vx=sgn*sc*compile(parts[0])(0,0),vy=sgn*sc*compile(parts[1])(0,0);
+      if(!isFinite(vx)||!isFinite(vy))return null;dx+=vx;dy+=vy;list.push({dx:vx,dy:vy});continue}
+    const vm=raw.match(/^(.*?)([a-zA-Z]'*)$/);
+    if(vm&&VECS[vm[2]]){const sc=vm[1].trim()?compile(vm[1].trim())(0,0):1,v=VECS[vm[2]];
+      const vx=sgn*sc*v.dx,vy=sgn*sc*v.dy;if(!isFinite(vx)||!isFinite(vy))return null;dx+=vx;dy+=vy;list.push({dx:vx,dy:vy,name:vm[2]});continue}
+    return null}
+  return{dx,dy,terms:list}}
+function parseVecRow(s){
+  let tx=0,ty=0,body=s;
+  const tm=body.match(/^(.*?)\s*(?:at|@)\s*\(\s*([^,()]+)\s*,\s*([^,()]+)\s*\)\s*$/i);
+  if(tm){body=tm[1].trim();tx=compile(tm[2])(0,0);ty=compile(tm[3])(0,0);if(!isFinite(tx)||!isFinite(ty))throw 0}
+  const em=body.match(/^([a-wzA-WZ]'*)\s*=\s*(.+)$/);if(!em&&body.includes('='))return null;
+  const vname=em?em[1]:null,rhs=em?em[2].trim():body;
+  if(!em&&!/[\[\]<>]/.test(rhs)&&!Object.keys(VECS).some(k=>new RegExp('(?:^|[^a-zA-Z])'+k.replace("'","'")+'(?![a-zA-Z])').test(rhs)))return null;
+  const ev=evalVec(rhs);if(!ev)return null;
+  return{type:'vec',vname,dx:ev.dx,dy:ev.dy,tx,ty,terms:ev.terms,label:vname||rhs}}
+function normInfo(str){const m=str.match(/norm(?:al)?pdf\s*\(([^()]*)\)/i);if(!m)return null;
+  const a=splitTop(m[1],',');if(a.length==1)return{mu:()=>0,sig:()=>1};
+  if(a.length==3)return{mu:()=>compile(a[1])(0,0),sig:()=>compile(a[2])(0,0)};return null}
+
 function parseRow(s){
-  s=s.replace(/[\u2212\u2013]/g,'-').trim();if(!s)return null;
+  s=s.replace(/[\u2212\u2013]/g,'-').replace(/[\u2018\u2019]/g,"'").trim();if(!s)return null;
   {const pw=parsePW(s);if(pw)return pw}
+  {const vr=parseVecRow(s);if(vr)return vr}
   let restr=null;const rm=s.match(/^([^{}]*?)\s*((?:\{[^{}]*\}\s*)+)$/);
   const raw=rm?rm[1].trim():s;
   const pre=/([A-Za-z]'*)?\s*\(\s*(-?\d*\.?\d+)\s*,\s*(-?\d*\.?\d+)\s*\)/g;
@@ -686,7 +735,7 @@ function parseRow(s){
       return{type:'param',fx,fy,t0,t1}}}
   if(rm){s=rm[1].trim();restr=parseRestr(rm[2]);if(!s)throw 0}
   const dm=s.match(/^([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*(.+)$/);
-  if(dm)return{type:'f',f:compile(dm[2]),name:dm[1].toLowerCase(),restr}
+  if(dm)return{type:'f',f:compile(dm[2]),name:dm[1].toLowerCase(),restr,norm:normInfo(dm[2])}
   const pre1=/([A-Z]'*)?\s*\(\s*(-?\d*\.?\d+)\s*\)/g;
   const pts1=[...s.matchAll(pre1)];
   if(pts1.length&&s.replace(pre1,'').replace(/[\s,]/g,'')==='')return{type:'pts',pts:pts1.map(m=>({n:m[1]||'',x:+m[2],y:0})),is1D:true};
@@ -699,6 +748,10 @@ function parseRow(s){
     const loB=h1.right?h1:h2,hiB=h1.right?h2:h1;if(loB.right===hiB.right)throw 0;
     const empty=loB.c>hiB.c||(Math.abs(loB.c-hiB.c)<1e-9&&(!loB.incl||!hiB.incl));
     return{type:'v',c:empty?NaN:loB.c,hi:empty?NaN:hiB.c,ineq:{lt:false,incl:loB.incl,right:true,hiIncl:hiB.incl,compound:true},restr}}
+  const nm=s.match(/^(.*?)(!=|\u2260)(.*)$/);
+  if(nm){const fa=compile(nm[1]),fb=compile(nm[3]),d=x=>fa(x,0)-fb(x,0);if(fa(0,0)!==fa(0,1)||fb(0,0)!==fb(0,1))throw 0;
+    const a=d(0),b=d(1)-a,tx=1e-9*Math.max(1,Math.abs(b));if(!isFinite(a)||!b||!(Math.abs((d(2)-d(1))-b)<=tx)||!(Math.abs((d(.37)-a)-.37*b)<=tx))throw 0;
+    return{type:'v',c:-a/b,neq:true,restr}}
   const im=s.match(/^(.*?)(<=|>=|\u2264|\u2265|<|>)(.*)$/);let ineq=null;
   const parts=im?[im[1],im[3]]:s.split('=');if(parts.length>2)throw 0;
   if(im)ineq={lt:im[2][0]=='<'||im[2]=='\u2264',incl:im[2].length==2||im[2]=='\u2264'||im[2]=='\u2265'};
@@ -706,12 +759,14 @@ function parseRow(s){
   if(parts.length==1){const f=compile(parts[0]);g=(x,y)=>y-f(x,y)}
   else{const a=compile(parts[0]),b=compile(parts[1]);g=(x,y)=>a(x,y)-b(x,y)}
   const X0=[.5,2.3,7.1,-3.3,13.7,25,-11,60,-40].find(t=>isFinite(g(t,1)-g(t,0)));if(X0===undefined)return{type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
-  const dy=g(X0,1)-g(X0,0);
+  const dy=g(X0,1)-g(X0,0),ty=1e-9*Math.max(1,Math.abs(dy));
   const IMP={type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
-  if(Math.abs((g(X0,2)-g(X0,1))-dy)>1e-9*Math.max(1,Math.abs(dy)))return IMP;
-  if(dy===0){const a=g(0,0),b=g(1,0)-a;if(!isFinite(a)||!b)throw 0;
-    if(Math.abs((g(2,0)-g(1,0))-b)>1e-9*Math.max(1,Math.abs(b)))return IMP;return{type:'v',c:-a/b,ineq:ineq&&{...ineq,right:(ineq.lt?1:-1)*b<0},restr}}
-  return{type:'f',f:x=>{const a=g(x,0);return -a/(g(x,1)-a)},ineq:ineq&&{...ineq,above:(ineq.lt?1:-1)*dy<0},restr}}
+  if(!(Math.abs((g(X0,2)-g(X0,1))-dy)<=ty)||!(Math.abs((g(X0,.37)-g(X0,0))-.37*dy)<=ty))return IMP;
+  if(dy===0){const a=g(0,0),b=g(1,0)-a,tx=1e-9*Math.max(1,Math.abs(b));if(!isFinite(a)||!isFinite(b))throw 0;
+    if(!(Math.abs((g(2,0)-g(1,0))-b)<=tx)||!(Math.abs((g(.37,0)-a)-.37*b)<=tx))return IMP;
+    if(!b)throw 0;
+    return{type:'v',c:-a/b,ineq:ineq&&{...ineq,right:(ineq.lt?1:-1)*b<0},restr}}
+  return{type:'f',f:x=>{const a=g(x,0);return -a/(g(x,1)-a)},ineq:ineq&&{...ineq,above:(ineq.lt?1:-1)*dy<0},restr,norm:!ineq?normInfo(s):null}}
 
 const COLORS=['#000000'];
 let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
@@ -729,12 +784,16 @@ function renderRows(){
 <div class="pvrow"><div class="pv" data-pv="eq" hidden></div><div class="pvbtns" hidden><button type="button" class="pvcopy" data-act="cdoc" title="Copy as a Google Docs equation (a table for piecewise functions)">Copy for Docs</button><button type="button" class="pvcopy" data-act="cimg" title="Copy a picture of the equation">Copy as image</button></div></div>
 <div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
 <div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
-<details data-d="k" class="only-kp"${(r.ui&&r.ui.k!==undefined)?(r.ui.k?' open':''):((r.k_xint||r.k_yint||r.k_ext||r.k_poi)?' open':'')}><summary>Key points</summary><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates</label></div></details>
+<details data-d="k" class="only-kp"${(r.ui&&r.ui.k!==undefined)?(r.ui.k?' open':''):((r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?' open':'')}><summary>Key points &amp; symmetry</summary><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk only-fn"><input type="checkbox" data-k="k_inf"${r.k_inf?' checked':''}>Inflection points</label><label class="chk only-fn"><input type="checkbox" data-k="k_aos"${r.k_aos?' checked':''}>Axis of symmetry</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates / equation</label></div></details>
 <details data-d="inv" class="only-inv"${(r.ui&&r.ui.inv!==undefined)?(r.ui.inv?' open':''):(r.inv?' open':'')}><summary>Inverse function</summary><div class="g2"><label class="chk wide"><input type="checkbox" data-k="inv"${r.inv?' checked':''}>Show inverse <i>f</i><sup>−1</sup>(<i>x</i>) (swap <i>x</i> and <i>y</i>)</label><label class="chk wide inv-sub"${r.inv?'':' hidden'}><input type="checkbox" data-k="invmir"${r.invmir!==false?' checked':''}>Show dashed <i>y</i> = <i>x</i> mirror line</label></div></details>
+<details data-d="v" class="only-vec"${(r.ui&&r.ui.v!==undefined)?(r.ui.v?' open':''):((r.v_mag||r.v_comp||r.v_t2t)?' open':'')}><summary>Vector options</summary><div class="g2"><label class="chk wide"><input type="checkbox" data-k="v_mag"${r.v_mag?' checked':''}>Show magnitude |v| and angle θ</label><label class="chk wide"><input type="checkbox" data-k="v_comp"${r.v_comp?' checked':''}>Show x and y components</label><label class="chk wide"><input type="checkbox" data-k="v_t2t"${r.v_t2t?' checked':''}>Show tip-to-tail sum (for u ± v)</label></div></details>
+<details data-d="norm" class="only-norm"${(r.ui&&r.ui.norm!==undefined)?(r.ui.norm?' open':''):(r.n_shade?' open':'')}><summary>Normal probability</summary><div class="g2 calc"><label class="chk wide"><input type="checkbox" data-k="n_shade"${r.n_shade?' checked':''}>Shade probability region</label><label class="wide norm-sub"${r.n_shade?'':' hidden'}>Region<select data-k="n_tail">${sel([['between','Between a and b (a ≤ X ≤ b)'],['left','Left tail (X ≤ b)'],['right','Right tail (X ≥ a)']],r.n_tail||'between')}</select></label><label class="norm-sub"${r.n_shade?'':' hidden'}>From a<input data-k="n_a" value="${esc(r.n_a??'-1')}"></label><label class="norm-sub"${r.n_shade?'':' hidden'}>To b<input data-k="n_b" value="${esc(r.n_b??'1')}"></label><label class="chk wide norm-sub"${r.n_shade?'':' hidden'}><input type="checkbox" data-k="n_prob"${r.n_prob!==false?' checked':''}>Show probability P and z-scores</label></div></details>
 <div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>
 <details data-d="c" class="only-calc"${op('c')}><summary>Calculus tools</summary><div class="g2 calc">
+<label class="chk wide"><input type="checkbox" data-k="c_d1"${r.c_d1?' checked':''}>Show first derivative f′(x)</label>
+<label class="chk wide"><input type="checkbox" data-k="c_d2"${r.c_d2?' checked':''}>Show second derivative f″(x)</label>
 <label class="chk wide"><input type="checkbox" data-k="c_tan"${r.c_tan?' checked':''}>Tangent line at x = <input class="sm" data-k="c_ta" value="${esc(r.c_ta??'1')}"></label>
 <label class="chk wide" style="padding-left:20px"><input type="checkbox" data-k="c_taneq"${r.c_taneq?' checked':''}>Show tangent equation</label>
 <label class="chk wide"><input type="checkbox" data-k="c_sec"${r.c_sec?' checked':''}>Secant line from x = <input class="sm" data-k="c_sa" value="${esc(r.c_sa??'0')}"> to <input class="sm" data-k="c_sb" value="${esc(r.c_sb??'2')}"></label>
@@ -746,7 +805,7 @@ function renderRows(){
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
 const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='menu'){rowMenu(e.target,i);return}
   if(a=='cdoc'||a=='cimg'){copyEq(i,a);return}
@@ -769,9 +828,10 @@ function draw(){
       if(r.color&&r.color!=='#000000'&&(r.dash||'solid')==='solid'){if(!cmap[r.color])cmap[r.color]=['dashed','dotted','dashdot'][cix++%3];o.dash=cmap[r.color]}}
     if(STU&&r.keyonly)o={...o,vis:false,labOn:false};return o}):rows;
   document.querySelectorAll('.row').forEach((el,i)=>el.classList.toggle('keyhid',STU&&!!(rows[i]&&rows[i].keyonly)));
-  usedP=new Set();FUNCS={};FD={};KDEG=$('#tm').value=='deg';
+  usedP=new Set();FUNCS={};FD={};VECS={};KDEG=$('#tm').value=='deg';
   RW.forEach(r=>{const m=String(r.eq||'').match(/^\s*([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*([^{}]*?)\s*(\{[^{}]*\}\s*)*$/);const pw=pwTry(r.eq),n=pw&&pw.name?pw.name:(m?m[1].toLowerCase():null);if(n){let d=0;FUNCS[n]=x=>{if(d>8)return NaN;d++;try{return FD[n]?FD[n](x,0):NaN}finally{d--}};r._fn=[n,pw&&pw.name?null:m[2],pw&&pw.name?pw:null]}else r._fn=null});
   RW.forEach(r=>{if(r._fn){try{FD[r._fn[0]]=r._fn[2]?r._fn[2].f:compile(r._fn[1])}catch(e){}}});
+  RW.forEach(r=>{try{const v=parseVecRow(String(r.eq||'').replace(/[\u2212\u2013]/g,'-').replace(/[\u2018\u2019]/g,"'").trim());if(v&&v.vname)VECS[v.vname]=v}catch(e){}});
   let x0=val('x0'),x1=val('x1'),xs=val('xs'),y0=val('y0'),y1=val('y1'),ys=val('ys');
   if(live)({x0,x1,xs,y0,y1,ys}=live);
   const fig=$('#fig');
@@ -901,7 +961,7 @@ function draw(){
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
   RW.forEach((r,i)=>{
     let p=null;
-    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe)fe.textContent=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):''}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
+    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe){let ft=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):'';if(p.fit&&p.fit.f&&p.tbl.resid){const ssr=p.pts.reduce((s,q)=>s+Math.pow(q.y-p.fit.f(q.x),2),0);ft+='  \u00b7  SSR = '+ssr.toPrecision(4)}fe.textContent=ft}}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='',rowEls[i].dataset.norm=p&&p.norm?'1':'')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='',rowEls[i].dataset.norm='');return}
     if(!p)return;
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 4 2 4"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
@@ -925,7 +985,29 @@ function draw(){
       if(p.conn&&r.vis!==false&&p.pts.length>1){const dd=p.pts.map((q,k)=>(k?'L':'M')+sx(q.x).toFixed(1)+' '+sy(q.y).toFixed(1)).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${Math.max(1,r.w*.7)}" stroke-linejoin="round" stroke-linecap="round"/>`}
       if(p.fit&&p.fit.f&&r.vis!==false){const sg=trace(p.fit.f),dd=sg.map(z=>'M'+z.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
         if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dash}/>`;
-        if(p.tbl.showEq&&r.labOn!==false){const xm=Math.max(...p.pts.map(q=>q.x)),ym=p.fit.f(xm);if(isFinite(ym))labels+=lab(p.fit.text,ls,halo,'translate(0 0)',sx(xm)+10,sy(ym)-12,'start',i,'f')}}
+        if(p.tbl.showEq&&r.labOn!==false){const xm=Math.max(...p.pts.map(q=>q.x)),ym=p.fit.f(xm);if(isFinite(ym))labels+=lab(p.fit.text,ls,halo,'translate(0 0)',sx(xm)+10,sy(ym)-12,'start',i,'f')}
+        if(p.tbl.resid){p.pts.forEach((q,qi)=>{const res=q.y-p.fit.f(q.x);if(!isFinite(res))return;const px=sx(q.x),py=sy(res),py0=sy(0);
+          lines+=`<line data-i="${i}" x1="${px.toFixed(1)}" y1="${py0.toFixed(1)}" x2="${px.toFixed(1)}" y2="${py.toFixed(1)}" stroke="${r.color}" stroke-width="1.2" stroke-dasharray="3 3" opacity=".65"/>`;
+          arrows+=`<polygon data-i="${i}" points="${px.toFixed(1)},${(py-5.5).toFixed(1)} ${(px+5.5).toFixed(1)},${py.toFixed(1)} ${px.toFixed(1)},${(py+5.5).toFixed(1)} ${(px-5.5).toFixed(1)},${py.toFixed(1)}" fill="${r.color}" stroke="#fff" stroke-width="1.2"/>`;
+          if((r.coords||p.coords)&&r.labOn!==false)labels+=lab(`(${fmt(q.x)}, ${fmt(res)})`,ls,halo,'translate(0 0)',px,py+(res>=0?-11:ls+7),'middle',i,'rs'+qi)})}}
+      return}
+    if(p.type=='vec'){if(r.vis===false)return;
+      const xA=p.tx,yA=p.ty,xB=xA+p.dx,yB=yA+p.dy,px0=sx(xA),py0=sy(yA),px1=sx(xB),py1=sy(yB);
+      const len=Math.hypot(px1-px0,py1-py0),sz=10+r.w*1.6,hw=sz*.42,ang=Math.atan2(py1-py0,px1-px0);
+      const ex=len>sz?px1-Math.cos(ang)*(sz*.7):px0,ey=len>sz?py1-Math.sin(ang)*(sz*.7):py0;
+      if(r.v_comp&&(Math.abs(p.dx)>1e-9||Math.abs(p.dy)>1e-9)){const pxC=sx(xB),pyC=sy(yA);
+        lines+=`<path data-i="${i}" d="M${px0.toFixed(1)} ${py0.toFixed(1)}H${pxC.toFixed(1)}V${py1.toFixed(1)}" fill="none" stroke="${r.color}" stroke-width="1.4" stroke-dasharray="5 4" opacity=".7"/>`}
+      if(r.v_t2t&&p.terms&&p.terms.length==2){const t0=p.terms[0],t1=p.terms[1],mx=sx(xA+t0.dx),my=sy(yA+t0.dy),ln2=Math.hypot(px1-mx,py1-my),a2=Math.atan2(py1-my,px1-mx);
+        if(ln2>2){lines+=`<line data-i="${i}" x1="${mx.toFixed(1)}" y1="${my.toFixed(1)}" x2="${px1.toFixed(1)}" y2="${py1.toFixed(1)}" stroke="${r.color}" stroke-width="${Math.max(1.5,r.w*.8)}" stroke-dasharray="6 4" opacity=".75"/>`;
+          arrows+=`<polygon data-i="${i}" points="0,0 ${-sz*.85},${-hw*.85} ${-sz*.85},${hw*.85}" fill="${r.color}" opacity=".85" transform="translate(${px1.toFixed(1)} ${py1.toFixed(1)}) rotate(${(a2*180/Math.PI).toFixed(1)})"/>`}}
+      if(len>1)lines+=`<line data-i="${i}" x1="${px0.toFixed(1)}" y1="${py0.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" ${dash}/>`;
+      arrows+=`<circle data-i="${i}" cx="${px0.toFixed(1)}" cy="${py0.toFixed(1)}" r="3.2" fill="${r.color}"/>`;
+      if(len>1)arrows+=`<polygon data-i="${i}" points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${px1.toFixed(1)} ${py1.toFixed(1)}) rotate(${(ang*180/Math.PI).toFixed(1)})"/>`;
+      let vt=r.lab||(r.labOn!==false?p.label:'');
+      if(r.v_mag){const mg=Math.hypot(p.dx,p.dy);let th=Math.atan2(p.dy,p.dx);if(th<0)th+=2*Math.PI;const thTxt=KDEG?fmt(th*180/Math.PI)+'\u00b0':fmt(th)+' rad';
+        const mt=`|${p.vname||'v'}| = ${fmt(mg)}, \u03b8 = ${thTxt}`;vt=vt?vt+'  ('+mt+')':mt}
+      if(vt&&r.labOn!==false){const[dx,dy,an]={above:[0,-9,'middle'],below:[0,ls+5,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];
+        labels+=lab(vt,ls,halo,'translate(0 0)',(px0+px1)/2+dx,(py0+py1)/2+dy,an,i,0)}
       return}
     let segs;if(p.type=='f'&&!p.ineq){FNS[i]=p.f;RESTRS[i]=p.restr}if(p.type=='v'&&!p.ineq){VLINES[i]=p.c;RESTRS[i]=p.restr}
     if(p.type=='param'){const N=500;segs=[];let cu=[],pp=null;for(let k=0;k<=N;k++){const t=p.t0+(p.t1-p.t0)*k/N,mx=p.fx(0,0,t),my=p.fy(0,0,t);if(!isFinite(mx)||!isFinite(my)||Math.abs(mx)>1e6||Math.abs(my)>1e6){if(cu.length)segs.push(cu);cu=[];pp=null;continue}const pt=[sx(mx),sy(my)];if(pp&&Math.hypot(pt[0]-pp[0],pt[1]-pp[1])>Math.max(W,H)*1.2){segs.push(cu);cu=[]}cu.push(pt);pp=pt}if(cu.length)segs.push(cu)}
@@ -942,7 +1024,7 @@ function draw(){
       if(ft.va.length||ft.ha.length||ft.sa.length||ft.holes.length){rowEls[i]&&(rowEls[i].dataset.feat='1');
         if(r.asym!==false&&r.vis!==false){
           const dl=(a,b,c,d)=>`<line data-i="${i}" pointer-events="none" x1="${a.toFixed(1)}" y1="${b.toFixed(1)}" x2="${c.toFixed(1)}" y2="${d.toFixed(1)}" stroke="${r.color}" stroke-width="1.4" stroke-dasharray="7 5" opacity=".75"/>`;
-          ft.va.forEach(c=>{lines+=dl(sx(c),T,sx(c),T+H)});ft.ha.forEach(L=>{lines+=dl(L,sy(L),L+W,sy(L))});
+          ft.va.forEach(c=>{lines+=dl(sx(c),T,sx(c),T+H)});ft.ha.forEach(yA=>{lines+=dl(L,sy(yA),L+W,sy(yA))});
           ft.sa.forEach(([m,b])=>{const ya=y0-(y1-y0),yb=y1+(y1-y0),xa=Math.max(x0,Math.min(x1,(ya-b)/m)),xb=Math.max(x0,Math.min(x1,(yb-b)/m)),lo=Math.min(xa,xb),hi=Math.max(xa,xb);if(lo<hi)lines+=dl(sx(lo),sy(m*lo+b),sx(hi),sy(m*hi+b))});
           ft.holes.forEach(([hx,hy])=>{if(hx>=x0&&hx<=x1&&hy>=y0&&hy<=y1)arrows+=`<circle data-i="${i}" cx="${sx(hx).toFixed(1)}" cy="${sy(hy).toFixed(1)}" r="4.5" fill="#fff" stroke="${r.color}" stroke-width="2"/>`})}}}
     const dsh=p.ineq?(p.ineq.incl?'':'stroke-dasharray="9 6"'):dash;
@@ -985,8 +1067,9 @@ function draw(){
   if(!NL){
     const safe=(fn,x)=>{try{return fn(x)}catch(e){return NaN}},snap0=v=>Math.abs(v)<1e-7?0:v;
     const cont=(fn,x)=>{const d=Math.max(1e-6,(x1-x0)*1e-6),a=safe(fn,x-d),b=safe(fn,x+d),c=safe(fn,x);return isFinite(a)&&isFinite(b)&&isFinite(c)&&Math.abs(a-b)<(y1-y0)*.25&&Math.abs(c-(a+b)/2)<(y1-y0)*.25};
+    const cont1=(fn,x)=>{const d=Math.max(1e-6,(x1-x0)*1e-6),a=safe(fn,x-d),b=safe(fn,x+d),c=safe(fn,x),lim=(y1-y0)*.25;if(!isFinite(c))return false;const okL=isFinite(a)&&Math.abs(c-a)<lim,okR=isFinite(b)&&Math.abs(c-b)<lim;return(okL&&okR)?(Math.abs(a-b)<lim&&Math.abs(c-(a+b)/2)<lim):(okL||okR)};
     const rootsOf=fn=>{const out=[],N=400,dx=(x1-x0)/N,xs2=[],ys2=[];for(let k=0;k<=N;k++){const x=x0+k*dx;xs2.push(x);ys2.push(safe(fn,x))}
-      for(let k=0;k<=N;k++){if(isFinite(ys2[k])&&Math.abs(ys2[k])<1e-10&&cont(fn,xs2[k]))out.push(xs2[k]);
+      for(let k=0;k<=N;k++){if(isFinite(ys2[k])&&Math.abs(ys2[k])<1e-10&&cont1(fn,xs2[k]))out.push(xs2[k]);
         if(k<N&&isFinite(ys2[k])&&isFinite(ys2[k+1])){if(ys2[k]*ys2[k+1]<0){let lo=xs2[k],hi=xs2[k+1],fa=ys2[k];for(let t=0;t<42;t++){const m=(lo+hi)/2,fm=safe(fn,m);if(!isFinite(fm))break;if(fa*fm<=0)hi=m;else{lo=m;fa=fm}}const r=(lo+hi)/2;if(Math.abs(safe(fn,r))<1e-4&&cont(fn,r))out.push(r)}
           else if(k>0&&isFinite(ys2[k-1])&&Math.abs(ys2[k])<=Math.abs(ys2[k-1])&&Math.abs(ys2[k])<=Math.abs(ys2[k+1])&&Math.abs(ys2[k])<(y1-y0)*.1){let a=xs2[k-1],b=xs2[k+1];const phi=(Math.sqrt(5)-1)/2;for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a);if(Math.abs(safe(fn,c))<Math.abs(safe(fn,d)))b=d;else a=c}const r=(a+b)/2;if(Math.abs(safe(fn,r))<1e-5&&cont(fn,r))out.push(r)}}}
       return out};
@@ -996,20 +1079,32 @@ function draw(){
         let a=xs2[k-1],b=xs2[k+1];for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a),fc=safe(fn,c),fd=safe(fn,d);if(isMax?fc>fd:fc<fd)b=d;else a=c}
         const xm=(a+b)/2,ym=safe(fn,xm);if(isFinite(ym)&&cont(fn,xm))out.push({x:xm,y:ym,place:isMax?'above':'below'})}
       return out};
-    RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||(!r.k_xint&&!r.k_yint&&!r.k_ext&&!r.k_poi))return;
+    const infOf=fn=>{const out=[],N=400,dx=(x1-x0)/N,xs2=[],d2s=[];for(let k=0;k<=N;k++){const x=x0+k*dx;xs2.push(x);d2s.push(cont(fn,x)?deriv2(fn,x):NaN)}
+      const eps=Math.max(1e-4,(x1-x0)*1e-4);
+      for(let k=0;k<N;k++){if(!isFinite(d2s[k])||!isFinite(d2s[k+1])||d2s[k]*d2s[k+1]>0)continue;
+        let lo=xs2[k],hi=xs2[k+1],fa=d2s[k];for(let t=0;t<42;t++){const m=(lo+hi)/2,fm=deriv2(fn,m);if(!isFinite(fm))break;if(fa*fm<=0)hi=m;else{lo=m;fa=fm}}
+        const rx=(lo+hi)/2,l2=deriv2(fn,rx-eps),r2=deriv2(fn,rx+eps);
+        if(cont(fn,rx)&&isFinite(l2)&&isFinite(r2)&&l2*r2<0&&Math.abs(deriv2(fn,rx))<1e-2)out.push(rx)}
+      return out};
+    RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||(!r.k_xint&&!r.k_yint&&!r.k_ext&&!r.k_inf&&!r.k_aos&&!r.k_poi))return;
       const pts=[],ok=(x,y)=>isFinite(x)&&isFinite(y)&&x>=x0-1e-9&&x<=x1+1e-9&&y>=y0-1e-9&&y<=y1+1e-9&&(!RESTRS[i]||RESTRS[i].test(x,y));
       const add=(x,y,pl)=>{x=snap0(x);y=snap0(y);if(!ok(x,y))return;if(!pts.some(q=>Math.abs(q.x-x)<Math.max(1e-5,(x1-x0)*1e-4)&&Math.abs(q.y-y)<Math.max(1e-5,(y1-y0)*1e-4)))pts.push({x,y,place:pl||'above'})};
+      const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
       if(f){
         if(r.k_xint)rootsOf(f).forEach(rx=>add(rx,0,'above'));
         if(r.k_yint&&x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');
-        if(r.k_ext)extOf(f).forEach(q=>add(q.x,q.y,q.place));
+        const exts=(r.k_ext||r.k_aos)?extOf(f):[];
+        if(r.k_ext)exts.forEach(q=>add(q.x,q.y,q.place));
+        if(r.k_inf)infOf(f).forEach(rx=>add(rx,safe(f,rx),'above'));
+        if(r.k_aos){const sym=exts.filter(q=>q.x>=x0&&q.x<=x1&&(!RESTRS[i]||RESTRS[i].test(q.x,q.y))&&Math.abs(safe(f,q.x-.37)-safe(f,q.x+.37))<1e-4&&Math.abs(safe(f,q.x-1.13)-safe(f,q.x+1.13))<1e-4);
+          sym.forEach((q,ai)=>{const axX=snap0(q.x),px=sx(axX);lines+=`<line data-i="${i}" pointer-events="none" x1="${px.toFixed(1)}" y1="${T}" x2="${px.toFixed(1)}" y2="${T+H}" stroke="${r.color}" stroke-width="1.5" stroke-dasharray="6 4" opacity=".8"/>`;
+            if(r.kplab!==false)labels+=lab(`x = ${fmt(axX)}`,ls,halo,'translate(0 0)',px+6,T+ls+4,'start',i,'aos'+ai)})}
         if(r.k_poi){FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].k_poi))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
           VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1||(j<i&&RW[j]&&RW[j].k_poi))return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')})}
       }else{
         if(r.k_xint)add(vx,0,'above');
         if(r.k_poi)FNS.forEach((g,j)=>{if(!g||(j<i&&RW[j]&&RW[j].k_poi))return;const ry=safe(g,vx);if(!RESTRS[j]||RESTRS[j].test(vx,ry))add(vx,ry,'right')});
       }
-      const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
       pts.forEach((q,ki)=>{arrows+=`<circle data-i="${i}" cx="${sx(q.x).toFixed(1)}" cy="${sy(q.y).toFixed(1)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1.5"/>`;
         if(r.kplab!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[q.place];labels+=lab(`(${fmt(q.x)}, ${fmt(q.y)})`,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,'kp'+ki)}})});
   }
@@ -1017,6 +1112,21 @@ function draw(){
   const fn2=n=>Math.abs(n)<1e-9?'0':String(+n.toFixed(3)).replace('-','\u2212');
   RW.forEach((r,i)=>{const f=FNS[i];if(!f||r.vis===false)return;
     const col=r.color,halo=`fill="${col}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
+    if(r.c_d1){const sg=trace(x=>deriv1(f,x),RESTRS[i]),dd=sg.map(z=>'M'+z.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
+      if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${col}" stroke-width="${Math.max(1.5,r.w*.85)}" stroke-dasharray="8 5" stroke-linecap="round"/>`}
+    if(r.c_d2){const sg=trace(x=>deriv2(f,x),RESTRS[i]),dd=sg.map(z=>'M'+z.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
+      if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${col}" stroke-width="${Math.max(1.5,r.w*.8)}" stroke-dasharray="2 5" stroke-linecap="round"/>`}
+    if(r.n_shade){const ni=normInfo(r.eq),mu=ni?ni.mu():0,sig=ni?ni.sig():1,tl=r.n_tail||'between';
+      const va=cnum(r.n_a??'-1'),vb=cnum(r.n_b??'1');
+      if(isFinite(mu)&&isFinite(sig)&&sig>0&&((tl=='left'&&isFinite(vb))||(tl=='right'&&isFinite(va))||(tl=='between'&&isFinite(va)&&isFinite(vb)))){
+        const lo=tl=='left'?x0:Math.max(x0,tl=='between'?Math.min(va,vb):va),hi=tl=='right'?x1:Math.min(x1,tl=='between'?Math.max(va,vb):vb);
+        if(lo<hi){const N=180,pts=[];for(let k=0;k<=N;k++){const x=lo+(hi-lo)*k/N,y=f(x);if(isFinite(y))pts.push(sx(x).toFixed(1)+' '+sy(y).toFixed(1))}
+          if(pts.length>1)fills+=`<path data-i="${i}" pointer-events="none" d="M${sx(lo).toFixed(1)} ${sy(0).toFixed(1)}L${pts.join('L')}L${sx(hi).toFixed(1)} ${sy(0).toFixed(1)}Z" fill="${col}" fill-opacity="0.28" stroke="none"/>`}
+        if(r.n_prob!==false){const z1=(va-mu)/sig,z2=(vb-mu)/sig;
+          const prob=tl=='left'?normCdf(z2):tl=='right'?1-normCdf(z1):Math.abs(normCdf(z2)-normCdf(z1));
+          const zTxt=(Math.abs(mu)>1e-9||Math.abs(sig-1)>1e-9)?(tl=='left'?` (z = ${fn2(z2)})`:tl=='right'?` (z = ${fn2(z1)})`:` (z: ${fn2(Math.min(z1,z2))} to ${fn2(Math.max(z1,z2))})`):'';
+          const xm=tl=='left'?Math.max(x0,vb-sig*.7):tl=='right'?Math.min(x1,va+sig*.7):(va+vb)/2,ym=f(xm)*.45;
+          if(isFinite(ym))labels+=lab(`P = ${prob.toFixed(4)}${zTxt}`,ls,halo,'translate(0 0)',sx(xm),sy(ym),'middle',i,'np')}}}
     const dot=(u,v)=>{arrows+=`<circle data-i="${i}" cx="${sx(u).toFixed(1)}" cy="${sy(v).toFixed(1)}" r="4.5" fill="${col}" stroke="#fff" stroke-width="1.5"/>`};
     const across=(a,m,fa)=>`<line data-i="${i}" x1="${sx(x0).toFixed(1)}" y1="${sy(fa+m*(x0-a)).toFixed(1)}" x2="${sx(x1).toFixed(1)}" y2="${sy(fa+m*(x1-a)).toFixed(1)}" stroke="${col}" stroke-width="${Math.max(1.5,r.w*.8)}" stroke-dasharray="7 4"/>`;
     if(r.c_tan){const a=cnum(r.c_ta??'1'),fa=f(a),h=1e-5*Math.max(1,Math.abs(a)),m=(f(a+h)-f(a-h))/(2*h);
@@ -1212,6 +1322,7 @@ const openExp=()=>{
   closeAxes();
   exPop.hidden=false;exBtn.setAttribute('aria-expanded','true');
   const st=$('.stage').getBoundingClientRect(),b=exBtn.getBoundingClientRect();
+  exPop.style.right='auto';
   exPop.style.left=Math.max(8,Math.min(b.left-st.left,st.width-exPop.offsetWidth-8))+'px';
   exPop.style.top=Math.max(8,b.bottom-st.top+6)+'px';
 };
@@ -1232,7 +1343,7 @@ const onKey=e=>{if(e.target!==wrap)return;const k=e.key;let dx=0,dy=0,f=1;
 wrap.addEventListener('keydown',onKey);
 const unsupAll=t=>unsup(String(t));
 function texTxt(t,subs){
-  t=unsupAll(t).replace(/\u2212/g,'-').replace(/\s*(<=|\u2264)\s*/g,' \\le ').replace(/\s*(>=|\u2265)\s*/g,' \\ge ');
+  t=unsupAll(t).replace(/\u2212/g,'-').replace(/\s*(<=|\u2264)\s*/g,' \\le ').replace(/\s*(>=|\u2265)\s*/g,' \\ge ').replace(/\s*(!=|\u2260)\s*/g,' \\ne ');
   t=t.replace(/log_(\d+)/g,'\\log_{$1}').replace(/abs\(([^()]*)\)/g,'\\left|$1\\right|');
   t=t.replace(/(^|[^a-zA-Z\\])(arcsin|arccos|arctan|sin|cos|tan|sec|csc|cot|ln|log)(?![a-zA-Z_])/g,'$1\\$2');
   t=t.replace(/(^|[^a-zA-Z\\])pi(?![a-zA-Z])/g,'$1\\pi ');
@@ -1332,8 +1443,13 @@ function rowAction(k,i){if(['cimg','simg','cdoc','ctex','ctxt'].includes(k)){cop
   else if(k=='key')rows[i].keyonly=!rows[i].keyonly;
   renderRows();draw();
   if(k=='dup')focusRow(i+1);else if(k=='up')focusRow(i-1);else if(k=='down')focusRow(i+1);else if(k=='key')focusRow(i)}
-let lastField=null;
-document.addEventListener('focusin',e=>{const t=e.target;if(t&&t.tagName=='INPUT'&&t.type=='text'&&t.closest&&t.closest('#panel')&&!t.closest('.par'))lastField=t});
+let lastField=null,lastRow=null;
+document.addEventListener('focusin',e=>{const t=e.target;
+  if(t&&t.closest&&t.closest('#params')){if(lastRow&&lastRow.isConnected)lastRow.classList.add('par-hold');return}
+  document.querySelectorAll('.row.par-hold').forEach(el=>el.classList.remove('par-hold'));
+  const rw=t&&t.closest&&t.closest('.row');if(rw)lastRow=rw;
+  if(t&&t.tagName=='INPUT'&&t.type=='text'&&t.closest&&t.closest('#panel')&&!t.closest('.par'))lastField=t});
+document.addEventListener('focusout',e=>{if(e.target&&e.target.closest&&e.target.closest('#params'))setTimeout(()=>{const ae=document.activeElement;if(!ae||!ae.closest||!ae.closest('#params'))document.querySelectorAll('.row.par-hold').forEach(el=>el.classList.remove('par-hold'))},0)});
 function insertAt(el,txt,back){const a=el.selectionStart==null?el.value.length:el.selectionStart,b=el.selectionEnd==null?a:el.selectionEnd;
   el.value=el.value.slice(0,a)+txt+el.value.slice(b);const c=a+txt.length-(back||0);el.focus();el.setSelectionRange(c,c);el.dispatchEvent(new Event('input',{bubbles:true}))}
 $('#symbar').addEventListener('mousedown',e=>e.preventDefault());
