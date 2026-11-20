@@ -97,9 +97,14 @@ h3{font-size:13px;margin:12px 0 6px}
 #params h3{margin:12px 0 6px}
 .trig{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mute)}
 .row:not([data-feat="1"]) .only-feat{display:none}
+.row:not([data-type="f"]):not([data-type="v"]) .only-kp,.row[data-ineq="1"] .only-kp{display:none}
+.only-kp{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.kp-lbl[hidden]{display:none}
 .row[data-type="imp"]:not([data-ineq="1"]) .kind::after{content:"Curve (circle, ellipse, or other)"}
 .calc .sm{width:68px;padding:3px 5px}
 .row:not([data-type="f"]) .only-calc,.row[data-ineq="1"] .only-calc{display:none}
+.ax-nlrow{padding:10px 0 8px;border-bottom:1px solid var(--line)}
+.axespop.nl-on .ax-blk:nth-of-type(3){opacity:.4;pointer-events:none}
 .qm,.qm2{width:24px;height:24px;border-radius:50%;padding:0;font-size:13px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
 .qm{margin-left:auto}.qm+.chev{margin-left:8px}
 .bar.proj .qm2{margin-left:auto}
@@ -261,7 +266,7 @@ h3{font-size:13px;margin:12px 0 6px}
     <button type="button" id="undo" title="Undo (Ctrl+Z)" disabled>↶ Undo</button>
     <button type="button" id="redo" title="Redo (Ctrl+Shift+Z)" disabled>↷ Redo</button>
     <select id="tpl" aria-label="Start from a template"><option value="">Template…</option>
-        <optgroup label="Coordinate grids"><option value="4q">Four quadrants (−10 to 10)</option><option value="q1">First quadrant (0 to 10)</option><option value="q1b">First quadrant (0 to 20, step 2)</option><option value="s5">Small grid (−5 to 5)</option></optgroup>
+        <optgroup label="Coordinate grids"><option value="4q">Four quadrants (−10 to 10)</option><option value="q1">First quadrant (0 to 10)</option><option value="q1b">First quadrant (0 to 20, step 2)</option><option value="s5">Small grid (−5 to 5)</option><option value="nl">Number line (−10 to 10)</option><option value="nl5">Number line (−5 to 5)</option></optgroup>
         <optgroup label="Trigonometry, radians"><option value="trig">−2π to 2π, π/4 grid, y −4 to 4</option><option value="trig2">0 to 4π, π/4 grid (two cycles)</option><option value="trig6">0 to 2π, π/6 grid (special angles)</option><option value="trigT">−2π to 2π, tall: tan, sec, csc, cot</option></optgroup>
         <optgroup label="Trigonometry, degrees"><option value="deg">0° to 720°, 30° grid (two cycles)</option><option value="deg2">−360° to 360°, 30° grid</option></optgroup>
         </select>
@@ -308,7 +313,8 @@ h3{font-size:13px;margin:12px 0 6px}
   <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Graph settings" title="Graph settings" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
   <div id="axespop" class="axespop" role="dialog" aria-label="Graph settings" hidden>
     <div class="axespop-hd"><span>Graph settings</span><button type="button" id="axh" class="qm" aria-label="Help for Graph settings" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close graph settings" title="Close">×</button></div>
-    <div id="axinfo" class="info" hidden><p><b>Axes &amp; range:</b> Uncheck <b>X-Axis</b> or <b>Y-Axis</b> to hide that axis line and its labels. Edit the inequality bounds or <b>Step</b> using numbers, fractions, or <code>pi</code> (like <code>pi/2</code>).</p><p><b>Labels &amp; grid:</b> Axis labels default to <code>x</code> and <code>y</code> until you type something else, and powers like <code>x^2</code> format automatically.</p></div>
+    <div id="axinfo" class="info" hidden><p><b>Number line mode (1D):</b> Collapses the grid into a single horizontal number line for inequalities like <code>x &gt; 3</code>, <code>−2 ≤ x &lt; 4</code>, or points like <code>A(−3), B(2)</code>.</p><p><b>Axes &amp; range:</b> Edit the inequality bounds or <b>Step</b> using numbers, fractions, or <code>pi</code> (like <code>pi/2</code>). Axis labels default to <code>x</code> and <code>y</code> until changed.</p></div>
+    <div class="ax-nlrow"><label class="ax-chk"><input type="checkbox" id="nl"><span>Number line mode (1D)</span></label></div>
     <div class="ax-blk">
       <div class="ax-top">
         <label class="ax-chk"><input type="checkbox" id="xax" checked><span>X-Axis</span></label>
@@ -489,7 +495,7 @@ function diagnose(s){s=String(s||'').trim();if(!s)return'';
   if(/[+\-*\/^=<>\u2264\u2265\u221a]$/.test(main))return'Something is missing after \u201c'+main.slice(-1)+'\u201d.';
   if(/^[*\/^=]/.test(main))return'Something is missing before \u201c'+main[0]+'\u201d.';
   const cmp=main.match(/<=|>=|\u2264|\u2265|<|>/g)||[];
-  if(cmp.length>1)return'Use one inequality per row. For 1 < x < 3, use two rows or add a restriction like {1 < x < 3}.';
+  if(cmp.length>2||(cmp.length==2&&/[yY]/.test(main)))return'Use one 2D inequality per row, or a 1D chain like \u22122 < x \u2264 4.';
   if((main.match(/=/g)||[]).length>1&&!cmp.length)return'Use only one = sign in a row.';
   const known=['x','y','e','pi','sqrt','sin','cos','tan','sec','csc','cot','abs','ln','log','arcsin','arccos','arctan'];
   for(const t of (main.toLowerCase().replace(/log_\d+/g,'log').match(/[a-z]+/g)||[])){if(known.includes(t))continue;
@@ -662,6 +668,18 @@ function parseRow(s){
   const pre=/([A-Za-z]'*)?\s*\(\s*(-?\d*\.?\d+)\s*,\s*(-?\d*\.?\d+)\s*\)/g;
   const pts=[...s.matchAll(pre)];
   if(pts.length&&s.replace(pre,'').replace(/[\s,]/g,'')==='')return{type:'pts',pts:pts.map(m=>({n:m[1]||'',x:+m[2],y:+m[3]}))};
+  const pre1=/([A-Z]'*)?\s*\(\s*(-?\d*\.?\d+)\s*\)/g;
+  const pts1=[...s.matchAll(pre1)];
+  if(pts1.length&&s.replace(pre1,'').replace(/[\s,]/g,'')==='')return{type:'pts',pts:pts1.map(m=>({n:m[1]||'',x:+m[2],y:0})),is1D:true};
+  const cm=s.match(/^(.*?)(<=|>=|\u2264|\u2265|<|>)(.*?)(<=|>=|\u2264|\u2265|<|>)(.*)$/);
+  if(cm){const o1=cm[2],o2=cm[4],l1=o1[0]=='<'||o1=='\u2264',l2=o2[0]=='<'||o2=='\u2264';if(l1!==l2)throw 0;
+    const hlf=(A,op,B)=>{const fa=compile(A),fb=compile(B),d=x=>fa(x,0)-fb(x,0);if(fa(0,0)!==fa(0,1)||fb(0,0)!==fb(0,1))throw 0;
+      const a=d(0),b=d(1)-a;if(!isFinite(a)||!b||Math.abs((d(2)-d(1))-b)>1e-9*Math.max(1,Math.abs(b)))throw 0;
+      const lt=op[0]=='<'||op=='\u2264',incl=op.length==2||op=='\u2264'||op=='\u2265';return{c:-a/b,incl,right:(lt?1:-1)*b<0}};
+    const h1=hlf(cm[1],o1,cm[3]),h2=hlf(cm[3],o2,cm[5]);
+    const loB=h1.right?h1:h2,hiB=h1.right?h2:h1;if(loB.right===hiB.right)throw 0;
+    const empty=loB.c>hiB.c||(Math.abs(loB.c-hiB.c)<1e-9&&(!loB.incl||!hiB.incl));
+    return{type:'v',c:empty?NaN:loB.c,hi:empty?NaN:hiB.c,ineq:{lt:false,incl:loB.incl,right:true,hiIncl:hiB.incl,compound:true},restr}}
   const im=s.match(/^(.*?)(<=|>=|\u2264|\u2265|<|>)(.*)$/);let ineq=null;
   const parts=im?[im[1],im[3]]:s.split('=');if(parts.length>2)throw 0;
   if(im)ineq={lt:im[2][0]=='<'||im[2]=='\u2264',incl:im[2].length==2||im[2]=='\u2264'||im[2]=='\u2265'};
@@ -692,6 +710,7 @@ function renderRows(){
 <div class="pvrow"><div class="pv" data-pv="eq" hidden></div><div class="pvbtns" hidden><button type="button" class="pvcopy" data-act="cdoc" title="Copy as a Google Docs equation (a table for piecewise functions)">Copy for Docs</button><button type="button" class="pvcopy" data-act="cimg" title="Copy a picture of the equation">Copy as image</button></div></div>
 <div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
 <div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
+<div class="restrow only-kp"><label><input type="checkbox" data-k="kp"${r.kp?' checked':''}>Show key points (intercepts, vertex, intersections)</label><label class="kp-lbl"${r.kp?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Coordinates</label></div>
 <div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>
@@ -707,7 +726,7 @@ function renderRows(){
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const r=rows[e.target.closest('.row').dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab'){const rw=e.target.closest('.row');pvUpdate(rw,+rw.dataset.i)}draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k=='kp'){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!r.kp}draw()});
 const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='menu'){rowMenu(e.target,i);return}
   if(a=='cdoc'||a=='cimg'){copyEq(i,a);return}
@@ -738,42 +757,50 @@ function draw(){
   const fig=$('#fig');
   if(![x0,x1,xs,y0,y1,ys].every(isFinite)||x1<=x0||y1<=y0||xs<=0||ys<=0||(x1-x0)/xs>200||(y1-y0)/ys>200){$('#note').textContent='Check the axis ranges: \u201cTo\u201d must be larger than \u201cFrom\u201d, and \u201cCount by\u201d must be positive.';return}
   $('#note').textContent='';
-  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()||'x',yl=$('#yl').value.trim()||'y';
-  const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
+  const NL=$('#nl').checked,axPopEl=$('#axespop');if(axPopEl)axPopEl.classList.toggle('nl-on',NL);
+  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()\vert{}\vert{}'x',yl=$('#yl').value.trim()||'y';
+  const W=live?live.W:(x1-x0)/xs*cell,H=NL?96:(live?live.H:(y1-y0)/ys*cell),nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
     ctHalf=ct?Math.ceil(wsup(ct,18)/2-W/2)+12:0,
     fsn=Math.max(15,nsz+3),
-    L=Math.max(56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+24,Math.ceil(wsup(yl,fsn)/2)+6,ctHalf),
+    L=Math.max(NL?36:56,NL?0:Math.ceil(mw(y0,y1,ys,$('#yf').value))+24,NL?0:Math.ceil(wsup(yl,fsn)/2)+6,ctHalf),
     R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(wsup(xl,fsn))+5,ctHalf),
-    T=Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn)),
-    B=Math.max(44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14));
+    T=NL?(ct?44:16):Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn)),
+    B=Math.max(44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+(NL?18:14)));
   {const o=$('#nso');if(o)o.textContent=nsz}{const o=$('#lso');if(o)o.textContent=ls}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
   let s=`<svg id="fig" xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 ${TW} ${TH}" font-family="Helvetica,Arial,sans-serif"><rect width="100%" height="100%" fill="#fff"/><defs><clipPath id="cp"><rect x="${L}" y="${T}" width="${W}" height="${H}"/></clipPath></defs>`;
   // grid
   const gc0={light:'#d5dae0',standard:'#9ba6b2',bold:'#4a5560'}[$('#gw').value],gt=+$('#gt').value,gc=gc0&&[gc0,gt],mn=+$('#gm').value;
-  if(gc){
+  if(gc&&!NL){
     const ln=(a,b,c,d,w,o)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="${gc[0]}" stroke-width="${w}" opacity="${o}"/>`;
     if(mn>1){ticks(x0,x1,xs/mn).forEach(([k,v])=>{if(((k%mn)+mn)%mn)s+=ln(sx(v),T,sx(v),T+H,gc[1]*.5,.7)});
              ticks(y0,y1,ys/mn).forEach(([k,v])=>{if(((k%mn)+mn)%mn)s+=ln(L,sy(v),L+W,sy(v),gc[1]*.5,.7)})}
     ticks(x0,x1,xs).forEach(([k,v])=>s+=ln(sx(v),T,sx(v),T+H,gc[1],1));
     ticks(y0,y1,ys).forEach(([k,v])=>s+=ln(L,sy(v),L+W,sy(v),gc[1],1))}
   // axes
-  const xOn=$('#xax').checked,yOn=$('#yax').checked;
-  const ax=y0<=0&&y1>=0?sy(0):T+H,ay=x0<=0&&x1>=0?sx(0):L;
+  const xOn=$('#xax').checked,yOn=!NL&&$('#yax').checked;
+  const ax=NL?(T+Math.round(H*.56)):(y0<=0&&y1>=0?sy(0):T+H),ay=x0<=0&&x1>=0?sx(0):L;
   s+=`<g stroke="#111" stroke-width="1.8">${xOn?`<line x1="${L-6}" y1="${ax}" x2="${L+W+6}" y2="${ax}"/>`:''}${yOn?`<line x1="${ay}" y1="${T-6}" x2="${ay}" y2="${T+H+6}"/>`:''}</g><g fill="#111">`
     +(xOn?`<polygon points="${L+W+15},${ax} ${L+W+5},${ax-4.5} ${L+W+5},${ax+4.5}"/><polygon points="${L-15},${ax} ${L-5},${ax-4.5} ${L-5},${ax+4.5}"/>`:'')
     +(yOn?`<polygon points="${ay},${T-15} ${ay-4.5},${T-5} ${ay+4.5},${T-5}"/><polygon points="${ay},${T+H+15} ${ay-4.5},${T+H+5} ${ay+4.5},${T+H+5}"/>`:'')+`</g>`;
+  if(NL&&xOn){
+    let tk=`<g stroke="#111" stroke-linecap="round">`;
+    if(mn>1)ticks(x0,x1,xs/mn).forEach(([k,v])=>{if(((k%mn)+mn)%mn)tk+=`<line x1="${sx(v).toFixed(1)}" y1="${ax-3.5}" x2="${sx(v).toFixed(1)}" y2="${ax+3.5}" stroke-width="1.1"/>`});
+    ticks(x0,x1,xs).forEach(([k,v])=>{tk+=`<line x1="${sx(v).toFixed(1)}" y1="${ax-6}" x2="${sx(v).toFixed(1)}" y2="${ax+6}" stroke-width="1.6"/>`});
+    s+=tk+'</g>';
+  }
   // numbers
-  const xm=$('#xf').value,ym=$('#yf').value,xe=xOn?+$('#xn').value:0,ye=yOn?+$('#yn').value:0,orig=x0<=0&&x1>=0&&y0<=0&&y1>=0;
+  const xm=$('#xf').value,ym=$('#yf').value,xe=xOn?+$('#xn').value:0,ye=yOn?+$('#yn').value:0,orig=!NL&&x0<=0&&x1>=0&&y0<=0&&y1>=0;
   const numHalo=`fill="#111" stroke="#fff" stroke-width="${Math.max(3,nsz*.3).toFixed(1)}" paint-order="stroke" stroke-linejoin="round"`;
   const numLay=t=>{const old=LW;LW='normal';try{return layout(t,nsz,numHalo)}finally{LW=old}};
   const sKeep=s;s='';s+=`<g font-size="${nsz}" ${numHalo} pointer-events="none">`;
+  const xNumOff=NL?9:(ax>T+H-1?8:4);
   if(xe)ticks(x0,x1,xs).forEach(([k,v])=>{if(((k%xe)+xe)%xe||(Math.abs(v)<1e-9&&orig))return;const t=nf(v,xm);
-    if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(sx(v)-r.w/2).toFixed(1)} ${(ax+(ax>T+H-1?8:4)+r.up).toFixed(1)})">${r.svg}</g>`}
-    else s+=`<text x="${sx(v)}" y="${ax+(ax>T+H-1?nsz+8:nsz+4)}" text-anchor="middle">${t}</text>`});
+    if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(sx(v)-r.w/2).toFixed(1)} ${(ax+xNumOff+r.up).toFixed(1)})">${r.svg}</g>`}
+    else s+=`<text x="${sx(v)}" y="${ax+nsz+xNumOff}" text-anchor="middle">${t}</text>`});
   if(ye)ticks(y0,y1,ys).forEach(([k,v])=>{if(((k%ye)+ye)%ye||(Math.abs(v)<1e-9&&orig))return;const t=nf(v,ym);
     if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(ay-8-r.w).toFixed(1)} ${(sy(v)+nsz*.3).toFixed(1)})">${r.svg}</g>`}
     else s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${t}</text>`});
@@ -842,14 +869,27 @@ function draw(){
       const p=[sx(x),sy(y)];if(pp&&Math.abs(p[1]-pp[1])>H*1.2){segs.push(cur);cur=[]}
       cur.push(p);pp=p;px=x;py=y}
     if(cur.length)segs.push(cur);return segs};
-  let lines='',labels='',arrows='',fills='',pats='',FNS=[],REG=[],nIn=0;
+  let lines='',labels='',arrows='',fills='',pats='',FNS=[],VLINES=[],RESTRS=[],REG=[],nIn=0;
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
   RW.forEach((r,i)=>{
     let p=null;
-    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe)fe.textContent=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):''}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
+    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe)fe.textContent=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):''}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='');return}
     if(!p)return;
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 4 2 4"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
+    if(NL){
+      if(p.type=='pts'){const cs=r.lab?r.lab.split(';').map(z=>z.trim()):[];p.pts.forEach((q,qi)=>{if(q.x<x0||q.x>x1)return;if(r.vis!==false)arrows+=`<circle data-i="${i}" cx="${sx(q.x).toFixed(1)}" cy="${ax.toFixed(1)}" r="5.5" fill="${r.color}" stroke="#fff" stroke-width="1.5"/>`;
+        const t=(cs[qi]||q.n)+(r.coords?`(${fmt(q.x)})`:'');if(t&&r.labOn!==false)labels+=lab(t,ls,halo,'translate(0 0)',sx(q.x),ax-13,'middle',i,qi)});return}
+      if(p.type!='v'||r.vis===false)return;
+      const sw=Math.max(4,+r.w+1.5),dot=(xv,inc)=>{if(xv>=x0&&xv<=x1)arrows+=`<circle data-i="${i}" cx="${sx(xv).toFixed(1)}" cy="${ax.toFixed(1)}" r="5.5" fill="${inc?r.color:'#fff'}" stroke="${r.color}" stroke-width="2.2"/>`};
+      const rArr=(xEnd,dir)=>{const sz=11+sw*.6,hw=sz*.45;arrows+=`<polygon data-i="${i}" points="0,0 ${-dir*sz},${-hw} ${-dir*sz},${hw}" fill="${r.color}" transform="translate(${xEnd.toFixed(1)} ${ax.toFixed(1)})"/>`};
+      let lx=p.c;
+      if(p.neq){arrows+=`<line data-i="${i}" x1="${L-12}" y1="${ax}" x2="${L+W+12}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;rArr(L-15,-1);rArr(L+W+15,1);dot(p.c,false)}
+      else if(p.interval){const[a,b,incA,incB]=p.interval,lo=Math.max(a,x0),hi=Math.min(b,x1);if(lo<=hi)arrows+=`<line data-i="${i}" x1="${sx(lo).toFixed(1)}" y1="${ax}" x2="${sx(hi).toFixed(1)}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;dot(a,incA);dot(b,incB);lx=(lo+hi)/2}
+      else if(p.ineq){const cx=sx(Math.max(x0,Math.min(x1,p.c))),ex=p.ineq.right?L+W+12:L-12;if((p.ineq.right&&p.c<=x1)||(!p.ineq.right&&p.c>=x0)){arrows+=`<line data-i="${i}" x1="${cx.toFixed(1)}" y1="${ax}" x2="${ex.toFixed(1)}" y2="${ax}" stroke="${r.color}" stroke-width="${sw}" stroke-linecap="round"/>`;rArr(p.ineq.right?L+W+15:L-15,p.ineq.right?1:-1)}dot(p.c,p.ineq.incl);lx=p.ineq.right?(Math.max(p.c,x0)+x1)/2:(x0+Math.min(p.c,x1))/2}
+      else dot(p.c,true);
+      if(r.lab&&r.labOn!==false&&lx>=x0&&lx<=x1)labels+=lab(r.lab,ls,halo,'translate(0 0)',sx(lx),ax-13,'middle',i,0);
+      return}
     if(p.type=='pts'){
       const cs=r.lab?r.lab.split(';').map(z=>z.trim()):[];p.pts.forEach((q,qi)=>{if(r.vis!==false)lines+=`<circle data-i="${i}" cx="${sx(q.x)}" cy="${sy(q.y)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1"/><circle data-i="${i}" cx="${sx(q.x)}" cy="${sy(q.y)}" r="11" fill="transparent" style="cursor:pointer"/>`;
         const t=(cs[qi]||q.n)+((r.coords||p.coords)?`(${fmt(q.x)}, ${fmt(q.y)})`:'');
@@ -859,7 +899,7 @@ function draw(){
         if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dash}/>`;
         if(p.tbl.showEq&&r.labOn!==false){const xm=Math.max(...p.pts.map(q=>q.x)),ym=p.fit.f(xm);if(isFinite(ym))labels+=lab(p.fit.text,ls,halo,'translate(0 0)',sx(xm)+10,sy(ym)-12,'start',i,'f')}}
       return}
-    let segs;if(p.type=='f'&&!p.ineq)FNS[i]=p.f;
+    let segs;if(p.type=='f'&&!p.ineq){FNS[i]=p.f;RESTRS[i]=p.restr}if(p.type=='v'&&!p.ineq){VLINES[i]=p.c;RESTRS[i]=p.restr}
     if(p.type=='v'){const n=80,yl=[...Array(n+1)].map((_,k)=>y0+(y1-y0)*k/n);if(p.restr)p.restr.bounds.forEach(b=>{if(b.v=='y'&&b.val>y0&&b.val<y1)yl.push(b.val)});yl.sort((a,b)=>a-b);segs=[];let cu=[];yl.forEach(yy=>{if(p.restr&&!p.restr.test(p.c,yy)){if(cu.length)segs.push(cu);cu=[]}else cu.push([sx(p.c),sy(yy)])});if(cu.length)segs.push(cu)}else if(p.type=='imp'){const mr=march(p.g,p.restr,p.ineq?(p.ineq.lt?v=>v<0:v=>v>0):null);segs=mr.chains;p._fill=mr.fill}else segs=p.pieces?p.pieces.flatMap(pc=>trace(pc.f,pc.restr)):trace(p.f,p.restr);
     if(p.pieces&&r.ends!==false&&r.vis!==false){const cs=[];
       p.pieces.forEach(pc=>pc.restr.bounds.forEach(b=>{if(b.v!='x'||b.val<x0||b.val>x1)return;const my=pc.f(b.val);if(!isFinite(my)||my<y0||my>y1||!pc.restr.test(b.val,my))return;cs.push([b.val,my,b.incl])}));
@@ -880,14 +920,17 @@ function draw(){
       const fo=(+r.fo||30)/100,hatch=r.fill=='hatch';
       if(hatch&&r.fill!=='none')pats+=`<pattern id="hp${i}" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(${[45,-45,0,90,30,-30][i%6]})"><line x1="0" y1="0" x2="0" y2="9" stroke="${r.color}" stroke-width="1.4" stroke-opacity="${Math.min(1,.35+fo)}"/></pattern>`;
       let fd='';
-      if(p.type=='v'){const cx=sx(p.c),a=p.ineq.right?cx:L,b=p.ineq.right?L+W:cx;fd=`M${a.toFixed(1)} ${T}H${b.toFixed(1)}V${T+H}H${a.toFixed(1)}Z`}
+      if(p.interval){const[a,b]=p.interval,ca=sx(Math.max(a,x0)),cb=sx(Math.min(b,x1));if(ca<=cb)fd=`M${ca.toFixed(1)} ${T}H${cb.toFixed(1)}V${T+H}H${ca.toFixed(1)}Z`}
+      else if(p.type=='v'){const cx=sx(p.c),a=p.ineq.right?cx:L,b=p.ineq.right?L+W:cx;fd=`M${a.toFixed(1)} ${T}H${b.toFixed(1)}V${T+H}H${a.toFixed(1)}Z`}
       else if(p.type=='imp')fd=p._fill||'';
       else{const edge=p.ineq.above?T:T+H;fd=segs.map(sg=>`M${sg[0][0].toFixed(1)} ${edge}`+sg.map(q=>`L${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join('')+`L${sg[sg.length-1][0].toFixed(1)} ${edge}Z`).join('')}
-      if(r.fill!=='none')fills+=`<path data-i="${i}" pointer-events="none" d="${fd}" fill="${hatch?`url(#hp${i})`:r.color}" fill-opacity="${hatch?1:fo}" stroke="none"/>`;REG.push({i,fd})}
-    if(r.vis!==false){const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dsh}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}
+      if(r.fill!=='none'&&fd)fills+=`<path data-i="${i}" pointer-events="none" d="${fd}" fill="${hatch?`url(#hp${i})`:r.color}" fill-opacity="${hatch?1:fo}" stroke="none"/>`;if(fd)REG.push({i,fd})}
+    if(r.vis!==false){
+      if(p.interval){const[a,b,incA,incB]=p.interval;[[a,incA],[b,incB]].forEach(([xv,inc])=>{if(xv>=x0&&xv<=x1)lines+=`<line data-i="${i}" x1="${sx(xv).toFixed(1)}" y1="${T}" x2="${sx(xv).toFixed(1)}" y2="${T+H}" stroke="${r.color}" stroke-width="${r.w}" ${inc?'':'stroke-dasharray="9 6"'}/>`})}
+      else{const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dsh}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}}
     const vis=segs.flat().filter(q=>q[0]>=L&&q[0]<=L+W&&q[1]>=T&&q[1]<=T+H);
     const arr=r.arr||'both';
-    if(vis.length>1&&r.vis!==false&&p.type!='imp'){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
+    if(vis.length>1&&r.vis!==false&&p.type!='imp'&&!p.interval){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
       const n=vis.length,ed=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2;if(arr=='start'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[0]))&&hd(vis[0],vis[Math.min(4,n-1)]);if(arr=='end'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[n-1]))&&hd(vis[n-1],vis[Math.max(0,n-5)])}
     if(r.lab&&r.labOn!==false&&vis.length>1){
       const k=Math.round(r.pos/100*(vis.length-1)),q=vis[k],a=vis[Math.max(0,k-4)],b=vis[Math.min(vis.length-1,k+4)];
@@ -895,6 +938,31 @@ function draw(){
       const[dx,dy,an]={above:[0,-9,'middle'],below:[0,ls+3,'middle'],on:[0,ls*.35,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[r.place];
       labels+=lab(r.lab,ls,halo,`translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})`,dx,dy,an,i,0)}
   });
+  if(!NL){
+    const safe=(fn,x)=>{try{return fn(x)}catch(e){return NaN}},snap0=v=>Math.abs(v)<1e-7?0:v;
+    const cont=(fn,x)=>{const d=Math.max(1e-6,(x1-x0)*1e-6),a=safe(fn,x-d),b=safe(fn,x+d),c=safe(fn,x);return isFinite(a)&&isFinite(b)&&isFinite(c)&&Math.abs(a-b)<(y1-y0)*.25&&Math.abs(c-(a+b)/2)<(y1-y0)*.25};
+    const rootsOf=fn=>{const out=[],N=400,dx=(x1-x0)/N,xs2=[],ys2=[];for(let k=0;k<=N;k++){const x=x0+k*dx;xs2.push(x);ys2.push(safe(fn,x))}
+      for(let k=0;k<=N;k++){if(isFinite(ys2[k])&&Math.abs(ys2[k])<1e-10&&cont(fn,xs2[k]))out.push(xs2[k]);
+        if(k<N&&isFinite(ys2[k])&&isFinite(ys2[k+1])){if(ys2[k]*ys2[k+1]<0){let lo=xs2[k],hi=xs2[k+1],fa=ys2[k];for(let t=0;t<42;t++){const m=(lo+hi)/2,fm=safe(fn,m);if(!isFinite(fm))break;if(fa*fm<=0)hi=m;else{lo=m;fa=fm}}const r=(lo+hi)/2;if(Math.abs(safe(fn,r))<1e-4&&cont(fn,r))out.push(r)}
+          else if(k>0&&isFinite(ys2[k-1])&&Math.abs(ys2[k])<=Math.abs(ys2[k-1])&&Math.abs(ys2[k])<=Math.abs(ys2[k+1])&&Math.abs(ys2[k])<(y1-y0)*.1){let a=xs2[k-1],b=xs2[k+1];const phi=(Math.sqrt(5)-1)/2;for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a);if(Math.abs(safe(fn,c))<Math.abs(safe(fn,d)))b=d;else a=c}const r=(a+b)/2;if(Math.abs(safe(fn,r))<1e-5&&cont(fn,r))out.push(r)}}}
+      return out};
+    const extOf=fn=>{const out=[],N=400,dx=(x1-x0)/N,xs2=[],ys2=[],phi=(Math.sqrt(5)-1)/2;for(let k=0;k<=N;k++){const x=x0+k*dx;xs2.push(x);ys2.push(safe(fn,x))}
+      for(let k=1;k<N;k++){if(!isFinite(ys2[k-1])||!isFinite(ys2[k])||!isFinite(ys2[k+1]))continue;if(Math.abs(ys2[k]-ys2[k-1])<1e-12&&Math.abs(ys2[k+1]-ys2[k])<1e-12)continue;
+        const isMax=ys2[k]>=ys2[k-1]&&ys2[k]>=ys2[k+1],isMin=ys2[k]<=ys2[k-1]&&ys2[k]<=ys2[k+1];if(!isMax&&!isMin)continue;
+        let a=xs2[k-1],b=xs2[k+1];for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a),fc=safe(fn,c),fd=safe(fn,d);if(isMax?fc>fd:fc<fd)b=d;else a=c}
+        const xm=(a+b)/2,ym=safe(fn,xm);if(isFinite(ym)&&cont(fn,xm))out.push({x:xm,y:ym,place:isMax?'above':'below'})}
+      return out};
+    RW.forEach((r,i)=>{const f=FNS[i];if(!f||r.vis===false||(!r.k_int&&!r.k_ext&&!r.k_poi))return;
+      const pts=[],ok=(x,y)=>isFinite(x)&&isFinite(y)&&x>=x0-1e-9&&x<=x1+1e-9&&y>=y0-1e-9&&y<=y1+1e-9&&(!RESTRS[i]||RESTRS[i].test(x,y));
+      const add=(x,y,pl)=>{x=snap0(x);y=snap0(y);if(!ok(x,y))return;if(!pts.some(q=>Math.abs(q.x-x)<Math.max(1e-5,(x1-x0)*1e-4)&&Math.abs(q.y-y)<Math.max(1e-5,(y1-y0)*1e-4)))pts.push({x,y,place:pl||'above'})};
+      if(r.k_int){if(x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');rootsOf(f).forEach(rx=>add(rx,0,'above'))}
+      if(r.k_ext)extOf(f).forEach(q=>add(q.x,q.y,q.place));
+      if(r.k_poi){FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].k_poi))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
+        VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1)return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')})}
+      const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
+      pts.forEach((q,ki)=>{arrows+=`<circle data-i="${i}" cx="${sx(q.x).toFixed(1)}" cy="${sy(q.y).toFixed(1)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1.5"/>`;
+        if(r.k_lbl!==false){const[dx,dy,an]={above:[0,-11,'middle'],below:[0,ls+7,'middle'],right:[11,4,'start'],left:[-11,4,'end']}[q.place];labels+=lab(`(${fmt(q.x)}, ${fmt(q.y)})`,ls,halo,'translate(0 0)',sx(q.x)+dx,sy(q.y)+dy,an,i,'kp'+ki)}})});
+  }
   const cnum=t=>{try{return compile(String(t))(0,0)}catch(e){return NaN}};
   const fn2=n=>Math.abs(n)<1e-9?'0':String(+n.toFixed(3)).replace('-','\u2212');
   RW.forEach((r,i)=>{const f=FNS[i];if(!f||r.vis===false)return;
@@ -991,8 +1059,9 @@ function commit(){clearTimeout(snapT);if(!live)return;const l=live,c=+$('#cell')
   const nx=Math.max(1,Math.round(l.W/c)),ny=Math.max(1,Math.round(l.H/c));
   const snap=(a,b,st,n,nz)=>{let w=b-a;if(gz){st=nz(w/n);w=n*st}const a2=Math.round(((a+b)/2-w/2)/st)*st;return[a2,a2+w,st]};
   const[x0,x1,xs]=snap(l.x0,l.x1,l.xs,nx,niceFor('x')),[y0,y1,ys]=snap(l.y0,l.y1,l.ys,ny,niceFor('y'));
-  $('#x0').value=fvp(x0,'x');$('#x1').value=fvp(x1,'x');$('#y0').value=fvp(y0,'y');$('#y1').value=fvp(y1,'y');
-  if(gz){$('#xs').value=fvp(xs,'x');$('#ys').value=fvp(ys,'y')}
+  $('#x0').value=fvp(x0,'x');$('#x1').value=fvp(x1,'x');
+  if(gz)$('#xs').value=fvp(xs,'x');
+  if(!$('#nl').checked){$('#y0').value=fvp(y0,'y');$('#y1').value=fvp(y1,'y');if(gz)$('#ys').value=fvp(ys,'y')}
   draw()}
 let lbd=null,clickRow=null;
 wrap.addEventListener('pointerdown',e=>{if(e.button>0||e.target.closest('.zoomc'))return;const g=e.target.closest('.lbl'),h=e.target.closest('[data-i]');
@@ -1049,11 +1118,11 @@ const TPL={trig:{x0:'-2pi',x1:'2pi',xs:'pi/4',y0:-4,y1:4,ys:1,xf:'pi',xn:'2',cel
   trig6:{x0:0,x1:'2pi',xs:'pi/6',y0:-3,y1:3,ys:1,xf:'pi',xn:'1',cell:58,ns:14},
   trigT:{x0:'-2pi',x1:'2pi',xs:'pi/4',y0:-8,y1:8,ys:2,xf:'pi',xn:'2',cell:44,ns:14},
   deg:{x0:0,x1:720,xs:30,y0:-5,y1:5,ys:1,xf:'deg',xn:'3',cell:30,tm:'deg',ns:14},
-  deg2:{x0:-360,x1:360,xs:30,y0:-5,y1:5,ys:1,xf:'deg',xn:'3',cell:30,tm:'deg',ns:14},'4q':{x0:-10,x1:10,xs:1,y0:-10,y1:10,ys:1},q1:{x0:0,x1:10,xs:1,y0:0,y1:10,ys:1},q1b:{x0:0,x1:20,xs:2,y0:0,y1:20,ys:2},s5:{x0:-5,x1:5,xs:1,y0:-5,y1:5,ys:1}};
+  deg2:{x0:-360,x1:360,xs:30,y0:-5,y1:5,ys:1,xf:'deg',xn:'3',cell:30,tm:'deg',ns:14},'4q':{x0:-10,x1:10,xs:1,y0:-10,y1:10,ys:1},q1:{x0:0,x1:10,xs:1,y0:0,y1:10,ys:1},q1b:{x0:0,x1:20,xs:2,y0:0,y1:20,ys:2},s5:{x0:-5,x1:5,xs:1,y0:-5,y1:5,ys:1},nl:{x0:-10,x1:10,xs:1,nl:true},nl5:{x0:-5,x1:5,xs:1,nl:true}};
 $('#tpl').onchange=e=>{const k=e.target.value;e.target.value='';if(!k)return;snap(true);
   if(k=='blank'){rows=[];renderRows()}
-  $('#xf').value='dec';$('#yf').value='dec';$('#tm').value='rad';$('#xn').value='1';$('#yn').value='1';$('#cell').value='28';$('#ns').value='12';
-  Object.entries(TPL[k=='blank'?'4q':k]).forEach(([id,v])=>$('#'+id).value=v);draw()};
+  $('#xf').value='dec';$('#yf').value='dec';$('#tm').value='rad';$('#xn').value='1';$('#yn').value='1';$('#cell').value='28';$('#ns').value='12';$('#nl').checked=false;
+  Object.entries(TPL[k=='blank'?'4q':k]).forEach(([id,v])=>{const el=$('#'+id);if(el.type=='checkbox')el.checked=!!v;else el.value=v});draw()};
 $('#sf').onclick=()=>saveFile('coordinate-grid.json',JSON.stringify(getState(),null,1));
 $('#of').onclick=()=>$('#openf').click();
 $('#openf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return;const fr=new FileReader();fr.onload=()=>{try{const st=JSON.parse(fr.result);if(!st||!Array.isArray(st.rows))throw 0;snap(true);setState(st);draw();note('Opened '+f.name)}catch(err){note('That file could not be read.')}};fr.readAsText(f)};
@@ -1068,7 +1137,7 @@ $('#rst-yes').onclick=()=>{
   rows=[Object.assign({},ROWDEF)];
   const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',ls:'15',sol:'off',ver:'key',bw:'color'};
   Object.entries(defs).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
-  $('#xax').checked=true;$('#yax').checked=true;
+  $('#xax').checked=true;$('#yax').checked=true;$('#nl').checked=false;
   syncSeg();renderRows();draw();note('All work cleared.');
 };
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
