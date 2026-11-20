@@ -797,14 +797,17 @@ function draw(){
     const cst=Math.abs(F(-3.7)-F(2.9))<1e-9&&Math.abs(F(2.9)-F(11.3))<1e-9;
     if(!cst)[lim(1),lim(-1)].forEach(L=>{if(L!==null&&L>=y0&&L<=y1&&!ha.includes(L))ha.push(L)});
     return{va,ha,holes}};
-  const trace=(f,rs)=>{const N=Math.max(600,Math.round(W)),segs=[],xl=[];let cur=[],pp=null;
+  const trace=(f,rs)=>{const N=Math.max(600,Math.round(W)),segs=[],xl=[];let cur=[],pp=null,px=null,py=NaN;
+    const ok=(x,y)=>isFinite(y)&&Math.abs(y)<=1e6&&(!rs||rs.test(x,y));
+    const edge=(vx,nx)=>{let lo=vx,hi=nx,vy=f(lo);for(let t=0;t<28;t++){const m=(lo+hi)/2,fm=f(m);if(ok(m,fm)){lo=m;vy=fm}else hi=m}return[sx(lo),sy(vy)]};
     for(let k=0;k<=N;k++)xl.push(x0+(x1-x0)*k/N);
     if(rs)rs.bounds.forEach(b=>{if(b.v=='x'&&b.val>x0&&b.val<x1)xl.push(b.val)});
     xl.sort((a,b)=>a-b);
     for(const x of xl){const y=f(x);
-      if(!isFinite(y)||Math.abs(y)>1e6||(rs&&!rs.test(x,y))){if(cur.length)segs.push(cur);cur=[];pp=null;continue}
+      if(!ok(x,y)){if(cur.length&&y!==y){const ep=edge(px,x);if(!pp||Math.abs(ep[1]-pp[1])<=H*1.2)cur.push(ep)}if(cur.length)segs.push(cur);cur=[];pp=null;px=x;py=y;continue}
+      if(!cur.length&&px!==null&&py!==py){const ep=edge(x,px);cur.push(ep);pp=ep}
       const p=[sx(x),sy(y)];if(pp&&Math.abs(p[1]-pp[1])>H*1.2){segs.push(cur);cur=[]}
-      cur.push(p);pp=p}
+      cur.push(p);pp=p;px=x;py=y}
     if(cur.length)segs.push(cur);return segs};
   let lines='',labels='',arrows='',fills='',pats='',FNS=[],REG=[],nIn=0;
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
