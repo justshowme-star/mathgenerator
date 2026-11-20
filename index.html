@@ -81,7 +81,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .sec.closed .chev{transform:rotate(-90deg)}
 .sec.closed .sb{display:none}
 .rad{display:inline-block;white-space:nowrap}.rs{font-size:1.05em}.rb{display:inline-block;border-top:1.5px solid currentColor;padding:1px 2px 0;margin-left:-1px}
-.bar.proj{padding-bottom:10px;border-bottom:1px solid var(--line)}
+.bar.proj{margin:10px 0 2px}
 .bar.proj button,.bar.proj select{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
 .bar.proj button:disabled{opacity:.4;cursor:default}
 .bar.proj .danger{color:var(--bad)}
@@ -207,6 +207,8 @@ h3{font-size:13px;margin:12px 0 6px}
 <body>
 <div class="app">
 <aside id="panel">
+  <h1>Welcome to the Math Grapher</h1>
+  <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
   <div class="bar proj">
     <button type="button" id="sf" title="Download your setup as a file">Save</button>
     <button type="button" id="of" title="Load a saved setup file">Load</button>
@@ -214,8 +216,6 @@ h3{font-size:13px;margin:12px 0 6px}
     <span id="saved" class="saved" role="status" aria-live="polite"></span>
     <input type="file" id="openf" class="nosave" accept=".json,application/json" hidden>
   </div>
-  <h1>Welcome to the Math Grapher</h1>
-  <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
   <section class="sec"><h2><span class="n">1</span>Lines and points<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Type an equation, inequality or point.</b> The symbol buttons insert at the cursor in whichever box you last clicked.</p><p><code>y = 2x + 1</code> <code>y ≥ x − 3</code> <code>x = 4</code> <code>x² + y² = 9</code> <code>f(x) = x²</code> <code>A(2, 3), B(−1, 4)</code></p><p>Press <b>Piecewise</b> for a fill-in editor, or type one line: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>. A last entry with no condition covers everything else. Labels show it as a proper piecewise function.</p><p>Limit a graph with braces: <code>y = x + 1 {−2 ≤ x &lt; 4}</code>. Use <code>^</code> for powers, <code>/</code> for fractions and <code>sqrt( )</code> for roots. Letters like a, h and k become sliders.</p><p>Click the colored circle to show or hide a row. Press and hold it to change the color. For several points, name them in the label box as <code>A; B; C</code>.</p><p>Press <b>+ Add table</b> for a data table. Type values or paste two columns copied from a spreadsheet, then choose a best fit, including sinusoidal, to see its equation and R².</p><p>Use the ⋯ button on a row to duplicate it, move it up or down, delete it, mark it as answer key only (hidden in the student copy), or copy or save the equation as an image, copy it for Google Docs, or copy it as LaTeX or plain text. <b>Copy for Docs</b> and <b>Copy as image</b> buttons also sit under each equation. The <b>View</b> section at the bottom of this pane switches between the answer key and student copy, and between color and black and white.</p></div>
   <div class="symbar" id="symbar" role="toolbar" aria-label="Math symbols"><button type="button" data-ins="^2" data-back="0" title="Square" aria-label="Square">x²</button><button type="button" data-ins="^()" data-back="1" title="Power" aria-label="Power">xⁿ</button><button type="button" data-ins="√()" data-back="1" title="Square root" aria-label="Square root">√</button><button type="button" data-ins="()/()" data-back="4" title="Fraction" aria-label="Fraction">a/b</button><button type="button" data-ins="pi" data-back="0" title="Pi" aria-label="Pi">π</button><button type="button" data-ins="≤" data-back="0" title="Less than or equal to" aria-label="Less than or equal to">≤</button><button type="button" data-ins="≥" data-back="0" title="Greater than or equal to" aria-label="Greater than or equal to">≥</button><button type="button" data-ins="abs()" data-back="1" title="Absolute value" aria-label="Absolute value">|x|</button><button type="button" data-ins=" {}" data-back="1" title="Restriction" aria-label="Restriction">{ }</button><button type="button" data-ins="sin()" data-back="1" title="Sine" aria-label="Sine">sin</button><button type="button" data-ins="f(x) = " data-back="0" title="Function, like f(x) = x^2" aria-label="Function definition">f(x)</button><button type="button" data-pw="1" data-back="0" title="Piecewise function editor" aria-label="Piecewise function editor">Piecewise</button><button type="button" data-ins="ln()" data-back="1" title="Natural log" aria-label="Natural log">ln</button></div>
