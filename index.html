@@ -265,7 +265,7 @@ h3{font-size:13px;margin:12px 0 6px}
   <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Axes and titles" title="Axes and titles" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
   <div id="axespop" class="axespop" role="dialog" aria-label="Axes and titles" hidden>
     <div class="axespop-hd"><span>Axes &amp; titles</span><button type="button" id="axh" class="qm" aria-label="Help for Axes and titles" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close axes and titles" title="Close">×</button></div>
-    <div id="axinfo" class="info" hidden><p><b>Range &amp; step:</b> From and To set the visible range. Step is the distance between gridlines. Fractions and <code>pi</code> work, like <code>pi/2</code>. Dragging or zooming the graph updates these boxes when you let go.</p><p><b>Titles &amp; names:</b> Optional. Powers format automatically (<code>x^2</code> → x²). <b>Axis name</b> labels the arrow tip (e.g. <code>x</code>); <b>Axis title</b> labels the full axis.</p></div>
+    <div id="axinfo" class="info" hidden><p><b>Range &amp; step:</b> From and To set the visible range. Step is the distance between gridlines. Fractions and <code>pi</code> work, like <code>pi/2</code>. Dragging or zooming the graph updates these boxes when you let go.</p><p><b>Titles &amp; axis labels:</b> Optional. Powers format automatically (<code>x^2</code> → x²). Axis labels default to <code>x</code> and <code>y</code> until you type something else, and revert if cleared.</p></div>
     <div class="f">
       <label>Chart title<input id="ct" placeholder="Optional"></label>
     </div>
@@ -275,9 +275,8 @@ h3{font-size:13px;margin:12px 0 6px}
       <label>To<input id="x1" value="10"></label>
       <label>Step<input id="xs" value="1"></label>
       <label>Show numbers<select id="xn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
-      <label>Axis name<input id="xl" value="x"></label>
+      <label>Axis label<input id="xl" placeholder="x"></label>
       <label>Number style<select id="xf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
-      <label class="span3">Axis title<input id="xt" placeholder="Optional"></label>
     </div>
     <h3>Vertical axis (y)</h3>
     <div class="grid3">
@@ -285,9 +284,8 @@ h3{font-size:13px;margin:12px 0 6px}
       <label>To<input id="y1" value="10"></label>
       <label>Step<input id="ys" value="1"></label>
       <label>Show numbers<select id="yn"><option value="1">Every line</option><option value="2">Every 2nd</option><option value="3">Every 3rd</option><option value="4">Every 4th</option><option value="6">Every 6th</option><option value="5">Every 5th</option><option value="10">Every 10th</option><option value="0">None</option></select></label>
-      <label>Axis name<input id="yl" value="y"></label>
+      <label>Axis label<input id="yl" placeholder="y"></label>
       <label>Number style<select id="yf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
-      <label class="span3">Axis title<input id="yt" placeholder="Optional"></label>
     </div>
     <div class="axespop-foot">
       <label class="trig">Axis number size<input id="ns" type="range" min="10" max="28" value="12"><output id="nso" class="vo">12</output></label>
@@ -665,19 +663,16 @@ function draw(){
   const fig=$('#fig');
   if(![x0,x1,xs,y0,y1,ys].every(isFinite)||x1<=x0||y1<=y0||xs<=0||ys<=0||(x1-x0)/xs>200||(y1-y0)/ys>200){$('#note').textContent='Check the axis ranges: \u201cTo\u201d must be larger than \u201cFrom\u201d, and \u201cCount by\u201d must be positive.';return}
   $('#note').textContent='';
-  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xt=$('#xt').value,yt=$('#yt').value;
-  const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),tf=Math.max(14,nsz+2),
+  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()||'x',yl=$('#yl').value.trim()||'y';
+  const W=live?live.W:(x1-x0)/xs*cell,H=live?live.H:(y1-y0)/ys*cell,nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
-    titleW=t=>{const old=LW;LW='normal';try{return wsup(t,tf)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
     ctHalf=ct?Math.ceil(wsup(ct,18)/2-W/2)+12:0,
-    xtHalf=xt?Math.ceil(titleW(xt)/2-W/2)+12:0,
-    ytHalf=yt?Math.ceil(titleW(yt)/2-H/2)+12:0,
-    fsn=Math.max(15,nsz+3),ytx=Math.max(16,Math.ceil(.9*tf)+6),
-    L=Math.max(xt||yt?64:56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+(yt?Math.max(36,ytx+Math.ceil(.2*tf)+14):24),Math.ceil(tw($('#yl').value,fsn)/2)+6,ctHalf,xtHalf),
-    R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(tw($('#xl').value,fsn))+5,ctHalf,xtHalf),
-    T=Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn),ytHalf),
-    B=Math.max(xt?64:44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14+(xt?tf+10:0)),ytHalf);
+    fsn=Math.max(15,nsz+3),
+    L=Math.max(56,Math.ceil(mw(y0,y1,ys,$('#yf').value))+24,Math.ceil(wsup(yl,fsn)/2)+6,ctHalf),
+    R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(wsup(xl,fsn))+5,ctHalf),
+    T=Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn)),
+    B=Math.max(44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+14));
   {const o=$('#nso');if(o)o.textContent=nsz}{const o=$('#lso');if(o)o.textContent=ls}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
@@ -707,11 +702,9 @@ function draw(){
     if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(ay-8-r.w).toFixed(1)} ${(sy(v)+nsz*.3).toFixed(1)})">${r.svg}</g>`}
     else s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${t}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+nsz+4}" text-anchor="end">0</text>`;
-  s+=`</g><g font-size="${fsn}" font-style="italic" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none"><text x="${L+W+22}" y="${ax+5}">${sup($('#xl').value,fsn)}</text><text x="${ay}" y="${T-22}" text-anchor="middle">${sup($('#yl').value,fsn)}</text></g>`;
+  s+=`</g><g font-size="${fsn}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round" pointer-events="none"><text x="${L+W+22}" y="${ax+5}"${/\s/.test(xl)?'':' font-style="italic"'}>${sup(xl,fsn)}</text><text x="${ay}" y="${T-22}" text-anchor="middle"${/\s/.test(yl)?'':' font-style="italic"'}>${sup(yl,fsn)}</text></g>`;
   const nums=s;s=sKeep;
   if(ct)s+=`<text x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
-  if(xt)s+=`<text x="${L+W/2}" y="${T+H+B-12}" text-anchor="middle" font-size="${tf}" fill="#111">${sup(xt,tf)}</text>`;
-  if(yt)s+=`<text transform="translate(${ytx} ${T+H/2}) rotate(-90)" text-anchor="middle" font-size="${tf}" fill="#111">${sup(yt,tf)}</text>`;
   // rows
   const march=(g,rs,ins)=>{
     const cw=4,nx=Math.max(8,Math.ceil(W/cw)),ny=Math.max(8,Math.ceil(H/cw)),dxp=W/nx,dyp=H/ny,V=[];
@@ -875,7 +868,7 @@ $('#cpy').onclick=()=>{try{toPng(async b=>{try{await navigator.clipboard.write([
 $('#cpy2').onclick=$('#cpy').onclick;
 $('#prt').onclick=()=>{try{window.print()}catch(e){note('Printing is blocked here.')}};
 
-document.querySelectorAll('#ct,#xt,#yt,#xl,#yl,#x0,#x1,#xs,#y0,#y1,#ys').forEach(el=>el.addEventListener('input',e=>supify(el,e)));
+document.querySelectorAll('#ct,#xl,#yl,#x0,#x1,#xs,#y0,#y1,#ys').forEach(el=>el.addEventListener('input',e=>supify(el,e)));
 document.querySelectorAll('#panel input[id]:not(.nosave),#panel select[id]:not(.nosave),#axespop input[id]:not(.nosave),#axespop select[id]:not(.nosave)').forEach(el=>el.addEventListener('input',draw));
 renderRows();draw();
 
@@ -992,8 +985,8 @@ $('#rst').onclick=()=>{
   snap(true);
   live=null;P={};shownP='';
   rows=[Object.assign({},ROWDEF)];
-  const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'x',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'y',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',xt:'',yt:'',ls:'15',sol:'off',ver:'key',bw:'color'};
-  Object.entries(defs).forEach(([id,v])=>$('#'+id).value=v);
+  const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',ls:'15',sol:'off',ver:'key',bw:'color'};
+  Object.entries(defs).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
   renderRows();draw();note('All work cleared.');
 };
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
