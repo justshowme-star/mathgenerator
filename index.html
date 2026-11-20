@@ -84,6 +84,8 @@ h3{font-size:13px;margin:12px 0 6px}
 .bar.proj{padding-bottom:10px;border-bottom:1px solid var(--line)}
 .bar.proj button,.bar.proj select{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
 .bar.proj button:disabled{opacity:.4;cursor:default}
+.bar.proj .danger{color:var(--bad)}
+.bar.proj .saved{margin-left:auto}
 .row.hov{outline:2px solid var(--accent);outline-offset:1px}
 .row.flash{animation:fl 1.2s}
 @keyframes fl{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 4px var(--accent)}}
@@ -205,6 +207,13 @@ h3{font-size:13px;margin:12px 0 6px}
 <body>
 <div class="app">
 <aside id="panel">
+  <div class="bar proj">
+    <button type="button" id="sf" title="Download your setup as a file">Save</button>
+    <button type="button" id="of" title="Load a saved setup file">Load</button>
+    <button type="button" id="rst" class="danger" title="Clear everything and reset to defaults">Reset</button>
+    <span id="saved" class="saved" role="status" aria-live="polite"></span>
+    <input type="file" id="openf" class="nosave" accept=".json,application/json" hidden>
+  </div>
   <h1>Welcome to the Math Grapher</h1>
   <p class="sub">Add lines or points, label them, then set up the axes and grid. The graph updates as you type.</p>
 
@@ -245,12 +254,6 @@ h3{font-size:13px;margin:12px 0 6px}
     <span class="tsep" aria-hidden="true"></span>
     <button type="button" id="cpy2" title="Copy the graph image">Copy image</button>
     <button type="button" id="exb" class="exbtn" aria-expanded="false" aria-controls="expop" title="Save, print, and export options">Export ▾</button>
-    <span class="tsep" aria-hidden="true"></span>
-    <button type="button" id="sf" title="Download your setup as a file">Save file</button>
-    <button type="button" id="of" title="Open a saved setup file">Open file</button>
-    <button type="button" id="rst" class="danger" title="Clear everything and reset to defaults">Reset</button>
-    <span id="saved" class="saved" role="status" aria-live="polite"></span>
-    <input type="file" id="openf" accept=".json,application/json" hidden>
     <button type="button" id="gh" class="qm2" aria-label="Help for the graph" title="Help" aria-expanded="false">?</button>
   </div>
   <div id="expop" class="axespop expop" role="dialog" aria-label="Export and print" hidden>
