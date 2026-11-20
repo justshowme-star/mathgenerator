@@ -1167,6 +1167,26 @@ const onSymClick=e=>{const b=e.target.closest('button');if(!b)return;
   if(el)insertAt(el,b.dataset.ins,+b.dataset.back||0)};
 $('#symbar').addEventListener('click',onSymClick);
 $('#addt').onclick=addTable;
+$('#rows').addEventListener('keydown',e=>{
+  const t=e.target;if(!t||!t.dataset||t.dataset.tc===undefined)return;
+  const k=e.key;if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(k))return;
+  const rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;
+  let ti=+t.dataset.ti,tc=+t.dataset.tc,pos=null;
+  if(k=='ArrowUp'){e.preventDefault();if(ti>0)ti--;else return}
+  else if(k=='ArrowDown'){
+    e.preventDefault();
+    if(ti<r.tbl.rows.length-1)ti++;
+    else{r.tbl.rows.push(['','']);tblSync(r);renderRows();draw();ti++}
+  }else if(k=='ArrowLeft'){
+    if(t.selectionStart!==0||t.selectionEnd!==0)return;
+    if(tc>0){e.preventDefault();tc--;pos=-1}else return;
+  }else if(k=='ArrowRight'){
+    if(t.selectionStart!==t.value.length||t.selectionEnd!==t.value.length)return;
+    if(tc<1){e.preventDefault();tc++;pos=0}else return;
+  }
+  const el=document.querySelectorAll('.row')[i],q=el&&el.querySelector(`[data-tc="${tc}"][data-ti="${ti}"]`);
+  if(q){focusIn(el,q);q.scrollIntoView({block:'nearest'});const p=pos===null?q.value.length:(pos<0?q.value.length:pos);if(q.setSelectionRange)q.setSelectionRange(p,p)}
+});
 $('#rows').addEventListener('paste',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.tc===undefined)return;
   const grid=pasteGrid((e.clipboardData||window.clipboardData).getData('text'));if(grid.length<2&&(!grid[0]||grid[0].length<2))return;
   const rw=t.closest('.row'),i=+rw.dataset.i,r=rows[i];if(!r||!r.tbl)return;e.preventDefault();pasteInto(r,+t.dataset.ti,+t.dataset.tc,grid);renderRows();draw();focusRow(i)});
