@@ -119,10 +119,14 @@ h3{font-size:13px;margin:12px 0 6px}
 .axespop-hd{display:flex;align-items:center;gap:8px;padding-bottom:8px;margin-bottom:8px;border-bottom:1px solid var(--line);font-weight:600;font-size:15px}
 .axespop-hd .qm{margin-left:auto}
 .axespop-x{width:24px;height:24px;border-radius:50%;padding:0;font-size:16px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
-.axespop h3{margin:12px 0 6px}
-.grid3 .span3{grid-column:1/-1}
-.axespop-foot{margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
-.axespop-foot .trig:first-child{margin-top:0}
+.axespop h3{margin:12px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px}
+.grid2 label{display:grid;gap:2px;font-size:13px;color:var(--mute)}
+.grid2 input[type=range]{height:28px}
+.ax-rv{font-size:12px;font-weight:500;padding:2px 8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px}
+.axespop-more{margin-top:12px;padding-top:8px;border-top:1px solid var(--line)}
+.axespop-more summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);user-select:none;padding:2px 0}
+.axespop-more-body{margin-top:8px;display:grid;gap:2px}
 @media(pointer:fine){#mvb{display:none}}
 @media print{.zoomc,.axespop{display:none}}
 .kind.err{color:var(--bad)}
@@ -208,23 +212,13 @@ h3{font-size:13px;margin:12px 0 6px}
   </div>
 
   </div></section>
-<section class="sec closed"><h2><span class="n">2</span>Grid<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p>Choose the gridline color and thickness, add minor lines, and change the block size (how big each square is).</p></div>
-  <div class="grid3">
-    <label>Color<select id="gw"><option value="light">Light</option><option value="standard" selected>Medium</option><option value="bold">Dark</option><option value="none">Hide grid</option></select></label>
-    <label>Thickness<input id="gt" type="range" min="0.5" max="4" step="0.25" value="1"></label>
-    <label>Minor lines<select id="gm"><option value="1">None</option><option value="2">2 per block</option><option value="4">4 per block</option><option value="5">5 per block</option></select></label>
-    <label>Block size<input id="cell" type="range" min="16" max="60" value="28"></label>
-  </div>
-  <div class="btnrow"><button type="button" id="rv" title="Back to x and y from −10 to 10, step 1">Reset view</button></div>
-
-  </div></section>
-<section class="sec closed"><h2><span class="n">3</span>View<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Answer key</b> shows everything. <b>Student copy</b> hides rows marked <b>Key</b> (use the ⋯ menu on a row). <b>Black and white</b> draws everything in black and turns shading into hatching, which photocopies better.</p></div>
+<section class="sec closed"><h2><span class="n">2</span>View<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p><b>Answer key</b> shows everything. <b>Student copy</b> hides rows marked <b>Key</b> (use the ⋯ menu on a row). <b>Black and white</b> draws everything in black and turns shading into hatching, which photocopies better.</p></div>
   <div class="grid3">
     <label>Version<select id="ver" class="nosave" title="Student copy hides rows marked as answer key only"><option value="key">Answer key</option><option value="student">Student copy</option></select></label>
     <label>Colors<select id="bw" class="nosave"><option value="color">Color</option><option value="bw">Black and white</option></select></label>
   </div>
 </div></section>
-<section class="sec closed"><h2><span class="n">4</span>Export<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p>Save or copy the whole graph as a picture. <b>1×</b> is the size you see; choose a larger size for a sharper picture. The Google Docs settings control how copied equations are wrapped and what the cells of a piecewise table contain.</p></div>
+<section class="sec closed"><h2><span class="n">3</span>Export<button type="button" class="qm" aria-label="Help for this section" title="Help" aria-expanded="false">?</button><span class="chev" aria-hidden="true">▾</span></h2><div class="sb"><div class="info" hidden><p>Save or copy the whole graph as a picture. <b>1×</b> is the size you see; choose a larger size for a sharper picture. The Google Docs settings control how copied equations are wrapped and what the cells of a piecewise table contain.</p></div>
   <div class="grid3">
     <label>PNG size<select id="esz" class="nosave"><option value="1" selected>1× (as shown)</option><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option></select></label>
     <label>Background<select id="ebg" class="nosave"><option value="white">White</option><option value="clear">Transparent</option></select></label>
@@ -262,13 +256,10 @@ h3{font-size:13px;margin:12px 0 6px}
 <li><b>Editable Docs equation:</b> choose <b>Copy for Docs equation</b>, then paste it into your Doc. It is wrapped in $ … $ by default; change the wrapper in the Export section at the bottom of the left pane, or paste it into Insert → Equation without the $. Docs converts commands such as <code>\frac</code>, <code>\sqrt</code> and <code>\pi</code> when you press space after them. If pasted commands stay as plain text, click right after each command and press space.</li>
 <li><b>Piecewise functions:</b> Docs equations can’t draw these, so <b>Copy for Docs equation</b> copies them as a borderless <b>table</b>: a large brace beside one row per piece. Paste it straight into your Doc. Cells hold plain math text (x², √x, ≤) you can edit, or choose “Docs equation commands” to turn each cell into a Docs equation yourself. If borders show up, select the table and set the border width to 0.</li>
 <li>If copying the image is blocked, use <b>Download PNG</b> and insert it with Insert → Image.</li></ul></details></div>
-  <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Axes and titles" title="Axes and titles" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
-  <div id="axespop" class="axespop" role="dialog" aria-label="Axes and titles" hidden>
-    <div class="axespop-hd"><span>Axes &amp; titles</span><button type="button" id="axh" class="qm" aria-label="Help for Axes and titles" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close axes and titles" title="Close">×</button></div>
-    <div id="axinfo" class="info" hidden><p><b>Range &amp; step:</b> From and To set the visible range. Step is the distance between gridlines. Fractions and <code>pi</code> work, like <code>pi/2</code>. Dragging or zooming the graph updates these boxes when you let go.</p><p><b>Titles &amp; axis labels:</b> Optional. Powers format automatically (<code>x^2</code> → x²). Axis labels default to <code>x</code> and <code>y</code> until you type something else, and revert if cleared.</p></div>
-    <div class="f">
-      <label>Chart title<input id="ct" placeholder="Optional"></label>
-    </div>
+  <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Graph settings" title="Graph settings" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
+  <div id="axespop" class="axespop" role="dialog" aria-label="Graph settings" hidden>
+    <div class="axespop-hd"><span>Graph settings</span><button type="button" id="axh" class="qm" aria-label="Help for Graph settings" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close graph settings" title="Close">×</button></div>
+    <div id="axinfo" class="info" hidden><p><b>Range &amp; step:</b> From and To set the visible range. Step is the distance between gridlines. Fractions and <code>pi</code> work, like <code>pi/2</code>. Dragging or zooming the graph updates these boxes when you let go.</p><p><b>Grid &amp; titles:</b> Adjust gridline weight, minor subdivisions, and square size. Axis labels default to <code>x</code> and <code>y</code> until changed, and powers like <code>x^2</code> format automatically.</p></div>
     <h3>Horizontal axis (x)</h3>
     <div class="grid3">
       <label>From<input id="x0" value="-10"></label>
@@ -287,11 +278,22 @@ h3{font-size:13px;margin:12px 0 6px}
       <label>Axis label<input id="yl" placeholder="y"></label>
       <label>Number style<select id="yf"><option value="dec">Decimal</option><option value="pi">Multiples of π</option><option value="deg">Degrees (°)</option></select></label>
     </div>
-    <div class="axespop-foot">
-      <label class="trig">Axis number size<input id="ns" type="range" min="10" max="28" value="12"><output id="nso" class="vo">12</output></label>
-      <label class="trig">Label text size<input id="ls" type="range" min="11" max="26" value="15"><output id="lso" class="vo">15</output></label>
-      <label class="trig">Trig functions use<select id="tm"><option value="rad">Radians</option><option value="deg">Degrees</option></select></label>
+    <h3><span>Grid</span><button type="button" id="rv" class="ax-rv" title="Back to x and y from −10 to 10, step 1">Reset view</button></h3>
+    <div class="grid2">
+      <label>Color<select id="gw"><option value="light">Light</option><option value="standard" selected>Medium</option><option value="bold">Dark</option><option value="none">Hide grid</option></select></label>
+      <label>Minor lines<select id="gm"><option value="1">None</option><option value="2">2 per block</option><option value="4">4 per block</option><option value="5">5 per block</option></select></label>
+      <label>Thickness<input id="gt" type="range" min="0.5" max="4" step="0.25" value="1"></label>
+      <label>Block size<input id="cell" type="range" min="16" max="60" value="28"></label>
     </div>
+    <details class="axespop-more">
+      <summary>Titles, sizes &amp; trig</summary>
+      <div class="axespop-more-body">
+        <div class="f"><label>Chart title<input id="ct" placeholder="Optional"></label></div>
+        <label class="trig">Axis number size<input id="ns" type="range" min="10" max="28" value="12"><output id="nso" class="vo">12</output></label>
+        <label class="trig">Label text size<input id="ls" type="range" min="11" max="26" value="15"><output id="lso" class="vo">15</output></label>
+        <label class="trig">Trig functions use<select id="tm"><option value="rad">Radians</option><option value="deg">Degrees</option></select></label>
+      </div>
+    </details>
   </div>
   <div id="note" role="status"></div>
 </main>
