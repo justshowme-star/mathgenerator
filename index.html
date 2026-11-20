@@ -36,7 +36,7 @@ button{cursor:pointer}button:hover{border-color:var(--accent)}
 .wrap{overflow:auto;background:#fff;border-radius:6px;border:1px solid var(--line)}
 #fig{display:block;max-width:100%;height:auto;margin:0 auto}
 #note{color:var(--mute);font-size:13px;min-height:1.4em;margin-top:8px}
-@media print{body{background:#fff}aside,.bar,.tools,#note,#ginfo{display:none}.app{display:block;padding:0}.stage{border:0;padding:0;position:static}.wrap{border:0}}
+@media print{body{background:#fff}aside,.bar,.tools,#note,#helpdlg{display:none}.app{display:block;padding:0}.stage{border:0;padding:0;position:static}.wrap{border:0}}
 
 h2{display:flex;align-items:center;gap:8px;font-size:15px}
 h3{font-size:13px;margin:12px 0 6px}
@@ -171,6 +171,21 @@ h3{font-size:13px;margin:12px 0 6px}
 .modal p{margin:0 0 14px;font-size:14px;color:var(--mute)}
 .modal-act{display:flex;justify-content:flex-end;gap:8px}
 .modal-act .danger{background:var(--bad);color:#fff;border-color:var(--bad)}
+.help-modal{width:min(680px,100%);max-height:min(84vh,720px);display:flex;flex-direction:column;padding:0;overflow:hidden}
+.help-hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 0}
+.help-hd h3{margin:0;font-size:17px}
+.help-tabs{display:flex;gap:4px;padding:10px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto;flex:none}
+.help-tabs button{border:0;border-bottom:2px solid transparent;border-radius:6px 6px 0 0;background:transparent;color:var(--mute);padding:7px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+.help-tabs button:hover{color:var(--ink);background:var(--bg)}
+.help-tabs button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);background:var(--bg)}
+.help-body{padding:14px 16px 16px;overflow-y:auto;font-size:13.5px;line-height:1.5}
+.help-body[hidden]{display:none}
+.help-body h4{margin:14px 0 5px;font-size:14px;color:var(--ink)}
+.help-body h4:first-child{margin-top:0}
+.help-body p{margin:0 0 8px;color:var(--ink)}
+.help-body ul{margin:0 0 10px;padding-left:18px}
+.help-body li{margin-bottom:5px;color:var(--ink)}
+.help-body code{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
 @media(pointer:fine){#mvb{display:none}}
 @media print{.zoomc,.axespop,.modal-bg{display:none}}
 .kind.err{color:var(--bad)}
@@ -288,7 +303,7 @@ h3{font-size:13px;margin:12px 0 6px}
     <span class="tsep" aria-hidden="true"></span>
     <button type="button" id="cpy2" title="Copy the graph image">Copy image</button>
     <button type="button" id="exb" class="exbtn" aria-expanded="false" aria-controls="expop" title="Save, print, and export options">Export ▾</button>
-    <button type="button" id="gh" class="qm2" aria-label="Help for the graph" title="Help" aria-expanded="false">?</button>
+    <button type="button" id="gh" class="qm2" aria-label="Help" title="Help" aria-haspopup="dialog" aria-expanded="false" aria-controls="helpdlg">?</button>
   </div>
   <div id="expop" class="axespop expop" role="dialog" aria-label="Export and print" hidden>
     <div class="axespop-hd"><span>Export &amp; print</span><button type="button" id="exh" class="qm" aria-label="Help for Export and print" title="Help" aria-expanded="false">?</button><button type="button" id="exx" class="axespop-x" aria-label="Close export options" title="Close">×</button></div>
@@ -308,12 +323,96 @@ h3{font-size:13px;margin:12px 0 6px}
       <label>Piecewise cells<select id="dcm" class="nosave"><option value="plain" selected>Plain math text</option><option value="docs">Docs commands</option></select></label>
     </div>
   </div>
-  <div class="info" id="ginfo" hidden><p><b>Working with the graph</b></p><p>Drag to move the view. Hold Ctrl (Cmd on a Mac) and scroll to zoom, or use the + and − buttons. After you click the graph, plain scrolling, the arrow keys and + and − also work. The view snaps to the grid when you let go. On a touch screen, tap ✥ to drag the graph; otherwise your finger scrolls the page.</p><p>Drag a label to place it (double-click it to reset). Click a line or point to edit its row.</p><p>Ctrl+Z undoes and Ctrl+Shift+Z redoes. Your work saves automatically in this browser.</p><details><summary>Getting equations into Google Docs</summary><ul>
-<li>Use the <b>Copy for Docs</b> and <b>Copy as image</b> buttons under an equation, or the same options in the row’s ⋯ menu.</li>
-<li><b>Copy as image</b>, click in your Doc and paste (Ctrl/Cmd+V). This works for everything, including piecewise functions. Resize it in Docs if needed.</li>
-<li><b>Editable Docs equation:</b> choose <b>Copy for Docs equation</b>, then paste it into your Doc. It is wrapped in $ … $ by default; change the wrapper in the <b>Export ▾</b> menu in the top toolbar, or paste it into Insert → Equation without the $. Docs converts commands such as <code>\frac</code>, <code>\sqrt</code> and <code>\pi</code> when you press space after them. If pasted commands stay as plain text, click right after each command and press space.</li>
-<li><b>Piecewise functions:</b> Docs equations can’t draw these, so <b>Copy for Docs equation</b> copies them as a borderless <b>table</b>: a large brace beside one row per piece. Paste it straight into your Doc. Cells hold plain math text (x², √x, ≤) you can edit, or choose “Docs equation commands” to turn each cell into a Docs equation yourself. If borders show up, select the table and set the border width to 0.</li>
-<li>If copying the image is blocked, open <b>Export ▾</b>, choose <b>Save PNG</b>, and insert it with Insert → Image.</li></ul></details></div>
+  <div id="helpdlg" class="modal-bg" hidden>
+    <div class="modal help-modal" role="dialog" aria-modal="true" aria-labelledby="help-t">
+      <div class="help-hd">
+        <h3 id="help-t">Math Grapher Help</h3>
+        <button type="button" id="helpx" class="axespop-x" aria-label="Close help" title="Close">×</button>
+      </div>
+      <div class="help-tabs" role="tablist" aria-label="Help topics">
+        <button type="button" role="tab" id="htab-gen" aria-selected="true" aria-controls="hp-gen" tabindex="0">General help</button>
+        <button type="button" role="tab" id="htab-g9" aria-selected="false" aria-controls="hp-g9" tabindex="-1">Grade 9 &amp; 10</button>
+        <button type="button" role="tab" id="htab-g11" aria-selected="false" aria-controls="hp-g11" tabindex="-1">Grade 11 &amp; 12</button>
+        <button type="button" role="tab" id="htab-data" aria-selected="false" aria-controls="hp-data" tabindex="-1">Data</button>
+      </div>
+      <div id="hp-gen" class="help-body" role="tabpanel" aria-labelledby="htab-gen">
+        <h4>Typing Equations, Points &amp; Sliders</h4>
+        <p>Type equations, inequalities, or points in any row: <code>y = 2x + 1</code>, <code>x = 4</code>, <code>x² + y² = 9</code>, <code>f(x) = x²</code>, or <code>A(2, 3), B(−1, 4)</code>. Use the symbol toolbar or type <code>^2</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>!=</code>, <code>sqrt()</code>, and <code>pi</code> to format automatically.</p>
+        <p>Single letters other than <code>x, y, e, i, j, l, o</code> (such as <code>a, b, c, h, k, m</code>) automatically create interactive sliders with adjustable min, max, and step bounds.</p>
+        <h4>Row Styling, Labels &amp; Teacher Modes</h4>
+        <ul>
+          <li>Click a row’s colored circle to show or hide it; press and hold (or right-click) to change its color.</li>
+          <li>Expand a row for <b>Line style</b> (dashed, dotted, thickness, arrows) and <b>Label</b> placement, or drag labels directly on the graph (double-click a label to reset its position).</li>
+          <li>Use <code>⋯</code> → <b>Answer key only</b> to mark solution rows, then toggle <b>Key | Student</b> and <b>Color | B&amp;W</b> in the top toolbar for worksheets and photocopying.</li>
+        </ul>
+        <h4>Navigation, Graph Settings &amp; Exporting</h4>
+        <ul>
+          <li>Drag to pan, hold Ctrl (Cmd on Mac) + scroll (or use <code>+</code>/<code>−</code>) to zoom, and click a plotted line or point to jump to its row. On touch screens, tap ✥ to drag the graph.</li>
+          <li>Click the gear button for <b>Graph settings</b> (axis bounds, step sizes like <code>pi/2</code>, decimal/π/degree ticks, grid lines, and radians/degrees) or pick a preset from <b>Template…</b>.</li>
+          <li>Use <b>Copy for Docs</b> or <b>Copy as image</b> under any equation (piecewise functions copy as a borderless aligned table). Open <b>Export ▾</b> to save PNG (1×–4×) or SVG, print, or adjust <code>$ … $</code> wrappers. <b>Save</b> and <b>Load</b> export <code>.json</code> files, and work autosaves locally with <code>Ctrl+Z</code> / <code>Ctrl+Shift+Z</code>.</li>
+        </ul>
+      </div>
+      <div id="hp-g9" class="help-body" role="tabpanel" aria-labelledby="htab-g9" hidden>
+        <h4>Coordinate Points &amp; 1D Number Lines</h4>
+        <ul>
+          <li>Plot ordered pairs as <code>(2, 3)</code> or named points <code>A(2, 3), B(−1, 4)</code>. Name multiple points in the <b>Label</b> box as <code>A; B; C</code> and check <b>Show coordinates</b>.</li>
+          <li>Turn on <b>Number line mode (1D)</b> in Graph settings (or choose a Number line template) to plot 1D points <code>A(−3), B(2)</code> and compound inequalities such as <code>−2 ≤ x &lt; 4</code> or <code>x ≠ 3</code>.</li>
+        </ul>
+        <h4>Linear Relations &amp; Systems of Equations</h4>
+        <ul>
+          <li>Graph lines in slope-intercept (<code>y = −2x + 5</code>), standard (<code>3x − 2y = 6</code>), horizontal (<code>y = 4</code>), or vertical (<code>x = −2</code>) form.</li>
+          <li>Open <b>Key points &amp; symmetry</b> on a row to display <b>x-intercepts</b>, <b>y-intercept</b>, and <b>POI (intersections)</b> where lines or curves cross.</li>
+        </ul>
+        <h4>Quadratics, Circles &amp; 2D Inequalities</h4>
+        <ul>
+          <li>Graph parabolas in vertex (<code>y = a(x − h)² + k</code>), factored (<code>y = (x − 3)(x + 1)</code>), or standard (<code>y = x² − 4x + 3</code>) form, and toggle <b>Vertex / turning points</b> and <b>Axis of symmetry</b>.</li>
+          <li>Graph circles centered at the origin (<code>x² + y² = 25</code>) or translated (<code>(x − 2)² + (y + 1)² = 16</code>).</li>
+          <li>Use <code>&lt;</code>, <code>&gt;</code>, <code>≤</code>, or <code>≥</code> (e.g., <code>y ≥ x − 3</code>) for 2D inequalities, and use <b>Where inequalities overlap</b> to shade or cross-hatch feasible regions.</li>
+        </ul>
+      </div>
+      <div id="hp-g11" class="help-body" role="tabpanel" aria-labelledby="htab-g11" hidden>
+        <h4>Functions, Domain Restrictions &amp; Piecewise</h4>
+        <ul>
+          <li>Define named functions such as <code>f(x) = x² − 4</code> and transform them in other rows (<code>y = −2f(x − 1) + 3</code>).</li>
+          <li>Restrict domains or ranges with braces: <code>y = x² {x ≥ 0}</code> or <code>y = x + 1 {−2 ≤ x &lt; 4}</code> (automatically draws open and filled endpoint circles).</li>
+          <li>Click <b>Piecewise</b> for the visual fill-in editor, or enter inline: <code>f(x) = {x &lt; 0: x + 1, 0 ≤ x &lt; 2: x², 3}</code>.</li>
+        </ul>
+        <h4>Inverses, Rational, Exponential &amp; Logarithmic Functions</h4>
+        <ul>
+          <li>Expand <b>Inverse function</b> on any function row to plot <i>f</i><sup>−1</sup>(<i>x</i>) along with the dashed <code>y = x</code> reflection line.</li>
+          <li>Rational functions such as <code>y = (x² − 1)/(x − 1)</code> or <code>y = 1/(x − 2) + 3</code> automatically highlight vertical, horizontal, and slant asymptotes as well as holes.</li>
+          <li>Plot exponential and logarithmic curves: <code>y = 2^x</code>, <code>y = e^x</code>, <code>y = ln(x)</code>, <code>y = log(x)</code>, and <code>y = log_2(x)</code>.</li>
+        </ul>
+        <h4>Trigonometry, Parametric, Vectors &amp; Calculus</h4>
+        <ul>
+          <li>Graph <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>sec</code>, <code>csc</code>, <code>cot</code>, and inverse trig (<code>arcsin</code>, <code>arccos</code>, <code>arctan</code>) in radians or degrees (switch in Graph settings or via the trig templates).</li>
+          <li>Plot parametric curves with parameter <code>t</code>: <code>(cos(t), sin(t)) {0 ≤ t ≤ 2pi}</code>.</li>
+          <li>Define 2D vectors like <code>u = [3, 4]</code>, <code>v = [−2, 1] at (1, 2)</code>, or combinations like <code>u + v</code>, and open <b>Vector options</b> to show magnitude |v|, angle θ, components, and tip-to-tail addition.</li>
+          <li>Plot derivatives directly as <code>f'(x)</code> and <code>f''(x)</code>, or expand <b>Calculus tools</b> for tangent/secant lines and shaded area or Riemann sums (left, right, midpoint rectangles, trapezoids). Enter <code>normpdf(x, 0, 1)</code> for normal distribution shading and <i>z</i>-scores.</li>
+        </ul>
+      </div>
+      <div id="hp-data" class="help-body" role="tabpanel" aria-labelledby="htab-data" hidden>
+        <h4>Entering &amp; Pasting Data Tables</h4>
+        <ul>
+          <li>Click <b>+ Add table</b> to create an (<i>x</i>, <i>y</i>) table. Navigate cells with arrow keys (pressing <code>↓</code> in the last row inserts a new row), or paste two columns copied directly from Google Sheets or Excel—text column headers are skipped automatically.</li>
+        </ul>
+        <h4>Scatter Plot &amp; Point Options</h4>
+        <ul>
+          <li>Toggle <b>Connect the points</b>, <b>Name the points A, B, C</b>, and <b>Show coordinates</b> to format scatter plots or broken-line graphs.</li>
+        </ul>
+        <h4>Curve Fitting &amp; Best-Fit Regressions</h4>
+        <ul>
+          <li>Choose a <b>Best fit</b> model from the dropdown: <b>Linear</b>, <b>Quadratic</b>, <b>Cubic</b>, <b>Exponential</b>, <b>Logarithmic</b>, <b>Power</b>, or <b>Sinusoidal</b> (with an optional fixed <b>Period</b> input).</li>
+          <li>The table footer shows the fitted equation and <i>R</i>² value (plus period, amplitude, and midline for sinusoidal fits).</li>
+        </ul>
+        <h4>Residual Plots &amp; Promoting Fits to Function Rows</h4>
+        <ul>
+          <li>Check <b>Show the equation on the graph</b> to label the regression curve directly on the canvas, or check <b>Show residual plot (y − ŷ)</b> to plot residuals against <i>x</i>.</li>
+          <li>Click <b>Add the best fit as a new row</b> to copy the regression equation into a regular function row so you can inspect key points, intersections, inverses, or calculus properties.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
   <div class="wrap" tabindex="0" role="application" aria-label="Graph. Arrow keys move the view. Plus and minus zoom."><svg id="fig"></svg><div class="zoomc"><button type="button" id="zi" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zo" aria-label="Zoom out" title="Zoom out">−</button><button type="button" id="axb" aria-label="Graph settings" title="Graph settings" aria-expanded="false" aria-controls="axespop"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button><button type="button" id="mvb" aria-pressed="false" aria-label="Drag the graph with touch" title="Touch screens: turn on to drag the graph. Off lets your finger scroll the page.">✥</button></div></div>
   <div id="axespop" class="axespop" role="dialog" aria-label="Graph settings" hidden>
     <div class="axespop-hd"><span>Graph settings</span><button type="button" id="axh" class="qm" aria-label="Help for Graph settings" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close graph settings" title="Close">×</button></div>
@@ -1303,7 +1402,13 @@ $('#rst-yes').onclick=()=>{
 try{const j=localStorage.getItem('cg-state2');if(j){const st=JSON.parse(j);if(st&&Array.isArray(st.rows)){setState(st);draw();setSaved('Restored your last session')}}}catch(e){setSaved('Autosave is not available here. Use Save file.',true)}
 lastJ=JSON.stringify(getState());hist=[lastJ];hi=0;clearTimeout(hT);updHist();
 document.querySelectorAll('.sec .qm').forEach(b=>{b.addEventListener('keydown',e=>e.stopPropagation());b.addEventListener('click',e=>{e.stopPropagation();const sec=b.closest('.sec');if(sec&&sec.classList.contains('closed'))sec.querySelector('h2').click();const inf=sec.querySelector('.info');inf.hidden=!inf.hidden;b.setAttribute('aria-expanded',String(!inf.hidden))})});
-$('#gh').onclick=()=>{const i=$('#ginfo');i.hidden=!i.hidden;$('#gh').setAttribute('aria-expanded',String(!i.hidden))};
+const helpDlg=$('#helpdlg'),helpTabs=[...document.querySelectorAll('#helpdlg [role="tab"]')];
+const closeHelp=()=>{if(helpDlg&&!helpDlg.hidden){helpDlg.hidden=true;$('#gh').setAttribute('aria-expanded','false')}};
+const setHelpTab=btn=>{helpTabs.forEach(t=>{const on=t===btn;t.setAttribute('aria-selected',String(on));t.tabIndex=on?0:-1;const p=$('#'+t.getAttribute('aria-controls'));if(p){p.hidden=!on;if(on)p.scrollTop=0}})};
+$('#gh').onclick=()=>{if(!helpDlg.hidden){closeHelp();return}closeAxes();closeExp();helpDlg.hidden=false;$('#gh').setAttribute('aria-expanded','true');(helpTabs.find(t=>t.getAttribute('aria-selected')==='true')||$('#helpx')).focus()};
+$('#helpx').onclick=()=>{closeHelp();$('#gh').focus()};
+helpDlg.onclick=e=>{if(e.target===helpDlg)closeHelp()};
+helpTabs.forEach((b,idx)=>{b.onclick=()=>setHelpTab(b);b.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();const nxt=helpTabs[(idx+(e.key==='ArrowRight'?1:-1)+helpTabs.length)%helpTabs.length];setHelpTab(nxt);nxt.focus()}}});
 const syncSeg=()=>document.querySelectorAll('[data-seg]').forEach(b=>b.setAttribute('aria-pressed',String($('#'+b.dataset.seg).value===b.dataset.v)));
 document.querySelectorAll('[data-seg]').forEach(b=>b.onclick=()=>{const inp=$('#'+b.dataset.seg);if(inp.value!==b.dataset.v){inp.value=b.dataset.v;syncSeg();draw()}});
 const zoomBtn=f=>{if(!begin())return;mv=true;zoomAt(view.L+view.W/2,view.T+view.H/2,f);commit()};
@@ -1335,7 +1440,7 @@ document.addEventListener('pointerdown',e=>{
   if(!axPop.hidden&&!e.target.closest('#axespop')&&!e.target.closest('#axb'))closeAxes();
   if(!exPop.hidden&&!e.target.closest('#expop')&&!e.target.closest('#exb'))closeExp();
 });
-document.addEventListener('keydown',e=>{if(e.key=='Escape'){closeAxes();closeExp();closeRst()}});
+document.addEventListener('keydown',e=>{if(e.key=='Escape'){closeAxes();closeExp();closeRst();closeHelp()}});
 $('#mvb').onclick=()=>{const on=wrap.classList.toggle('mv');$('#mvb').setAttribute('aria-pressed',String(!!on))};
 const onKey=e=>{if(e.target!==wrap)return;const k=e.key;let dx=0,dy=0,f=1;
   if(k=='ArrowLeft')dx=1;else if(k=='ArrowRight')dx=-1;else if(k=='ArrowUp')dy=1;else if(k=='ArrowDown')dy=-1;else if(k=='+'||k=='=')f=.5;else if(k=='-'||k=='_')f=2;else return;
