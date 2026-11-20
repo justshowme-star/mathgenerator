@@ -97,8 +97,7 @@ h3{font-size:13px;margin:12px 0 6px}
 #params h3{margin:12px 0 6px}
 .trig{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:13px;color:var(--mute)}
 .row:not([data-feat="1"]) .only-feat{display:none}
-.row:not([data-type="f"]):not([data-type="v"]) .only-kp,.row[data-ineq="1"] .only-kp{display:none}
-.only-kp{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.row:not([data-type="f"]):not([data-type="v"]) .only-kp,.row[data-ineq="1"] .only-kp,.row[data-type="v"] .only-fn{display:none}
 .kp-lbl[hidden]{display:none}
 .row[data-type="imp"]:not([data-ineq="1"]) .kind::after{content:"Curve (circle, ellipse, or other)"}
 .calc .sm{width:68px;padding:3px 5px}
@@ -710,7 +709,7 @@ function renderRows(){
 <div class="pvrow"><div class="pv" data-pv="eq" hidden></div><div class="pvbtns" hidden><button type="button" class="pvcopy" data-act="cdoc" title="Copy as a Google Docs equation (a table for piecewise functions)">Copy for Docs</button><button type="button" class="pvcopy" data-act="cimg" title="Copy a picture of the equation">Copy as image</button></div></div>
 <div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
 <div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
-<div class="restrow only-kp"><label><input type="checkbox" data-k="kp"${r.kp?' checked':''}>Show key points (intercepts, vertex, intersections)</label><label class="kp-lbl"${r.kp?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Coordinates</label></div>
+<details data-d="k" class="only-kp"${(r.ui&&r.ui.k!==undefined)?(r.ui.k?' open':''):((r.k_xint||r.k_yint||r.k_ext||r.k_poi)?' open':'')}><summary>Key points</summary><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates</label></div></details>
 <div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
 <details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
 <details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>
@@ -726,7 +725,7 @@ function renderRows(){
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k=='kp'){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!r.kp}draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_poi)}draw()});
 const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
   if(a=='menu'){rowMenu(e.target,i);return}
   if(a=='cdoc'||a=='cimg'){copyEq(i,a);return}
@@ -954,18 +953,18 @@ function draw(){
         let a=xs2[k-1],b=xs2[k+1];for(let t=0;t<42;t++){const c=b-phi*(b-a),d=a+phi*(b-a),fc=safe(fn,c),fd=safe(fn,d);if(isMax?fc>fd:fc<fd)b=d;else a=c}
         const xm=(a+b)/2,ym=safe(fn,xm);if(isFinite(ym)&&cont(fn,xm))out.push({x:xm,y:ym,place:isMax?'above':'below'})}
       return out};
-    RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||!r.kp)return;
+    RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||(!r.k_xint&&!r.k_yint&&!r.k_ext&&!r.k_poi))return;
       const pts=[],ok=(x,y)=>isFinite(x)&&isFinite(y)&&x>=x0-1e-9&&x<=x1+1e-9&&y>=y0-1e-9&&y<=y1+1e-9&&(!RESTRS[i]||RESTRS[i].test(x,y));
       const add=(x,y,pl)=>{x=snap0(x);y=snap0(y);if(!ok(x,y))return;if(!pts.some(q=>Math.abs(q.x-x)<Math.max(1e-5,(x1-x0)*1e-4)&&Math.abs(q.y-y)<Math.max(1e-5,(y1-y0)*1e-4)))pts.push({x,y,place:pl||'above'})};
       if(f){
-        if(x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');
-        rootsOf(f).forEach(rx=>add(rx,0,'above'));
-        extOf(f).forEach(q=>add(q.x,q.y,q.place));
-        FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].kp))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
-        VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1)return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')});
+        if(r.k_xint)rootsOf(f).forEach(rx=>add(rx,0,'above'));
+        if(r.k_yint&&x0<=0&&x1>=0&&cont(f,0))add(0,safe(f,0),'right');
+        if(r.k_ext)extOf(f).forEach(q=>add(q.x,q.y,q.place));
+        if(r.k_poi){FNS.forEach((g,j)=>{if(!g||j===i||(j<i&&RW[j]&&RW[j].k_poi))return;rootsOf(x=>safe(f,x)-safe(g,x)).forEach(rx=>{const ry=safe(f,rx);if(!RESTRS[j]||RESTRS[j].test(rx,ry))add(rx,ry,'above')})});
+          VLINES.forEach((cx,j)=>{if(cx===undefined||cx<x0||cx>x1||(j<i&&RW[j]&&RW[j].k_poi))return;const ry=safe(f,cx);if(!RESTRS[j]||RESTRS[j].test(cx,ry))add(cx,ry,'right')})}
       }else{
-        add(vx,0,'above');
-        FNS.forEach((g,j)=>{if(!g||(RW[j]&&RW[j].kp))return;const ry=safe(g,vx);if(!RESTRS[j]||RESTRS[j].test(vx,ry))add(vx,ry,'right')});
+        if(r.k_xint)add(vx,0,'above');
+        if(r.k_poi)FNS.forEach((g,j)=>{if(!g||(j<i&&RW[j]&&RW[j].k_poi))return;const ry=safe(g,vx);if(!RESTRS[j]||RESTRS[j].test(vx,ry))add(vx,ry,'right')});
       }
       const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
       pts.forEach((q,ki)=>{arrows+=`<circle data-i="${i}" cx="${sx(q.x).toFixed(1)}" cy="${sy(q.y).toFixed(1)}" r="4.5" fill="${r.color}" stroke="#fff" stroke-width="1.5"/>`;
