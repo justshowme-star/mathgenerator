@@ -13,7 +13,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
 .app{display:grid;grid-template-columns:minmax(300px,390px) 1fr;gap:16px;padding:16px;max-width:1400px;margin:0 auto}
 @media(max-width:860px){.app{grid-template-columns:1fr}}
-aside,.stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+aside,.stage{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;min-width:0}
 h1{font-size:19px;margin:0 0 2px}h2{font-size:14px;margin:18px 0 8px;padding-top:12px;border-top:1px solid var(--line)}
 .sub,.hint{color:var(--mute);font-size:13px;margin:0 0 6px}
 input,select,button{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 7px;min-width:0}
@@ -21,7 +21,7 @@ input[type=color]{padding:1px;width:38px;height:30px}input[type=range]{padding:0
 button{cursor:pointer}button:hover{border-color:var(--accent)}
 :focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .bad{border-color:var(--bad)}
-.row{border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px;display:grid;gap:6px}
+.row{border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:8px;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
 .l1{display:flex;gap:6px}.l1 .eq{flex:1;font-family:ui-monospace,Menlo,Consolas,monospace}
 .l2,.l3{display:flex;gap:6px;align-items:center}.l2{flex-wrap:wrap}.l2 .chk{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--mute)}.l3 input{flex:1}
 .l4{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;align-items:center;font-size:13px;color:var(--mute)}
@@ -41,8 +41,8 @@ button{cursor:pointer}button:hover{border-color:var(--accent)}
 h2{display:flex;align-items:center;gap:8px;font-size:15px}
 h3{font-size:13px;margin:12px 0 6px}
 .row{padding:10px;background:var(--bg)}
-.head{display:flex;gap:6px;align-items:center}
-.head .eq{flex:1}
+.head{display:flex;gap:6px;align-items:center;min-width:0}
+.head .eq{flex:1;min-width:0}
 .head .show{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--mute);white-space:nowrap}
 .kind{font-size:12px;color:var(--mute)}
 .row[data-type="f"] .kind::after{content:"Line or curve"}
@@ -50,17 +50,17 @@ h3{font-size:13px;margin:12px 0 6px}
 .row[data-type="pts"] .kind::after{content:"Point(s)"}
 .row details{border-top:1px solid var(--line);padding-top:6px}
 .row summary{cursor:pointer;font-size:13px;font-weight:600;padding:2px 0}
-.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;align-items:end}
-.g3 label,.g2 label{display:grid;gap:3px;font-size:12px;color:var(--mute)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:6px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px;align-items:end}
+.g3 label,.g2 label{display:grid;gap:3px;font-size:12px;color:var(--mute);min-width:0}
 .g2 .wide{grid-column:1/-1}
 .g2 .chk{display:flex;align-items:center;gap:6px;font-size:13px}
-.inl{display:flex;gap:6px}.inl input{flex:1}
+.inl{display:flex;gap:6px;min-width:0}.inl input{flex:1;min-width:0}.inl button{flex:none}.inl button.synced{border-color:var(--accent);color:var(--accent)}
 .adds{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
 .primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .chip{font-size:12px;padding:3px 8px;border-radius:99px;font-family:ui-monospace,Menlo,Consolas,monospace}
 .row[data-type="pts"] .only-line,.row:not([data-type="pts"]) .only-pts{display:none}
-.fold{padding:3px 8px;line-height:1.2;font-size:14px}
+.fold{padding:3px 8px;line-height:1.2;font-size:14px;flex:none}
 .dot,.dot:hover{width:24px;height:24px;padding:0;border-radius:50%;border:2px solid var(--panel);background:var(--c);box-shadow:0 0 0 1.5px var(--mute);flex:none;cursor:pointer}
 .visbtn{width:28px;height:28px;padding:0;display:grid;place-items:center;background:transparent;border:1px solid transparent;color:var(--mute);border-radius:6px;flex:none}
 .visbtn:hover{background:var(--panel);color:var(--ink);border-color:var(--line)}
@@ -242,7 +242,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .row.istbl[data-type="pts"] .rtab.only-line{display:inline-flex}
 .sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
 .row:not([data-fit="sin"]) .sinonly{display:none}
-.rowbody{display:grid;gap:8px;padding-top:4px}
+.rowbody{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:4px;min-width:0}
 .row.ac:not(.pin):not(.par-hold){padding:6px 10px}
 .row.ac:not(.pin):not(.par-hold) .rowbody{display:none}
 .row.ac:not(.pin):not(.par-hold) .fold{transform:rotate(-90deg)}
@@ -250,7 +250,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .rtab{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--panel);color:var(--mute);border:1px solid var(--line);line-height:1.3}
 .rtab:hover{color:var(--ink);border-color:var(--accent)}
 .rtab.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-.rtab-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.rtab-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
 .rtab-panel[hidden]{display:none}
 .rtab-panel .g2,.rtab-panel .g3{margin-top:0}
 .errline{font-size:12px;color:var(--bad)}.errline[hidden]{display:none}
@@ -752,10 +752,12 @@ function pasteInto(r,ti,tc,grid){let g=grid;if(ti==0&&tc==0&&g.length>1&&g[0].ev
   g.forEach((cells,k)=>{while(r.tbl.rows.length<=ti+k)r.tbl.rows.push(['','']);cells.forEach((c,j)=>{if(tc+j<2)r.tbl.rows[ti+k][tc+j]=c.trim()})});tblSync(r)}
 function pwEditorHTML(r,i){const m=r.pw||(r.pw=pwParts(r.eq)||{lhs:'y',rows:[{e:'',c:''}]}),n=m.rows.length;
   return `<div class="pwed"><div class="pwrow0"><input class="pwlhs" data-pw="lhs" value="${esc(m.lhs)}" aria-label="Left side, like y or f(x)"><span class="eqs">=</span><svg class="pwbr" viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M10 1C4 1 5 8 5 20L5 40C5 46 3 50 0 50C3 50 5 54 5 60L5 80C5 92 4 99 10 99" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg><div class="pwrows">${m.rows.map((q,k)=>`<div class="pwr"><input data-pw="e" data-pi="${k}" value="${esc(q.e)}" placeholder="expression, like x + 1" aria-label="Expression ${k+1}"><span class="pwif">if</span><input data-pw="c" data-pi="${k}" value="${esc(q.c)}" placeholder="${k==n-1&&n>1?'condition, or blank for otherwise':'condition, like x < 0'}" aria-label="Condition ${k+1}"><button type="button" class="pwx" data-act="pwdel" data-pi="${k}" aria-label="Remove this piece" title="Remove this piece"${n<2?' disabled':''}>\u00d7</button></div>`).join('')}</div></div><div class="pwbar"><button type="button" data-act="pwadd">+ Add piece</button><button type="button" data-act="pwtext">Edit as one line</button></div></div>`}
+const eqLabel=eq=>piSym(String(eq||'').replace(/\s+/g,' ').trim());
+function syncLabBtn(rw,r){const b=rw&&rw.querySelector('[data-act="useeq"]');if(!b)return;const on=!!(r&&r.labEq);b.classList.toggle('synced',on);b.setAttribute('aria-pressed',String(on));b.textContent=on?'\u2713 Copy equation':'Copy equation';b.title=on?'Synced with equation \u2014 updates automatically when equation changes. Edit label text to unlink.':'Copy equation to label and keep it synced when the equation changes'}
 function pwSync(r){const m=r.pw,old=r.eq,ok=m.rows.filter(q=>q.e.trim()||q.c.trim()),L=(m.lhs||'y').trim()||'y';
   if(!ok.length)r.eq='';else if(!ok.some(q=>q.c.trim()))r.eq=L+' = '+ok[0].e.trim();
   else r.eq=L+' = {'+ok.map(q=>q.c.trim()?q.c.trim()+': '+q.e.trim():q.e.trim()).join(', ')+'}';
-  if(r.lab&&r.lab===old)r.lab=r.eq}
+  if(r.labEq||(r.lab&&r.lab===eqLabel(old)))r.lab=eqLabel(r.eq)}
 function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'',c:''},{e:'',c:''}]};r.pwEd=true;r.pin=true;pwSync(r);renderRows();draw();
   const el=document.querySelectorAll('.row')[i],q=el&&el.querySelector('[data-pw="e"]');if(q){focusIn(el,q);if(q.select)q.select()}}
 function pwFromPalette(el){const rw=el&&el.closest?el.closest('.row'):null;
@@ -882,7 +884,7 @@ function parseRow(s){
 
 const COLORS=['#1f5fbf','#c74440','#2e7d32','#6042a6','#d97706','#0e7490','#e6007e','#000000'];
 const nextColor=()=>{const used=new Set(rows.map(r=>r.color));return COLORS.find(c=>!used.has(c))||COLORS[rows.length%COLORS.length]};
-let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
+let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
 const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}</option>`).join('');
 const eyeSVG=on=>on?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
@@ -893,6 +895,7 @@ function applyRowTab(rw,r){if(!rw||!r)return;let tb=r.tab!==undefined?r.tab:'s';
 function renderRows(){
   const box=$('#rows');box.innerHTML='';
   rows.forEach((r,i)=>{
+    if(r.labEq)r.lab=eqLabel(r.eq);
     const on=r.vis!==false;
     const d=document.createElement('div');d.className='row ac'+(r.pin?' pin':'')+(r.tbl?' istbl':'')+(on?'':' ishid');d.dataset.fit=r.tbl?(r.tbl.fit||'none'):'';d.dataset.i=i;
     const tb=r.tab!==undefined?r.tab:'s';
@@ -913,7 +916,7 @@ function renderRows(){
   <button type="button" role="tab" class="rtab only-calc${tb=='c'?' on':''}" data-tab="c" aria-selected="${tb=='c'}">Calculus</button>
 </div>
 <div class="rtab-panel" data-panel="s"${tb=='s'?'':' hidden'}><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></div>
-<div class="rtab-panel" data-panel="l"${tb=='l'?'':' hidden'}><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></div>
+<div class="rtab-panel" data-panel="l"${tb=='l'?'':' hidden'}><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line${r.labEq?' synced':''}" aria-pressed="${!!r.labEq}" title="${r.labEq?'Synced with equation \u2014 updates automatically when equation changes. Edit label text to unlink.':'Copy equation to label and keep it synced when the equation changes'}">${r.labEq?'\u2713 Copy equation':'Copy equation'}</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></div>
 <div class="rtab-panel" data-panel="k"${tb=='k'?'':' hidden'}><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk only-fn"><input type="checkbox" data-k="k_inf"${r.k_inf?' checked':''}>Inflection points</label><label class="chk only-fn"><input type="checkbox" data-k="k_aos"${r.k_aos?' checked':''}>Axis of symmetry</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates / equation</label></div></div>
 <div class="rtab-panel" data-panel="inv"${tb=='inv'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="inv"${r.inv?' checked':''}>Show inverse <i>f</i><sup>−1</sup>(<i>x</i>) (swap <i>x</i> and <i>y</i>)</label><label class="chk wide inv-sub"${r.inv?'':' hidden'}><input type="checkbox" data-k="invmir"${r.invmir!==false?' checked':''}>Show dashed <i>y</i> = <i>x</i> mirror line</label></div></div>
 <div class="rtab-panel" data-panel="v"${tb=='v'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="v_mag"${r.v_mag?' checked':''}>Show magnitude |v| and angle θ</label><label class="chk wide"><input type="checkbox" data-k="v_comp"${r.v_comp?' checked':''}>Show x and y components</label><label class="chk wide"><input type="checkbox" data-k="v_t2t"${r.v_t2t?' checked':''}>Show tip-to-tail sum (for u ± v)</label></div></div>
@@ -932,7 +935,7 @@ function renderRows(){
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></div></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'){if(r.labEq){r.lab=eqLabel(r.eq);const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=r.lab}pvUpdate(rw,+rw.dataset.i)}else if(k=='lab'){r.labEq=false;syncLabBtn(rw,r);pvUpdate(rw,+rw.dataset.i)}if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
 const onRowsClick=e=>{const rw=e.target.closest('.row');if(!rw)return;const i=+rw.dataset.i;
   if(e.target.dataset.tab){const tb=e.target.dataset.tab;rows[i].tab=rows[i].tab===tb?'':tb;applyRowTab(rw,rows[i]);return}
   const actEl=e.target.closest('[data-act]');if(!actEl)return;const a=actEl.dataset.act;
@@ -945,10 +948,10 @@ const onRowsClick=e=>{const rw=e.target.closest('.row');if(!rw)return;const i=+r
   if(a=='key')rows[i].keyonly=!rows[i].keyonly;
   if(a=='dot'){openMenu(actEl,i);return}
   if(a=='vis'){const on=rows[i].vis===false;rows[i].vis=on;rw.classList.toggle('ishid',!on);actEl.classList.toggle('off',!on);actEl.setAttribute('aria-pressed',String(on));actEl.setAttribute('aria-label',on?'Hide on graph':'Show on graph');actEl.title=on?'Hide on graph':'Show on graph';actEl.innerHTML=eyeSVG(on);draw();return}
-  if(a=='useeq'){rows[i].lab=piSym(rows[i].eq.replace(/\s+/g,' ').trim());const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
+  if(a=='useeq'){rows[i].labEq=true;rows[i].lab=eqLabel(rows[i].eq);const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;syncLabBtn(rw,rows[i]);pvUpdate(rw,i);draw();return}
   renderRows();draw()};
 $('#rows').addEventListener('click',onRowsClick);
-$('#add').onclick=()=>{rows.push({eq:'',color:nextColor(),dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
+$('#add').onclick=()=>{rows.push({eq:'',color:nextColor(),dash:'solid',w:'2.5',lab:'',labEq:false,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
@@ -1412,11 +1415,11 @@ $('#rows').addEventListener('mouseleave',()=>setHover(null));
 
 // state, undo and redo, autosave, files, templates
 const FIELDS='#panel input[id]:not(.nosave),#panel select[id]:not(.nosave),#axespop input[id]:not(.nosave),#axespop select[id]:not(.nosave)';
-const ROWDEF={eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
+const ROWDEF={eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
 const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.type=='checkbox'?el.checked:el.value);return{v:1,f,rows:rows.map(({ui,folded,pin,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
 function setState(st,keep){if(st.p){P=Object.assign({},st.p);shownP=''}
   document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined){if(el.type=='checkbox')el.checked=!!st.f[el.id];else el.value=st.f[el.id]}});
-  rows=(st.rows||[]).map((r,i)=>Object.assign({},ROWDEF,keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r));renderRows()}
+  rows=(st.rows||[]).map((r,i)=>{const row=Object.assign({},ROWDEF,keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r);if(r.labEq===undefined&&row.lab&&row.eq&&row.lab===eqLabel(row.eq))row.labEq=true;if(row.labEq)row.lab=eqLabel(row.eq);return row});renderRows()}
 function setSaved(t,bad){const el=$('#saved');if(!el)return;el.textContent=t;el.classList.toggle('bad',!!bad)}
 function savedMsg(ok){setSaved(ok?'Saved '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not saved. Use Save file.',!ok)}
 function updHist(){$('#undo').disabled=hi<=0;$('#redo').disabled=hi>=hist.length-1}
