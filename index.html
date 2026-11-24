@@ -111,8 +111,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .row[data-type="vec"] .kind::after{content:"2D Vector"}
 .calc .sm{width:68px;padding:3px 5px}
 .row:not([data-type="f"]) .only-calc,.row[data-ineq="1"] .only-calc{display:none}
-.ax-nlrow{padding:10px 0 8px;border-bottom:1px solid var(--line)}
-.axespop.nl-on .ax-blk+.ax-blk{opacity:.4;pointer-events:none}
+.axespop.nl-on .ax-blk+.ax-blk .ax-chk,.axespop.nl-on .ax-blk+.ax-blk .ax-lblbox,.axespop.nl-on .ax-blk+.ax-blk .ax-sub{opacity:.4;pointer-events:none}
 .qm,.qm2{width:24px;height:24px;border-radius:50%;padding:0;font-size:13px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
 .qm{margin-left:auto}.qm+.chev{margin-left:8px}
 .bar.proj .qm2{margin-left:auto}
@@ -131,10 +130,14 @@ h3{font-size:13px;margin:12px 0 6px}
 .axespop-x{width:24px;height:24px;border-radius:50%;padding:0;font-size:16px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
 .axespop h3{margin:12px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
 .ax-blk{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:10px}
-.ax-blk:has(.ax-chk input:not(:checked)) .ax-sub{opacity:.45}
-.ax-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ax-blk:has(.ax-top>.ax-chk input:not(:checked)) .ax-sub{opacity:.45}
+.ax-top{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap}
+.ax-ytoggles{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ax-chk{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;user-select:none}
 .ax-chk input{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
+.ax-nlchk{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--mute);cursor:pointer;user-select:none}
+.ax-nlchk input{width:15px;height:15px;margin:0;accent-color:var(--accent);cursor:pointer}
+.ax-nlchk:has(input:checked){color:var(--ink);font-weight:600}
 .ax-lblbox{position:relative;width:148px;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px 5px;transition:border-color .15s}
 .ax-lblbox:focus-within{border-color:var(--accent)}
 .ax-lblbox span{position:absolute;top:-7px;left:8px;padding:0 4px;background:var(--panel);font-size:11px;line-height:1;color:var(--mute)}
@@ -158,7 +161,7 @@ h3{font-size:13px;margin:12px 0 6px}
 .grid2 input[type=range]{height:28px}
 .ax-rv{font-size:12px;font-weight:500;padding:2px 8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px}
 .axespop-more-body{display:grid;gap:6px}
-.gtitle-add{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:4;padding:2px 10px;font-size:12px;border-radius:99px;background:rgba(255,255,255,.92);color:#5b6b7c;border:1px dashed #9ba6b2;opacity:0;pointer-events:none;transition:opacity .15s}
+.gtitle-add{position:absolute;top:6px;left:12px;z-index:4;padding:2px 10px;font-size:12px;border-radius:99px;background:rgba(255,255,255,.92);color:#5b6b7c;border:1px dashed #9ba6b2;opacity:0;pointer-events:none;transition:opacity .15s}
 .wrap:hover .gtitle-add,.wrap:focus-within .gtitle-add{opacity:1;pointer-events:auto}
 @media(pointer:coarse){.gtitle-add{opacity:.8;pointer-events:auto}}
 .gtitle-add:hover{color:#1f5fbf;border-color:#1f5fbf;background:#fff}
@@ -250,9 +253,9 @@ h3{font-size:13px;margin:12px 0 6px}
 .sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
 .row:not([data-fit="sin"]) .sinonly{display:none}
 .rowbody{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding-top:4px;min-width:0}
-.row.ac:not(.pin):not(.par-hold){padding:6px 10px}
-.row.ac:not(.pin):not(.par-hold) .rowbody{display:none}
-.row.ac:not(.pin):not(.par-hold) .fold{transform:rotate(-90deg)}
+.row.ac:not(.pin):not(.par-hold):not(:focus-within){padding:6px 10px}
+.row.ac:not(.pin):not(.par-hold):not(:focus-within) .rowbody{display:none}
+.row.ac:not(.pin):not(.par-hold):not(:focus-within) .fold{transform:rotate(-90deg)}
 .rtabs{display:flex;flex-wrap:wrap;gap:4px;padding-top:4px;border-top:1px solid var(--line)}
 .rtab{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--panel);color:var(--mute);border:1px solid var(--line);line-height:1.3}
 .rtab:hover{color:var(--ink);border-color:var(--accent)}
@@ -437,7 +440,6 @@ h3{font-size:13px;margin:12px 0 6px}
   <div id="axespop" class="axespop" role="dialog" aria-label="Graph settings" hidden>
     <div class="axespop-hd"><span>Graph settings</span><button type="button" id="axh" class="qm" aria-label="Help for Graph settings" title="Help" aria-expanded="false">?</button><button type="button" id="axx" class="axespop-x" aria-label="Close graph settings" title="Close">×</button></div>
     <div id="axinfo" class="info" hidden><p><b>Number line mode (1D):</b> Collapses the grid into a single horizontal number line for inequalities like <code>x &gt; 3</code>, <code>−2 ≤ x &lt; 4</code>, or points like <code>A(−3), B(2)</code>.</p><p><b>Axes &amp; range:</b> Edit the inequality bounds or <b>Step</b> using numbers, fractions, or <code>pi</code> (like <code>pi/2</code>). Axis labels default to <code>x</code> and <code>y</code> until changed.</p></div>
-    <div class="ax-nlrow"><label class="ax-chk"><input type="checkbox" id="nl"><span>Number line mode (1D)</span></label></div>
     <div class="ax-blk">
       <div class="ax-top">
         <label class="ax-chk"><input type="checkbox" id="xax" checked><span>X-Axis</span></label>
@@ -456,7 +458,10 @@ h3{font-size:13px;margin:12px 0 6px}
     </div>
     <div class="ax-blk">
       <div class="ax-top">
-        <label class="ax-chk"><input type="checkbox" id="yax" checked><span>Y-Axis</span></label>
+        <div class="ax-ytoggles">
+          <label class="ax-chk"><input type="checkbox" id="yax" checked><span>Y-Axis</span></label>
+          <label class="ax-nlchk" title="Collapse graph into a 1D horizontal number line"><input type="checkbox" id="nl"><span>Number line</span></label>
+        </div>
         <label class="ax-lblbox"><span>Label</span><input id="yl" placeholder="e.g. &ldquo;y&rdquo;"></label>
       </div>
       <div class="ax-sub">
@@ -851,7 +856,7 @@ function parseRow(s){
           else if(B=='t'){const v=compile(A)(0,0);if(!isFinite(v))throw 0;if(lo)t0=hasT?Math.max(t0,v):v;else t1=hasT?Math.min(t1,v):v;hasT=true}
           else throw 0}}))}
       if(!isFinite(t0)||!isFinite(t1)||t1<t0)throw 0;
-      if(!/\bt\b/i.test(args[0]+','+args[1]))return{type:'pts',pts:[{n:'',x:fx(0,0,0),y:fy(0,0,0)}]};
+      if(!/(?:^|[^a-z])t(?![a-z])/i.test(args[0]+','+args[1]))return{type:'pts',pts:[{n:'',x:fx(0,0,0),y:fy(0,0,0)}]};
       return{type:'param',fx,fy,t0,t1}}}
   if(rm){s=rm[1].trim();restr=parseRestr(rm[2]);if(!s)throw 0}
   const dm=s.match(/^([a-wzA-WZ])\s*\(\s*x\s*\)\s*=\s*(.+)$/);
@@ -878,7 +883,10 @@ function parseRow(s){
   let g;
   if(parts.length==1){const f=compile(parts[0]);g=(x,y)=>y-f(x,y)}
   else{const a=compile(parts[0]),b=compile(parts[1]);g=(x,y)=>a(x,y)-b(x,y)}
-  const X0=[.5,2.3,7.1,-3.3,13.7,25,-11,60,-40].find(t=>isFinite(g(t,1)-g(t,0)));if(X0===undefined)return{type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
+  const probes=[.5,2.3,7.1,-3.3,13.7,25,-11,60,-40];
+  const vx0=view?view.x0:+$('#x0')?.value,vx1=view?view.x1:+$('#x1')?.value;
+  if(isFinite(vx0)&&isFinite(vx1)&&vx1>vx0)for(let k=1;k<=32;k++)probes.push(vx0+(vx1-vx0)*(k/33));
+  const X0=probes.find(t=>isFinite(g(t,1)-g(t,0)));if(X0===undefined)return{type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
   const dy=g(X0,1)-g(X0,0),ty=1e-9*Math.max(1,Math.abs(dy));
   const IMP={type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
   if(!(Math.abs((g(X0,2)-g(X0,1))-dy)<=ty)||!(Math.abs((g(X0,.37)-g(X0,0))-.37*dy)<=ty))return IMP;
@@ -981,11 +989,12 @@ function draw(){
   const W=live?live.W:(x1-x0)/xs*cell,H=NL?96:(live?live.H:(y1-y0)/ys*cell),nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
+    hasCt=!!(ct||editKey==='ct'),
     ctHalf=ct?Math.ceil(wsup(ct,18)/2-W/2)+12:0,
     fsn=Math.max(15,nsz+3),
     L=Math.max(NL?36:56,NL?0:Math.ceil(mw(y0,y1,ys,$('#yf').value))+24,NL?0:Math.ceil(wsup(yl,fsn)/2)+6,ctHalf),
     R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(wsup(xl,fsn))+5,ctHalf),
-    T=NL?(ct?44:16):Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn)),
+    T=NL?(hasCt?44:16):Math.max(hasCt?58:34,(hasCt?28:0)+22+Math.ceil(.72*fsn)),
     B=Math.max(44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+(NL?18:14)));
   {const o=$('#nso');if(o)o.textContent=nsz}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
@@ -1024,11 +1033,11 @@ function draw(){
     if(t.includes('/')){const r=numLay(t);s+=`<g transform="translate(${(ay-8-r.w).toFixed(1)} ${(sy(v)+nsz*.3).toFixed(1)})">${r.svg}</g>`}
     else s+=`<text x="${ay-8}" y="${(sy(v)+nsz*.33).toFixed(1)}" text-anchor="end">${t}</text>`});
   if(orig&&(xe||ye))s+=`<text x="${ay-8}" y="${ax+nsz+4}" text-anchor="end">0</text>`;
-  view.ax=ax;view.ay=ay;
+  view.ax=ax;view.ay=ay;view.yOn=yOn;
   s+=`</g><g font-size="${fsn}" fill="#111" stroke="#fff" stroke-width="${Math.max(3,fsn*.25).toFixed(1)}" paint-order="stroke" stroke-linejoin="round">${xOn&&editKey!=='xl'?`<text class="axlbl" data-edit="xl" x="${L+W+22}" y="${ax+5}"${/\s/.test(xl)?'':' font-style="italic"'}>${sup(xl,fsn)}</text>`:''}${yOn&&editKey!=='yl'?`<text class="axlbl" data-edit="yl" x="${ay}" y="${T-22}" text-anchor="middle"${/\s/.test(yl)?'':' font-style="italic"'}>${sup(yl,fsn)}</text>`:''}</g>`;
   const nums=s;s=sKeep;
   if(ct&&editKey!=='ct')s+=`<text class="gtitle" data-edit="ct" x="${L+W/2}" y="24" text-anchor="middle" font-size="18" font-weight="bold" fill="#111">${sup(ct,18)}</text>`;
-  const addT=$('#addtitle');if(addT)addT.hidden=!!ct||editKey==='ct';
+  const addT=$('#addtitle');if(addT){addT.hidden=!!ct||editKey==='ct';if(!addT.hidden)posAddTitle()}
   // rows
   const march=(g,rs,ins)=>{
     const cw=4,nx=Math.max(8,Math.ceil(W/cw)),ny=Math.max(8,Math.ceil(H/cw)),dxp=W/nx,dyp=H/ny,V=[];
@@ -1391,6 +1400,20 @@ function commit(){clearTimeout(snapT);if(!live)return;const l=live,c=+$('#cell')
   if(!$('#nl').checked){$('#y0').value=fvp(y0,'y');$('#y1').value=fvp(y1,'y');if(gz)$('#ys').value=fvp(ys,'y')}
   draw()}
 const gtEdit=$('#gtedit'),addTitleBtn=$('#addtitle');
+function posAddTitle(){
+  if(!addTitleBtn||addTitleBtn.hidden||!view)return;
+  const r=$('#fig').getBoundingClientRect(),wr=wrap.getBoundingClientRect();
+  if(!r.width)return;
+  const sc=r.width/view.TW,ox=r.left-wr.left+wrap.scrollLeft,oy=r.top-wr.top+wrap.scrollTop;
+  const cx=ox+(view.L+view.W/2)*sc,axX=ox+view.ay*sc,bw=addTitleBtn.offsetWidth||84;
+  let left=cx-bw/2;
+  if(view.yOn&&Math.abs(cx-axX)<bw/2+26){
+    left=axX-22-bw;
+    if(left<Math.max(8,ox+4))left=axX+22;
+  }
+  addTitleBtn.style.left=Math.max(8,Math.min(left,wr.width-bw-48))+'px';
+  addTitleBtn.style.top=Math.max(4,oy+4)+'px';
+}
 function closeTitleEdit(save){
   if(!editKey)return;
   const k=editKey;editKey=null;
