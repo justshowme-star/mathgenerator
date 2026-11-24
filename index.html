@@ -884,7 +884,7 @@ function parseRow(s){
   if(parts.length==1){const f=compile(parts[0]);g=(x,y)=>y-f(x,y)}
   else{const a=compile(parts[0]),b=compile(parts[1]);g=(x,y)=>a(x,y)-b(x,y)}
   const probes=[.5,2.3,7.1,-3.3,13.7,25,-11,60,-40];
-  const vx0=view?view.x0:+$('#x0')?.value,vx1=view?view.x1:+$('#x1')?.value;
+  const vx0=live?live.x0:rd('x0'),vx1=live?live.x1:rd('x1');
   if(isFinite(vx0)&&isFinite(vx1)&&vx1>vx0)for(let k=1;k<=32;k++)probes.push(vx0+(vx1-vx0)*(k/33));
   const X0=probes.find(t=>isFinite(g(t,1)-g(t,0)));if(X0===undefined)return{type:'imp',g,ineq:ineq&&{lt:ineq.lt,incl:ineq.incl},restr};
   const dy=g(X0,1)-g(X0,0),ty=1e-9*Math.max(1,Math.abs(dy));
@@ -1339,15 +1339,16 @@ function draw(){
   fig.outerHTML=s;syncParams();if(!live)snap()}
 
 // export
-const svgStr=()=>{let t=new XMLSerializer().serializeToString($('#fig'));if($('#ebg').value=='clear')t=t.replace('<rect width="100%" height="100%" fill="#fff"/>','');return t};
+const svgStr=()=>{let t=new XMLSerializer().serializeToString($('#fig'));if($('#ebg').value=='clear')t=t.replace(/<rect\b[^>]*width="100%"[^>]*>/,'');return t};
 const uri=()=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svgStr());
 const note=m=>$('#note').textContent=m;
 function suffix(){return($('#ver').value=='student'?'-student':'-key')+($('#bw').value=='bw'?'-bw':'')}
 function save(name,href){const a=document.createElement('a');a.href=href;a.download=name;document.body.appendChild(a);a.click();a.remove()}
-function toPng(cb){const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),k=+$('#esz').value||2;c.width=img.width*k;c.height=img.height*k;const g=c.getContext('2d');if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(img,0,0,c.width,c.height);c.toBlob(cb)};img.onerror=()=>note('Could not build the image.');img.src=uri()}
+const pngBlob=()=>new Promise((ok,no)=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),k=+$('#esz').value||2;c.width=img.width*k;c.height=img.height*k;const g=c.getContext('2d');if($('#ebg').value!='clear'){g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height)}g.drawImage(img,0,0,c.width,c.height);c.toBlob(b=>b?ok(b):no())};img.onerror=no;img.src=uri()});
+function toPng(cb){pngBlob().then(cb,()=>note('Could not build the image.'))}
 $('#dsvg').onclick=()=>saveFile('coordinate-grid'+suffix()+'.svg',svgStr());
 $('#dpng').onclick=()=>{try{toPng(b=>saveFile('coordinate-grid'+suffix()+'.png',b))}catch(e){toast('Could not build the image.')}};
-$('#cpy').onclick=()=>{try{toPng(async b=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':b})]);note('Image copied.')}catch(e){note('Copying is blocked here. Use Save PNG from a local copy.')}})}catch(e){note('Copying is blocked here.')}};
+$('#cpy').onclick=async()=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':pngBlob()})]);note('Image copied.')}catch(e){note('Copying is blocked here. Use Save PNG from a local copy.')}};
 $('#cpy2').onclick=$('#cpy').onclick;
 $('#prt').onclick=()=>{try{window.print()}catch(e){note('Printing is blocked here.')}};
 
