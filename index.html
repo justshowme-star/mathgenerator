@@ -1110,7 +1110,7 @@ function draw(){
     clip=(x1,y1,x2,y2)=>{let t0=0,t1=1,dx=x2-x1,dy=y2-y1;
       for(const[p,q]of[[-dx,x1-xMin],[dx,xMax-x1],[-dy,y1-yMin],[dy,yMax-y1]]){
         if(p===0){if(q<0)return null}else{const r=q/p;if(p<0){if(r>t1)return null;if(r>t0)t0=r}else{if(r<t0)return null;if(r<t1)t1=r}}}
-      return[[t0===0?x1:x1+t0*dx,t0===0?y1:y1+t0*dy],[t1===1?x2:x2+t1*dx,t1===1?y2:y2+t1*dy],t1]},
+      return[[t0===0?x1:x1+t0*dx,t0===0?y1:y1+t0*dy],[t1===1?x2:x1+t1*dx,t1===1?y2:y1+t1*dy],t1]},
     push=(a,pt)=>{const l=a[a.length-1];if(!l||Math.hypot(pt[0]-l[0],pt[1]-l[1])>1e-4)a.push(pt)};
     segs.forEach(sg=>{if(!sg.length)return;if(sg.length===1){const q=sg[0];if(q[0]>=xMin&&q[0]<=xMax&&q[1]>=yMin&&q[1]<=yMax)out.push([q]);return}
       let cur=[];for(let k=0;k<sg.length-1;k++){const c=clip(sg[k][0],sg[k][1],sg[k+1][0],sg[k+1][1]);if(!c){if(cur.length>1)out.push(cur);cur=[];continue}push(cur,c[0]);push(cur,c[1]);if(c[2]<1){if(cur.length>1)out.push(cur);cur=[]}}
