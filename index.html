@@ -234,13 +234,20 @@ h3{font-size:13px;margin:12px 0 6px}
 .tblopts{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--mute)}.tblopts label{display:flex;gap:6px;align-items:center}
 .tblfit{font-size:13px;min-height:1.2em;font-variant-numeric:tabular-nums}
 .row.folded .tbl{display:none}
-.row.istbl[data-type="pts"] details.only-line{display:block}
+.row.istbl[data-type="pts"] .rtab.only-line{display:inline-flex}
 .sinonly{display:grid;gap:3px;font-size:12px;color:var(--mute)}.sinonly input{max-width:160px}
 .row:not([data-fit="sin"]) .sinonly{display:none}
-.rowbody{display:grid;gap:6px}
-.row.ac:not(:focus-within):not(.pin):not(.par-hold){padding:6px 10px}
-.row.ac:not(:focus-within):not(.pin):not(.par-hold) .rowbody{display:none}
-.row.ac:not(:focus-within):not(.pin):not(.par-hold) .fold{transform:rotate(-90deg)}
+.rowbody{display:grid;gap:8px;padding-top:4px}
+.row.ac:not(.pin):not(.par-hold){padding:6px 10px}
+.row.ac:not(.pin):not(.par-hold) .rowbody{display:none}
+.row.ac:not(.pin):not(.par-hold) .fold{transform:rotate(-90deg)}
+.rtabs{display:flex;flex-wrap:wrap;gap:4px;padding-top:4px;border-top:1px solid var(--line)}
+.rtab{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--panel);color:var(--mute);border:1px solid var(--line);line-height:1.3}
+.rtab:hover{color:var(--ink);border-color:var(--accent)}
+.rtab.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
+.rtab-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.rtab-panel[hidden]{display:none}
+.rtab-panel .g2,.rtab-panel .g3{margin-top:0}
 .errline{font-size:12px;color:var(--bad)}.errline[hidden]{display:none}
 .pwtitle{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tools{gap:8px;padding-bottom:10px;margin-bottom:10px;align-items:center}
@@ -655,10 +662,10 @@ var foldWas=null;
 function focusIn(el,q){if(!el||!q)return false;const r=rows[+el.dataset.i];el.classList.add('pin');try{q.focus({preventScroll:true})}catch(e){}
   if(!(r&&r.pin))el.classList.remove('pin');if(el.scrollIntoView)el.scrollIntoView({block:'nearest'});return document.activeElement===q}
 function focusRow(i){const el=document.querySelectorAll('.row')[i];focusIn(el,el&&el.querySelector('input.eq:not([hidden]),.pwed input,.tbl input'))}
-function foldToggle(i,rw){const r=rows[i];if(!r)return;const was=foldWas!==null?foldWas:!!(r.pin||(rw.matches&&rw.matches(':focus-within')));foldWas=null;
-  if(was){r.pin=false;const ae=document.activeElement;if(ae&&ae.blur&&rw.contains&&rw.contains(ae))ae.blur()}else r.pin=true;
+function foldToggle(i,rw){const r=rows[i];if(!r)return;const was=foldWas!==null?foldWas:!!r.pin;foldWas=null;
+  r.pin=!was;
   rw.classList.toggle('pin',!!r.pin);const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.fold');if(!b)return;const rw=b.closest('.row'),r=rows[+rw.dataset.i];foldWas=!!(r&&(r.pin||rw.matches(':focus-within')))},true);
+$('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.fold');if(!b)return;const rw=b.closest('.row'),r=rows[+rw.dataset.i];foldWas=!!(r&&r.pin)},true);
 function numOf(t){try{return compile(String(t))(0,0)}catch(e){return NaN}}
 const nameOf=k=>String.fromCharCode(65+k%26)+(k>=26?Math.floor(k/26):'');
 const FITS={linear:{n:2},quad:{n:3},cubic:{n:4},exp:{n:2},log:{n:2},pow:{n:2},sin:{n:4}};
@@ -731,7 +738,7 @@ function tblAct(a,i,t){const r=rows[i];if(!r||!r.tbl)return;
   if(a!='tadd')focusRow(i);
   if(a=='tadd'){const el=document.querySelectorAll('.row')[i],q=el&&el.querySelectorAll('[data-tc="0"]');if(q&&q.length)focusIn(el,q[q.length-1])}}
 function addTable(){let k=rows.findIndex(r=>!String(r.eq).trim()&&!r.pwEd&&!r.tbl);if(k<0){rows.push(Object.assign({},ROWDEF));k=rows.length-1}
-  rows[k].tbl={rows:[['',''],['',''],['','']],conn:false,names:false,coords:false,fit:'none',showEq:true};tblSync(rows[k]);renderRows();draw();
+  rows[k].tbl={rows:[['',''],['',''],['','']],conn:false,names:false,coords:false,fit:'none',showEq:true};rows[k].pin=true;tblSync(rows[k]);renderRows();draw();
   const el=document.querySelectorAll('.row')[k],q=el&&el.querySelector('[data-tc="0"]');if(q){focusIn(el,q);if(q.select)q.select()}}
 function pasteGrid(txt){const L=String(txt).replace(/\r/g,'').split('\n');while(L.length&&!L[L.length-1].trim())L.pop();
   return L.map(l=>l.includes('\t')?l.split('\t'):/^\s*[-+\d.eE]+\s*[,; ]\s*[-+\d.eE]+\s*$/.test(l)?l.trim().split(/\s*[,; ]\s*/):[l])}
@@ -743,7 +750,7 @@ function pwSync(r){const m=r.pw,old=r.eq,ok=m.rows.filter(q=>q.e.trim()||q.c.tri
   if(!ok.length)r.eq='';else if(!ok.some(q=>q.c.trim()))r.eq=L+' = '+ok[0].e.trim();
   else r.eq=L+' = {'+ok.map(q=>q.c.trim()?q.c.trim()+': '+q.e.trim():q.e.trim()).join(', ')+'}';
   if(r.lab&&r.lab===old)r.lab=r.eq}
-function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'',c:''},{e:'',c:''}]};r.pwEd=true;pwSync(r);renderRows();draw();
+function newPW(i,lhs){const r=rows[i];r.pw={lhs:lhs||'y',rows:[{e:'',c:''},{e:'',c:''}]};r.pwEd=true;r.pin=true;pwSync(r);renderRows();draw();
   const el=document.querySelectorAll('.row')[i],q=el&&el.querySelector('[data-pw="e"]');if(q){focusIn(el,q);if(q.select)q.select()}}
 function pwFromPalette(el){const rw=el&&el.closest?el.closest('.row'):null;
   if(rw&&el.classList.contains('eq')){const i=+rw.dataset.i,r=rows[i],m=String(r.eq).match(/^\s*(y|[a-wzA-WZ]\s*\(\s*x\s*\))\s*=?\s*$/);
@@ -871,26 +878,38 @@ const COLORS=['#000000'];
 let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
 const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}</option>`).join('');
 
+function applyRowTab(rw,r){if(!rw||!r)return;let tb=r.tab!==undefined?r.tab:'s';
+  if(tb){const btn=rw.querySelector(`.rtab[data-tab="${tb}"]`);if(btn&&getComputedStyle(btn).display==='none'){const vis=[...rw.querySelectorAll('.rtab')].find(b=>getComputedStyle(b).display!=='none');tb=vis?vis.dataset.tab:'';r.tab=tb}}
+  rw.querySelectorAll('.rtab').forEach(b=>{const on=b.dataset.tab===tb;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on))});
+  rw.querySelectorAll('.rtab-panel').forEach(p=>{p.hidden=p.dataset.panel!==tb})}
 function renderRows(){
   const box=$('#rows');box.innerHTML='';
   rows.forEach((r,i)=>{
     const d=document.createElement('div');d.className='row ac'+(r.pin?' pin':'')+(r.tbl?' istbl':'');d.dataset.fit=r.tbl?(r.tbl.fit||'none'):'';d.dataset.i=i;
-    const op=k=>(r.ui&&r.ui[k])?' open':'';
+    const tb=r.tab!==undefined?r.tab:'s';
     d.innerHTML=`<div class="head"><button type="button" data-act="fold" class="fold" aria-label="Show or hide this row’s settings" title="Show or hide settings">▾</button><button type="button" class="dot${r.vis!==false?'':' off'}" data-act="dot" style="--c:${r.color}" aria-pressed="${r.vis!==false}" aria-label="Show or hide on the graph. Press and hold, or right-click, to change color." title="Click: show or hide. Press and hold: change color."></button><input class="eq" data-k="eq" value="${esc(r.eq)}" placeholder="y = 2x + 1   or   A(2, 3)" aria-label="Equation or point"${(r.pwEd||r.tbl)?' hidden':''}>${r.pwEd?'<span class="pwtitle">Piecewise function</span>':''}${r.tbl?'<span class="pwtitle">Data table</span>':''}${r.keyonly?'<span class="keytag" title="Answer key only: hidden in the student copy">Key</span>':''}<button type="button" class="mbtn" data-act="menu" aria-label="Row actions" title="Row actions" aria-haspopup="menu">⋯</button></div>
 <div class="errline" hidden></div><div class="rowbody">${r.pwEd?pwEditorHTML(r,i):''}${r.tbl?tableEditorHTML(r,i):''}
-<div class="kind"></div>
 <button type="button" class="pwlink only-pw" data-act="pwedit"${r.pwEd?' hidden':''}>Edit as piecewise</button>
-<div class="pvrow"><div class="pv" data-pv="eq" hidden></div><div class="pvbtns" hidden><button type="button" class="pvcopy" data-act="cdoc" title="Copy as a Google Docs equation (a table for piecewise functions)">Copy for Docs</button><button type="button" class="pvcopy" data-act="cimg" title="Copy a picture of the equation">Copy as image</button></div></div>
+<div class="pvrow"><div class="pv" data-pv="eq" hidden></div></div>
 <div class="restrow only-restr"><label><input type="checkbox" data-k="ends"${r.ends!==false?' checked':''}>Show endpoint circles (open for &lt; &gt;, filled for ≤ ≥)</label></div>
 <div class="restrow only-feat"><label><input type="checkbox" data-k="asym"${r.asym!==false?' checked':''}>Show asymptotes and holes</label></div>
-<details data-d="k" class="only-kp"${(r.ui&&r.ui.k!==undefined)?(r.ui.k?' open':''):((r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?' open':'')}><summary>Key points &amp; symmetry</summary><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk only-fn"><input type="checkbox" data-k="k_inf"${r.k_inf?' checked':''}>Inflection points</label><label class="chk only-fn"><input type="checkbox" data-k="k_aos"${r.k_aos?' checked':''}>Axis of symmetry</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates / equation</label></div></details>
-<details data-d="inv" class="only-inv"${(r.ui&&r.ui.inv!==undefined)?(r.ui.inv?' open':''):(r.inv?' open':'')}><summary>Inverse function</summary><div class="g2"><label class="chk wide"><input type="checkbox" data-k="inv"${r.inv?' checked':''}>Show inverse <i>f</i><sup>−1</sup>(<i>x</i>) (swap <i>x</i> and <i>y</i>)</label><label class="chk wide inv-sub"${r.inv?'':' hidden'}><input type="checkbox" data-k="invmir"${r.invmir!==false?' checked':''}>Show dashed <i>y</i> = <i>x</i> mirror line</label></div></details>
-<details data-d="v" class="only-vec"${(r.ui&&r.ui.v!==undefined)?(r.ui.v?' open':''):((r.v_mag||r.v_comp||r.v_t2t)?' open':'')}><summary>Vector options</summary><div class="g2"><label class="chk wide"><input type="checkbox" data-k="v_mag"${r.v_mag?' checked':''}>Show magnitude |v| and angle θ</label><label class="chk wide"><input type="checkbox" data-k="v_comp"${r.v_comp?' checked':''}>Show x and y components</label><label class="chk wide"><input type="checkbox" data-k="v_t2t"${r.v_t2t?' checked':''}>Show tip-to-tail sum (for u ± v)</label></div></details>
-<details data-d="norm" class="only-norm"${(r.ui&&r.ui.norm!==undefined)?(r.ui.norm?' open':''):(r.n_shade?' open':'')}><summary>Normal probability</summary><div class="g2 calc"><label class="chk wide"><input type="checkbox" data-k="n_shade"${r.n_shade?' checked':''}>Shade probability region</label><label class="wide norm-sub"${r.n_shade?'':' hidden'}>Region<select data-k="n_tail">${sel([['between','Between a and b (a ≤ X ≤ b)'],['left','Left tail (X ≤ b)'],['right','Right tail (X ≥ a)']],r.n_tail||'between')}</select></label><label class="norm-sub"${r.n_shade?'':' hidden'}>From a<input data-k="n_a" value="${esc(r.n_a??'-1')}"></label><label class="norm-sub"${r.n_shade?'':' hidden'}>To b<input data-k="n_b" value="${esc(r.n_b??'1')}"></label><label class="chk wide norm-sub"${r.n_shade?'':' hidden'}><input type="checkbox" data-k="n_prob"${r.n_prob!==false?' checked':''}>Show probability P and z-scores</label></div></details>
 <div class="fillrow only-ineq"><label>Fill<select data-k="fill">${sel([['shade','Shaded'],['hatch','Hatched'],['none','None']],r.fill||'shade')}</select></label><label>Strength<input type="range" data-k="fo" min="10" max="70" value="${r.fo||30}"></label></div>
-<details data-d="s" class="only-line"${op('s')}><summary>Line style</summary><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></details>
-<details data-d="l"${op('l')}><summary>Label</summary><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></details>
-<details data-d="c" class="only-calc"${op('c')}><summary>Calculus tools</summary><div class="g2 calc">
+<div class="rtabs" role="tablist">
+  <button type="button" role="tab" class="rtab only-line${tb=='s'?' on':''}" data-tab="s" aria-selected="${tb=='s'}">Style</button>
+  <button type="button" role="tab" class="rtab${tb=='l'?' on':''}" data-tab="l" aria-selected="${tb=='l'}">Label</button>
+  <button type="button" role="tab" class="rtab only-kp${tb=='k'?' on':''}" data-tab="k" aria-selected="${tb=='k'}">Key points</button>
+  <button type="button" role="tab" class="rtab only-inv${tb=='inv'?' on':''}" data-tab="inv" aria-selected="${tb=='inv'}">Inverse</button>
+  <button type="button" role="tab" class="rtab only-vec${tb=='v'?' on':''}" data-tab="v" aria-selected="${tb=='v'}">Vector</button>
+  <button type="button" role="tab" class="rtab only-norm${tb=='norm'?' on':''}" data-tab="norm" aria-selected="${tb=='norm'}">Normal</button>
+  <button type="button" role="tab" class="rtab only-calc${tb=='c'?' on':''}" data-tab="c" aria-selected="${tb=='c'}">Calculus</button>
+</div>
+<div class="rtab-panel" data-panel="s"${tb=='s'?'':' hidden'}><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></div>
+<div class="rtab-panel" data-panel="l"${tb=='l'?'':' hidden'}><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line">Copy equation</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></div>
+<div class="rtab-panel" data-panel="k"${tb=='k'?'':' hidden'}><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk only-fn"><input type="checkbox" data-k="k_inf"${r.k_inf?' checked':''}>Inflection points</label><label class="chk only-fn"><input type="checkbox" data-k="k_aos"${r.k_aos?' checked':''}>Axis of symmetry</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates / equation</label></div></div>
+<div class="rtab-panel" data-panel="inv"${tb=='inv'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="inv"${r.inv?' checked':''}>Show inverse <i>f</i><sup>−1</sup>(<i>x</i>) (swap <i>x</i> and <i>y</i>)</label><label class="chk wide inv-sub"${r.inv?'':' hidden'}><input type="checkbox" data-k="invmir"${r.invmir!==false?' checked':''}>Show dashed <i>y</i> = <i>x</i> mirror line</label></div></div>
+<div class="rtab-panel" data-panel="v"${tb=='v'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="v_mag"${r.v_mag?' checked':''}>Show magnitude |v| and angle θ</label><label class="chk wide"><input type="checkbox" data-k="v_comp"${r.v_comp?' checked':''}>Show x and y components</label><label class="chk wide"><input type="checkbox" data-k="v_t2t"${r.v_t2t?' checked':''}>Show tip-to-tail sum (for u ± v)</label></div></div>
+<div class="rtab-panel" data-panel="norm"${tb=='norm'?'':' hidden'}><div class="g2 calc"><label class="chk wide"><input type="checkbox" data-k="n_shade"${r.n_shade?' checked':''}>Shade probability region</label><label class="wide norm-sub"${r.n_shade?'':' hidden'}>Region<select data-k="n_tail">${sel([['between','Between a and b (a ≤ X ≤ b)'],['left','Left tail (X ≤ b)'],['right','Right tail (X ≥ a)']],r.n_tail||'between')}</select></label><label class="norm-sub"${r.n_shade?'':' hidden'}>From a<input data-k="n_a" value="${esc(r.n_a??'-1')}"></label><label class="norm-sub"${r.n_shade?'':' hidden'}>To b<input data-k="n_b" value="${esc(r.n_b??'1')}"></label><label class="chk wide norm-sub"${r.n_shade?'':' hidden'}><input type="checkbox" data-k="n_prob"${r.n_prob!==false?' checked':''}>Show probability P and z-scores</label></div></div>
+<div class="rtab-panel" data-panel="c"${tb=='c'?'':' hidden'}><div class="g2 calc">
 <label class="chk wide"><input type="checkbox" data-k="c_d1"${r.c_d1?' checked':''}>Show first derivative f′(x)</label>
 <label class="chk wide"><input type="checkbox" data-k="c_d2"${r.c_d2?' checked':''}>Show second derivative f″(x)</label>
 <label class="chk wide"><input type="checkbox" data-k="c_tan"${r.c_tan?' checked':''}>Tangent line at x = <input class="sm" data-k="c_ta" value="${esc(r.c_ta??'1')}"></label>
@@ -902,19 +921,21 @@ function renderRows(){
 <label>Number of rectangles<input data-k="c_n" value="${esc(r.c_n??'6')}"></label>
 <label>Area is between this curve and<select data-k="c_base"><option value="axis"${!r.c_base||r.c_base=='axis'?' selected':''}>the x-axis</option>${rows.map((q,k)=>k==i?'':`<option value="${k}"${String(r.c_base)==String(k)?' selected':''}>Row ${k+1}: ${esc(String(q.eq||'').slice(0,18))}</option>`).join('')}</select></label>
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
-<label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></details></div>`;
+<label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></div></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
 $('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'||k=='lab')pvUpdate(rw,+rw.dataset.i);if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
-const onRowsClick=e=>{const a=e.target.dataset.act;if(!a)return;const i=+e.target.closest('.row').dataset.i;
+const onRowsClick=e=>{const rw=e.target.closest('.row');if(!rw)return;const i=+rw.dataset.i;
+  if(e.target.dataset.tab){const tb=e.target.dataset.tab;rows[i].tab=rows[i].tab===tb?'':tb;applyRowTab(rw,rows[i]);return}
+  const a=e.target.dataset.act;if(!a)return;
   if(a=='menu'){rowMenu(e.target,i);return}
   if(a=='cdoc'||a=='cimg'){copyEq(i,a);return}
   if(['tadd','tdel','tclear','tfitrow'].includes(a)){tblAct(a,i,e.target);return}
   if(a.startsWith('pw')){pwAct(a,i,e.target);return}
   if(a=='del')rows.splice(i,1);
-  if(a=='fold'){foldToggle(i,e.target.closest('.row'));return}
+  if(a=='fold'){foldToggle(i,rw);return}
   if(a=='key')rows[i].keyonly=!rows[i].keyonly;
   if(a=='dot'){if(held){held=false;return}rows[i].vis=rows[i].vis===false;e.target.classList.toggle('off',rows[i].vis===false);e.target.setAttribute('aria-pressed',String(rows[i].vis!==false));draw();return}
-  if(a=='useeq'){const rw=e.target.closest('.row');rows[i].lab=piSym(rows[i].eq.replace(/\s+/g,' ').trim());const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
+  if(a=='useeq'){rows[i].lab=piSym(rows[i].eq.replace(/\s+/g,' ').trim());const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;pvUpdate(rw,i);draw();return}
   renderRows();draw()};
 $('#rows').addEventListener('click',onRowsClick);
 $('#add').onclick=()=>{rows.push({eq:'',color:COLORS[rows.length%COLORS.length],dash:'solid',w:'2.5',lab:'',pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
@@ -1060,7 +1081,7 @@ function draw(){
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
   RW.forEach((r,i)=>{
     let p=null;
-    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe){let ft=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):'';if(p.fit&&p.fit.f&&p.tbl.resid){const ssr=p.pts.reduce((s,q)=>s+Math.pow(q.y-p.fit.f(q.x),2),0);ft+='  \u00b7  SSR = '+ssr.toPrecision(4)}fe.textContent=ft}}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='',rowEls[i].dataset.norm=p&&p.norm?'1':'')}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='',rowEls[i].dataset.norm='');return}
+    try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe){let ft=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):'';if(p.fit&&p.fit.f&&p.tbl.resid){const ssr=p.pts.reduce((s,q)=>s+Math.pow(q.y-p.fit.f(q.x),2),0);ft+='  \u00b7  SSR = '+ssr.toPrecision(4)}fe.textContent=ft}}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='',rowEls[i].dataset.norm=p&&p.norm?'1':'',applyRowTab(rowEls[i],rows[i]))}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='',rowEls[i].dataset.norm='',applyRowTab(rowEls[i],rows[i]));return}
     if(!p)return;
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 4 2 4"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
