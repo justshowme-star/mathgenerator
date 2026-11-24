@@ -1106,6 +1106,15 @@ function draw(){
       const p=[sx(x),sy(y)];if(pp&&Math.abs(p[1]-pp[1])>H*1.2){segs.push(cur);cur=[]}
       cur.push(p);pp=p;px=x;py=y}
     if(cur.length)segs.push(cur);return segs};
+  const clipSegs=(segs,xMin,yMin,xMax,yMax)=>{const out=[],
+    clip=(x1,y1,x2,y2)=>{let t0=0,t1=1,dx=x2-x1,dy=y2-y1;
+      for(const[p,q]of[[-dx,x1-xMin],[dx,xMax-x1],[-dy,y1-yMin],[dy,yMax-y1]]){
+        if(p===0){if(q<0)return null}else{const r=q/p;if(p<0){if(r>t1)return null;if(r>t0)t0=r}else{if(r<t0)return null;if(r<t1)t1=r}}}
+      return[[t0===0?x1:x1+t0*dx,t0===0?y1:y1+t0*dy],[t1===1?x2:x2+t1*dx,t1===1?y2:y2+t1*dy],t1]},
+    push=(a,pt)=>{const l=a[a.length-1];if(!l||Math.hypot(pt[0]-l[0],pt[1]-l[1])>1e-4)a.push(pt)};
+    segs.forEach(sg=>{if(!sg.length)return;if(sg.length===1){const q=sg[0];if(q[0]>=xMin&&q[0]<=xMax&&q[1]>=yMin&&q[1]<=yMax)out.push([q]);return}
+      let cur=[];for(let k=0;k<sg.length-1;k++){const c=clip(sg[k][0],sg[k][1],sg[k+1][0],sg[k+1][1]);if(!c){if(cur.length>1)out.push(cur);cur=[];continue}push(cur,c[0]);push(cur,c[1]);if(c[2]<1){if(cur.length>1)out.push(cur);cur=[]}}
+      if(cur.length>1)out.push(cur)});return out};
   let lines='',labels='',arrows='',fills='',pats='',FNS=[],VLINES=[],RESTRS=[],REG=[],nIn=0,hasMir=false;
   const eqs=document.querySelectorAll('.eq'),rowEls=document.querySelectorAll('.row'),setKind=(i,t)=>{const k=rowEls[i]&&rowEls[i].querySelector('.errline');if(k){k.textContent=t;k.hidden=!t}};
   RW.forEach((r,i)=>{
@@ -1192,10 +1201,16 @@ function draw(){
     if(r.vis!==false){
       if(cmp){if(isFinite(p.c)&&isFinite(p.hi))[[p.c,p.ineq.incl],[p.hi,p.ineq.hiIncl]].forEach(([xv,inc])=>{if(xv>=x0&&xv<=x1)lines+=`<line data-i="${i}" x1="${sx(xv).toFixed(1)}" y1="${T}" x2="${sx(xv).toFixed(1)}" y2="${T+H}" stroke="${r.color}" stroke-width="${r.w}" ${inc?'':'stroke-dasharray="9 6"'}/>`})}
       else{const dd=segs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${dsh}/><path data-i="${i}" d="${dd}" fill="none" stroke="transparent" stroke-width="14" style="cursor:pointer"/>`;}}
-    const vis=segs.flat().filter(q=>q[0]>=L&&q[0]<=L+W&&q[1]>=T&&q[1]<=T+H);
+    const cvis=clipSegs(segs,L,T,L+W,T+H),vis=cvis.flat();
     const arr=r.arr||'both';
-    if(vis.length>1&&r.vis!==false&&p.type!='imp'&&!cmp){const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
-      const n=vis.length,ed=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2;if(arr=='start'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[0]))&&hd(vis[0],vis[Math.min(4,n-1)]);if(arr=='end'||arr=='both')((!p.restr&&!p.pieces)||ed(vis[n-1]))&&hd(vis[n-1],vis[Math.max(0,n-5)])}
+    if(cvis.length&&r.vis!==false&&p.type!='imp'&&!cmp){
+      const hd=(q,a)=>{const ang=Math.atan2(q[1]-a[1],q[0]-a[0])*180/Math.PI,sz=9+r.w*1.5,hw=sz*.42;arrows+=`<polygon points="0,0 ${-sz},${-hw} ${-sz},${hw}" fill="${r.color}" transform="translate(${q[0].toFixed(1)} ${q[1].toFixed(1)}) rotate(${ang.toFixed(1)})"/>`};
+      const refF=sg=>{for(let k=1;k<sg.length;k++)if(Math.hypot(sg[k][0]-sg[0][0],sg[k][1]-sg[0][1])>=6)return sg[k];return sg[sg.length-1]};
+      const refB=sg=>{const q=sg[sg.length-1];for(let k=sg.length-2;k>=0;k--)if(Math.hypot(sg[k][0]-q[0],sg[k][1]-q[1])>=6)return sg[k];return sg[0]};
+      const ed=q=>q[0]<=L+2||q[0]>=L+W-2||q[1]<=T+2||q[1]>=T+H-2,open=!p.restr&&!p.pieces;
+      cvis.forEach((sg,si)=>{if(sg.length<2)return;
+        if((arr=='start'||arr=='both')&&(si===0?(open||ed(sg[0])):(arr=='both'&&ed(sg[0]))))hd(sg[0],refF(sg));
+        if((arr=='end'||arr=='both')&&(si===cvis.length-1?(open||ed(sg[sg.length-1])):(arr=='both'&&ed(sg[sg.length-1]))))hd(sg[sg.length-1],refB(sg))})}
     if(r.lab&&r.labOn!==false&&vis.length>1){
       const k=Math.round(r.pos/100*(vis.length-1)),q=vis[k],a=vis[Math.max(0,k-4)],b=vis[Math.min(vis.length-1,k+4)];
       let ang=r.rot?Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI:0;if(ang>90)ang-=180;if(ang<-90)ang+=180;
@@ -1229,7 +1244,7 @@ function draw(){
         const isegs=p.pieces?p.pieces.flatMap(pc=>traceInv(pc.f,pc.restr)):traceInv(p.f,p.restr);
         const idd=isegs.map(sg=>'M'+sg.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
         if(idd)lines+=`<path data-i="${i}" d="${idd}" fill="none" stroke="${r.color}" stroke-width="${r.w}" stroke-linecap="round" stroke-linejoin="round" ${idsh}/>`;
-        const ivis=isegs.map(sg=>sg.filter(q=>q[0]>=L-.5&&q[0]<=L+W+.5&&q[1]>=T-.5&&q[1]<=T+H+.5)).filter(sg=>sg.length>1);
+        const ivis=clipSegs(isegs,L,T,L+W,T+H).filter(sg=>sg.length>1);
         if(ivis.length){const refF=sg=>{for(let k=1;k<sg.length;k++)if(Math.hypot(sg[k][0]-sg[0][0],sg[k][1]-sg[0][1])>=2)return sg[k];return sg[sg.length-1]},refB=sg=>{const q=sg[sg.length-1];for(let k=sg.length-2;k>=0;k--)if(Math.hypot(sg[k][0]-q[0],sg[k][1]-q[1])>=2)return sg[k];return sg[0]};
           const s0=ivis[0],s1=ivis[ivis.length-1];
           if(arr=='start'||arr=='both')((!p.restr&&!p.pieces)||ied(s0[0]))&&ihd(s0[0],refF(s0));
