@@ -475,7 +475,6 @@ h3{font-size:13px;margin:12px 0 6px}
       <div class="axespop-more-body">
         <div class="f"><label>Chart title<input id="ct" placeholder="Optional"></label></div>
         <label class="trig">Axis number size<input id="ns" type="range" min="10" max="28" value="12"><output id="nso" class="vo">12</output></label>
-        <label class="trig">Label text size<input id="ls" type="range" min="11" max="26" value="15"><output id="lso" class="vo">15</output></label>
         <label class="trig">Trig functions use<select id="tm"><option value="rad">Radians</option><option value="deg">Degrees</option></select></label>
       </div>
     </details>
@@ -884,7 +883,7 @@ function parseRow(s){
 
 const COLORS=['#1f5fbf','#c74440','#2e7d32','#6042a6','#d97706','#0e7490','#e6007e','#000000'];
 const nextColor=()=>{const used=new Set(rows.map(r=>r.color));return COLORS.find(c=>!used.has(c))||COLORS[rows.length%COLORS.length]};
-let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
+let rows=[{eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,ls:15,pos:78,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true}];
 const sel=(o,v)=>o.map(([a,b])=>`<option value="${a}"${a==v?' selected':''}>${b}</option>`).join('');
 const eyeSVG=on=>on?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
 
@@ -916,7 +915,7 @@ function renderRows(){
   <button type="button" role="tab" class="rtab only-calc${tb=='c'?' on':''}" data-tab="c" aria-selected="${tb=='c'}">Calculus</button>
 </div>
 <div class="rtab-panel" data-panel="s"${tb=='s'?'':' hidden'}><div class="g3"><label>Style<select data-k="dash">${sel([['solid','Solid'],['dashed','Dashed'],['dotted','Dotted'],['dashdot','Dash-dot']],r.dash)}</select></label><label>Thickness<input type="range" data-k="w" min="1" max="10" step="0.5" value="${r.w}"></label><label>Arrows<select data-k="arr">${sel([['both','Both ends'],['start','Left/bottom'],['end','Right/top'],['none','None']],r.arr||'both')}</select></label></div></div>
-<div class="rtab-panel" data-panel="l"${tb=='l'?'':' hidden'}><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line${r.labEq?' synced':''}" aria-pressed="${!!r.labEq}" title="${r.labEq?'Synced with equation \u2014 updates automatically when equation changes. Edit label text to unlink.':'Copy equation to label and keep it synced when the equation changes'}">${r.labEq?'\u2713 Copy equation':'Copy equation'}</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></div>
+<div class="rtab-panel" data-panel="l"${tb=='l'?'':' hidden'}><div class="g2"><label class="wide">Label text<span class="inl"><input data-k="lab" value="${esc(r.lab)}" placeholder="e.g. y = 2x + 1"><button type="button" data-act="useeq" class="only-line${r.labEq?' synced':''}" aria-pressed="${!!r.labEq}" title="${r.labEq?'Synced with equation \u2014 updates automatically when equation changes. Edit label text to unlink.':'Copy equation to label and keep it synced when the equation changes'}">${r.labEq?'\u2713 Copy equation':'Copy equation'}</button></span></label><div class="pv wide" data-pv="lab" hidden></div><label>Placement<select data-k="place">${sel([['above','Above'],['below','Below'],['on','On the line'],['right','Right'],['left','Left']],r.place)}</select></label><label class="only-line">Position along line<input type="range" data-k="pos" min="0" max="100" value="${r.pos}"></label><label>Text size<span class="inl" style="align-items:center"><input type="range" data-k="ls" min="11" max="26" value="${r.ls||15}"><output class="vo">${r.ls||15}</output></span></label><label class="chk only-line"><input type="checkbox" data-k="rot"${r.rot?' checked':''}>Tilt with line</label><label class="chk only-pts"><input type="checkbox" data-k="coords"${r.coords?' checked':''}>Show coordinates</label><label class="chk"><input type="checkbox" data-k="labOn"${r.labOn!==false?' checked':''}>Show label</label></div></div>
 <div class="rtab-panel" data-panel="k"${tb=='k'?'':' hidden'}><div class="g2"><label class="chk"><input type="checkbox" data-k="k_xint"${r.k_xint?' checked':''}>x-intercepts</label><label class="chk only-fn"><input type="checkbox" data-k="k_yint"${r.k_yint?' checked':''}>y-intercept</label><label class="chk only-fn"><input type="checkbox" data-k="k_ext"${r.k_ext?' checked':''}>Vertex / turning points</label><label class="chk only-fn"><input type="checkbox" data-k="k_inf"${r.k_inf?' checked':''}>Inflection points</label><label class="chk only-fn"><input type="checkbox" data-k="k_aos"${r.k_aos?' checked':''}>Axis of symmetry</label><label class="chk"><input type="checkbox" data-k="k_poi"${r.k_poi?' checked':''}>POI (intersections)</label><label class="chk wide kp-lbl"${(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)?'':' hidden'}><input type="checkbox" data-k="kplab"${r.kplab!==false?' checked':''}>Show coordinates / equation</label></div></div>
 <div class="rtab-panel" data-panel="inv"${tb=='inv'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="inv"${r.inv?' checked':''}>Show inverse <i>f</i><sup>−1</sup>(<i>x</i>) (swap <i>x</i> and <i>y</i>)</label><label class="chk wide inv-sub"${r.inv?'':' hidden'}><input type="checkbox" data-k="invmir"${r.invmir!==false?' checked':''}>Show dashed <i>y</i> = <i>x</i> mirror line</label></div></div>
 <div class="rtab-panel" data-panel="v"${tb=='v'?'':' hidden'}><div class="g2"><label class="chk wide"><input type="checkbox" data-k="v_mag"${r.v_mag?' checked':''}>Show magnitude |v| and angle θ</label><label class="chk wide"><input type="checkbox" data-k="v_comp"${r.v_comp?' checked':''}>Show x and y components</label><label class="chk wide"><input type="checkbox" data-k="v_t2t"${r.v_t2t?' checked':''}>Show tip-to-tail sum (for u ± v)</label></div></div>
@@ -935,7 +934,7 @@ function renderRows(){
 <label>Fill<select data-k="c_fill">${sel([['shade','Shaded'],['hatch','Hatched']],r.c_fill||'shade')}</select></label><label>Strength<input type="range" data-k="c_fo" min="10" max="70" value="${r.c_fo||30}"></label>
 <label class="chk wide"><input type="checkbox" data-k="c_val"${r.c_val?' checked':''}>Show the value on the graph</label></div></div></div>`;
     box.append(d);pvUpdate(d,i)});const fa=$('#foldall');if(fa)fa.textContent=(rows.length&&rows.every(q=>q.pin))?'Collapse all':'Expand all'}
-$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='eq'){if(r.labEq){r.lab=eqLabel(r.eq);const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=r.lab}pvUpdate(rw,+rw.dataset.i)}else if(k=='lab'){r.labEq=false;syncLabBtn(rw,r);pvUpdate(rw,+rw.dataset.i)}if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
+$('#rows').addEventListener('input',e=>{if(e.target.dataset.pw){pwEdit(e);return}if(e.target.dataset.tc!==undefined||e.target.dataset.tk){tblEdit(e);return}const k=e.target.dataset.k;if(!k)return;supify(e.target,e);const rw=e.target.closest('.row'),r=rows[rw.dataset.i];r[k]=e.target.type=='checkbox'?e.target.checked:e.target.value;if(k=='ls'){const o=e.target.parentElement&&e.target.parentElement.querySelector('output');if(o)o.textContent=r.ls}if(k=='eq'){if(r.labEq){r.lab=eqLabel(r.eq);const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=r.lab}pvUpdate(rw,+rw.dataset.i)}else if(k=='lab'){r.labEq=false;syncLabBtn(rw,r);pvUpdate(rw,+rw.dataset.i)}if(k.startsWith('k_')){const kl=rw.querySelector('.kp-lbl');if(kl)kl.hidden=!(r.k_xint||r.k_yint||r.k_ext||r.k_inf||r.k_aos||r.k_poi)}if(k=='inv'){const il=rw.querySelector('.inv-sub');if(il)il.hidden=!r.inv}if(k=='n_shade')rw.querySelectorAll('.norm-sub').forEach(el=>el.hidden=!r.n_shade);draw()});
 const onRowsClick=e=>{const rw=e.target.closest('.row');if(!rw)return;const i=+rw.dataset.i;
   if(e.target.dataset.tab){const tb=e.target.dataset.tab;rows[i].tab=rows[i].tab===tb?'':tb;applyRowTab(rw,rows[i]);return}
   const actEl=e.target.closest('[data-act]');if(!actEl)return;const a=actEl.dataset.act;
@@ -951,7 +950,7 @@ const onRowsClick=e=>{const rw=e.target.closest('.row');if(!rw)return;const i=+r
   if(a=='useeq'){rows[i].labEq=true;rows[i].lab=eqLabel(rows[i].eq);const ql=rw.querySelector('[data-k="lab"]');if(ql)ql.value=rows[i].lab;syncLabBtn(rw,rows[i]);pvUpdate(rw,i);draw();return}
   renderRows();draw()};
 $('#rows').addEventListener('click',onRowsClick);
-$('#add').onclick=()=>{rows.push({eq:'',color:nextColor(),dash:'solid',w:'2.5',lab:'',labEq:false,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
+$('#add').onclick=()=>{rows.push({eq:'',color:nextColor(),dash:'solid',w:'2.5',lab:'',labEq:false,ls:15,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true});renderRows();draw();const rws=document.querySelectorAll('.row'),k=rws.length-1;focusIn(rws[k],rws[k]&&rws[k].querySelector('input.eq:not([hidden])'))};
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
@@ -971,7 +970,7 @@ function draw(){
   if(![x0,x1,xs,y0,y1,ys].every(isFinite)||x1<=x0||y1<=y0||xs<=0||ys<=0||(x1-x0)/xs>200||(y1-y0)/ys>200){$('#note').textContent='Check the axis ranges: \u201cTo\u201d must be larger than \u201cFrom\u201d, and \u201cCount by\u201d must be positive.';return}
   $('#note').textContent='';
   const NL=$('#nl').checked,axPopEl=$('#axespop');if(axPopEl)axPopEl.classList.toggle('nl-on',NL);
-  const cell=+$('#cell').value,ls=+$('#ls').value,ct=$('#ct').value,xl=$('#xl').value.trim()||'x',yl=$('#yl').value.trim()||'y';
+  const cell=+$('#cell').value,ct=$('#ct').value,xl=$('#xl').value.trim()||'x',yl=$('#yl').value.trim()||'y';
   const W=live?live.W:(x1-x0)/xs*cell,H=NL?96:(live?live.H:(y1-y0)/ys*cell),nsz=Math.max(8,Math.min(40,+$('#ns').value||12)),
     numW=t=>{const old=LW;LW='normal';try{return t.includes('/')?layout(t,nsz,'').w:tw(t,nsz)}finally{LW=old}},
     mw=(a,b,st,m)=>{let w=0,c=0;for(const[,v]of ticks(a,b,st)){if(c++>80)break;w=Math.max(w,numW(nf(v,m)))}return w},
@@ -981,7 +980,7 @@ function draw(){
     R=Math.max(36,Math.ceil(mw(x0,x1,xs,$('#xf').value)/2)+16,22+Math.ceil(wsup(xl,fsn))+5,ctHalf),
     T=NL?(ct?44:16):Math.max(ct?58:34,(ct?28:0)+22+Math.ceil(.72*fsn)),
     B=Math.max(44,Math.ceil(($('#xf').value=='pi'?2.3:1.25)*nsz+(NL?18:14)));
-  {const o=$('#nso');if(o)o.textContent=nsz}{const o=$('#lso');if(o)o.textContent=ls}
+  {const o=$('#nso');if(o)o.textContent=nsz}
   const TW=Math.round(L+W+R),TH=Math.round(T+H+B);view={L,T,W,H,TW,TH};
   const sx=x=>L+(x-x0)/(x1-x0)*W,sy=y=>T+H-(y-y0)/(y1-y0)*H;
   let s=`<svg id="fig" xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 ${TW} ${TH}" font-family="Helvetica,Arial,sans-serif"><rect width="100%" height="100%" fill="#fff"/><defs><clipPath id="cp"><rect x="${L}" y="${T}" width="${W}" height="${H}"/></clipPath></defs>`;
@@ -1096,6 +1095,7 @@ function draw(){
     let p=null;
     try{p=r.tbl?parseTable(r):parseRow(r.eq);if(p&&p.ineq&&!NL)nIn++;if(p&&p.tbl){const fe=rowEls[i]&&rowEls[i].querySelector('.tblfit');if(fe){let ft=p.fit?(p.fit.msg||p.fit.text+'     R\u00b2 = '+p.fit.r2.toFixed(4)+(p.fit.note?'  \u00b7  '+p.fit.note:'')):'';if(p.fit&&p.fit.f&&p.tbl.resid){const ssr=p.pts.reduce((s,q)=>s+Math.pow(q.y-p.fit.f(q.x),2),0);ft+='  \u00b7  SSR = '+ssr.toPrecision(4)}fe.textContent=ft}}eqs[i]&&eqs[i].classList.remove('bad');setKind(i,'');rowEls[i]&&(rowEls[i].dataset.type=p?p.type:'',rowEls[i].dataset.ineq=p&&p.ineq?'1':'',rowEls[i].dataset.restr=p&&(p.restr||p.pieces)?'1':'',rowEls[i].dataset.pw=p&&p.pieces?'1':'',rowEls[i].dataset.feat='',rowEls[i].dataset.norm=p&&p.norm?'1':'',applyRowTab(rowEls[i],rows[i]))}catch(e){eqs[i]&&eqs[i].classList.add('bad');setKind(i,diagnose(r.eq));rowEls[i]&&(rowEls[i].dataset.type='bad',rowEls[i].dataset.ineq='',rowEls[i].dataset.restr='',rowEls[i].dataset.pw='',rowEls[i].dataset.feat='',rowEls[i].dataset.norm='',applyRowTab(rowEls[i],rows[i]));return}
     if(!p)return;
+    const ls=Math.max(10,Math.min(36,+r.ls||15));
     const dash={solid:'',dashed:'stroke-dasharray="9 6"',dotted:'stroke-dasharray="1 6"',dashdot:'stroke-dasharray="10 4 2 4"'}[r.dash];
     const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
     if(NL){
@@ -1243,6 +1243,7 @@ function draw(){
         if(cont(fn,rx)&&isFinite(l2)&&isFinite(r2)&&l2*r2<0&&Math.abs(deriv2(fn,rx))<1e-2)out.push(rx)}
       return out};
     RW.forEach((r,i)=>{const f=FNS[i],vx=VLINES[i];if((!f&&vx===undefined)||r.vis===false||(!r.k_xint&&!r.k_yint&&!r.k_ext&&!r.k_inf&&!r.k_aos&&!r.k_poi))return;
+      const ls=Math.max(10,Math.min(36,+r.ls||15));
       const pts=[],ok=(x,y)=>isFinite(x)&&isFinite(y)&&x>=x0-1e-9&&x<=x1+1e-9&&y>=y0-1e-9&&y<=y1+1e-9&&(!RESTRS[i]||RESTRS[i].test(x,y));
       const add=(x,y,pl)=>{x=snap0(x);y=snap0(y);if(!ok(x,y))return;if(!pts.some(q=>Math.abs(q.x-x)<Math.max(1e-5,(x1-x0)*1e-4)&&Math.abs(q.y-y)<Math.max(1e-5,(y1-y0)*1e-4)))pts.push({x,y,place:pl||'above'})};
       const halo=`fill="${r.color}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
@@ -1267,6 +1268,7 @@ function draw(){
   const cnum=t=>{try{return compile(String(t))(0,0)}catch(e){return NaN}};
   const fn2=n=>Math.abs(n)<1e-9?'0':String(+n.toFixed(3)).replace('-','\u2212');
   RW.forEach((r,i)=>{const f=FNS[i];if(!f||r.vis===false)return;
+    const ls=Math.max(10,Math.min(36,+r.ls||15));
     const col=r.color,halo=`fill="${col}" stroke="#fff" stroke-width="4" paint-order="stroke" stroke-linejoin="round"`;
     if(r.c_d1){const sg=trace(x=>deriv1(f,x),RESTRS[i]),dd=sg.map(z=>'M'+z.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L')).join('');
       if(dd)lines+=`<path data-i="${i}" d="${dd}" fill="none" stroke="${col}" stroke-width="${Math.max(1.5,r.w*.85)}" stroke-dasharray="8 5" stroke-linecap="round"/>`}
@@ -1415,11 +1417,12 @@ $('#rows').addEventListener('mouseleave',()=>setHover(null));
 
 // state, undo and redo, autosave, files, templates
 const FIELDS='#panel input[id]:not(.nosave),#panel select[id]:not(.nosave),#axespop input[id]:not(.nosave),#axespop select[id]:not(.nosave)';
-const ROWDEF={eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
+const ROWDEF={eq:'',color:COLORS[0],dash:'solid',w:'2.5',lab:'',labEq:false,ls:15,pos:70,place:'above',rot:true,coords:false,arr:'both',vis:true,labOn:true};
 const getState=()=>{const f={};document.querySelectorAll(FIELDS).forEach(el=>f[el.id]=el.type=='checkbox'?el.checked:el.value);return{v:1,f,rows:rows.map(({ui,folded,pin,_fn,...r})=>r),p:JSON.parse(JSON.stringify(P))}};
 function setState(st,keep){if(st.p){P=Object.assign({},st.p);shownP=''}
   document.querySelectorAll(FIELDS).forEach(el=>{if(st.f&&st.f[el.id]!==undefined){if(el.type=='checkbox')el.checked=!!st.f[el.id];else el.value=st.f[el.id]}});
-  rows=(st.rows||[]).map((r,i)=>{const row=Object.assign({},ROWDEF,keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r);if(r.labEq===undefined&&row.lab&&row.eq&&row.lab===eqLabel(row.eq))row.labEq=true;if(row.labEq)row.lab=eqLabel(row.eq);return row});renderRows()}
+  const oldLs=st.f&&st.f.ls!==undefined?+st.f.ls:15;
+  rows=(st.rows||[]).map((r,i)=>{const row=Object.assign({},ROWDEF,{ls:oldLs},keep&&keep[i]?{pin:keep[i].pin,ui:keep[i].ui}:{},r);if(r.labEq===undefined&&row.lab&&row.eq&&row.lab===eqLabel(row.eq))row.labEq=true;if(row.labEq)row.lab=eqLabel(row.eq);return row});renderRows()}
 function setSaved(t,bad){const el=$('#saved');if(!el)return;el.textContent=t;el.classList.toggle('bad',!!bad)}
 function savedMsg(ok){setSaved(ok?'Saved '+new Date().toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'Not saved. Use Save file.',!ok)}
 function updHist(){$('#undo').disabled=hi<=0;$('#redo').disabled=hi>=hist.length-1}
@@ -1451,7 +1454,7 @@ $('#rst-yes').onclick=()=>{
   snap(true);
   live=null;P={};shownP='';
   rows=[Object.assign({},ROWDEF)];
-  const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',ls:'15',sol:'off',ver:'key',bw:'color'};
+  const defs={x0:'-10',x1:'10',xs:'1',xn:'1',xl:'',xf:'dec',y0:'-10',y1:'10',ys:'1',yn:'1',yl:'',yf:'dec',ns:'12',tm:'rad',gw:'standard',gt:'1',gm:'1',cell:'28',ct:'',sol:'off',ver:'key',bw:'color'};
   Object.entries(defs).forEach(([id,v])=>{const el=$('#'+id);if(el)el.value=v});
   $('#xax').checked=true;$('#yax').checked=true;$('#nl').checked=false;
   syncSeg();renderRows();draw();note('All work cleared.');
