@@ -969,10 +969,9 @@ $('#add').onclick=()=>{rows.push({eq:'',color:nextColor(),dash:'solid',w:'2.5',l
 
 function draw(){
   const val=id=>{try{return compile($('#'+id).value)(0,0)}catch(e){return NaN}};
-  const STU=$('#ver').value=='student',BW=$('#bw').value=='bw',cmap={};let cix=0;
+  const STU=$('#ver').value=='student',BW=$('#bw').value=='bw';
   const RW=(STU||BW)?rows.map(r=>{let o=r;
-    if(BW){o={...r,color:'#000000',fill:r.fill==='none'?'none':'hatch',c_fill:'hatch',fo:70,c_fo:70};
-      if(r.color&&r.color!=='#000000'&&(r.dash||'solid')==='solid'){if(!cmap[r.color])cmap[r.color]=['dashed','dotted','dashdot'][cix++%3];o.dash=cmap[r.color]}}
+    if(BW)o={...r,color:'#000000',fill:r.fill==='none'?'none':'hatch',c_fill:'hatch',fo:70,c_fo:70};
     if(STU&&r.keyonly)o={...o,vis:false,labOn:false};return o}):rows;
   document.querySelectorAll('.row').forEach((el,i)=>el.classList.toggle('keyhid',STU&&!!(rows[i]&&rows[i].keyonly)));
   usedP=new Set();FUNCS={};FD={};VECS={};KDEG=$('#tm').value=='deg';
