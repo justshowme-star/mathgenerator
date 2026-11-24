@@ -130,15 +130,15 @@ h3{font-size:13px;margin:12px 0 6px}
 .axespop-x{width:24px;height:24px;border-radius:50%;padding:0;font-size:16px;line-height:1;background:var(--bg);color:var(--mute);border:1px solid var(--line);flex:none}
 .axespop h3{margin:12px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px}
 .ax-blk{padding:12px 0;border-bottom:1px solid var(--line);display:grid;gap:10px}
-.ax-blk:has(.ax-top>.ax-chk input:not(:checked)) .ax-sub{opacity:.45}
-.ax-top{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap}
-.ax-ytoggles{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ax-chk{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--ink);cursor:pointer;user-select:none}
-.ax-chk input{width:18px;height:18px;margin:0;accent-color:var(--accent);cursor:pointer}
-.ax-nlchk{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--mute);cursor:pointer;user-select:none}
+.ax-blk:has(.ax-chk input:not(:checked)) .ax-sub{opacity:.45}
+.ax-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ax-ytoggles{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.ax-chk{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;user-select:none;white-space:nowrap}
+.ax-chk input{width:17px;height:17px;margin:0;accent-color:var(--accent);cursor:pointer}
+.ax-nlchk{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:var(--mute);cursor:pointer;user-select:none;white-space:nowrap}
 .ax-nlchk input{width:15px;height:15px;margin:0;accent-color:var(--accent);cursor:pointer}
 .ax-nlchk:has(input:checked){color:var(--ink);font-weight:600}
-.ax-lblbox{position:relative;width:148px;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px 5px;transition:border-color .15s}
+.ax-lblbox{position:relative;flex:0 1 132px;min-width:96px;border:1.5px solid var(--line);border-radius:7px;padding:7px 10px 5px;transition:border-color .15s}
 .ax-lblbox:focus-within{border-color:var(--accent)}
 .ax-lblbox span{position:absolute;top:-7px;left:8px;padding:0 4px;background:var(--panel);font-size:11px;line-height:1;color:var(--mute)}
 .ax-lblbox:focus-within span{color:var(--accent)}
