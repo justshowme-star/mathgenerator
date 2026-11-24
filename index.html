@@ -1333,15 +1333,17 @@ document.querySelectorAll('#panel input[id]:not(.nosave),#panel select[id]:not(.
 renderRows();draw();
 
 $('#rows').addEventListener('toggle',e=>{const dt=e.target;if(dt.tagName!='DETAILS')return;const r=rows[dt.closest('.row').dataset.i];if(!r)return;r.ui=r.ui||{l:true};r.ui[dt.dataset.d]=dt.open},true);
-const PAL=['#1f5fbf','#c74440','#2e7d32','#6042a6','#d97706','#0e7490','#e6007e','#000000','#8a6d3b','#7f7f7f'];
+let held=false,ht=null;
+const PAL=['#000000','#c74440','#2d70b3','#388c46','#6042a6','#fa7e19','#e6007e','#0e7490','#8a6d3b','#7f7f7f'];
 const closeMenu=()=>{const m=$('#cmenu');if(m)m.remove()};
-function openMenu(btn,i){const old=$('#cmenu');if(old){const same=old.dataset.for==='c'+i;old.remove();if(same)return}
-  const m=document.createElement('div');m.id='cmenu';m.dataset.for='c'+i;
+function openMenu(btn,i){closeMenu();const m=document.createElement('div');m.id='cmenu';
   m.innerHTML='<div class="pal">'+PAL.map(c=>`<button type="button" data-c="${c}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')+'</div><label>Custom<input type="color" value="'+rows[i].color+'"></label>';
   document.body.append(m);const b=btn.getBoundingClientRect();
   m.style.left=Math.max(8,Math.min(b.left,innerWidth-m.offsetWidth-8))+'px';m.style.top=Math.max(8,Math.min(b.bottom+6,innerHeight-m.offsetHeight-8))+'px';
   m.onclick=e=>{const c=e.target.dataset.c;if(c){rows[i].color=c;closeMenu();btn.style.setProperty('--c',c);draw()}};
   m.querySelector('input').oninput=e=>{rows[i].color=e.target.value;btn.style.setProperty('--c',e.target.value);draw()}}
+$('#rows').addEventListener('pointerdown',e=>{const b=e.target.closest('.dot');held=false;clearTimeout(ht);if(!b)return;ht=setTimeout(()=>{held=true;openMenu(b,+b.closest('.row').dataset.i)},450)});
+['pointerup','pointerleave','pointercancel'].forEach(t=>$('#rows').addEventListener(t,()=>clearTimeout(ht),true));
 $('#rows').addEventListener('contextmenu',e=>{const b=e.target.closest('.dot');if(!b)return;e.preventDefault();openMenu(b,+b.closest('.row').dataset.i)});
 document.addEventListener('pointerdown',e=>{if(!e.target.closest('#cmenu')&&!e.target.closest('.dot')&&!e.target.closest('.mbtn'))closeMenu()});
 document.addEventListener('keydown',e=>{if(e.key=='Escape')closeMenu()});
